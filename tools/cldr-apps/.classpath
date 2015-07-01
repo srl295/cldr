@@ -8,7 +8,6 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/cldr-tools"/>
 	<classpathentry exported="true" kind="lib" path="/cldr-tools/classes" sourcepath="/cldr-tools">
 		<attributes>
@@ -83,5 +82,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/srl/src/cldr-bluemix/tools/cldr-apps/libs/jsp-api.jar"/>
+	<classpathentry kind="lib" path="/Users/srl/src/cldr-bluemix/tools/cldr-apps/libs/servlet-api.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -1,0 +1,12 @@
+---
+applications:
+- name: surveytool
+  services:
+  - Monitoring and Analytics-u0
+  disk_quota: 2048M
+  host: surveytool
+  name: surveytool
+  path: tools/cldr-apps/cldr-apps.war
+  domain: mybluemix.net
+  instances: 1
+  memory: 1024M

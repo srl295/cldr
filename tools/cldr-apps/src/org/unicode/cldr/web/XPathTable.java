@@ -23,6 +23,7 @@ import java.util.Set;
 import org.unicode.cldr.icu.LDMLConstants;
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRConfig.Environment;
+import org.unicode.cldr.util.CLDRConfigImpl;
 import org.unicode.cldr.util.LDMLUtilities;
 import org.unicode.cldr.util.PrettyPath;
 import org.unicode.cldr.util.StringId;
@@ -240,6 +241,9 @@ public class XPathTable {
             insertStmt.addBatch();
             stat_dbAdd++;
         }
+        if(CLDRConfigImpl.vcapMode()) {
+            insertStmt.setQueryTimeout(Math.max(insertStmt.getQueryTimeout(), 500000));
+        }
         insertStmt.executeBatch();
         conn.commit();
         insertStmt.close();
@@ -250,6 +254,9 @@ public class XPathTable {
         queryStmt = conn.prepareStatement("SELECT id,xpath FROM " + CLDR_XPATHS + " ORDER BY id DESC");
         queryStmt.setMaxRows(xpaths.size());
         queryStmt.setFetchSize(xpaths.size());
+        if(CLDRConfigImpl.vcapMode()) {
+            queryStmt.setQueryTimeout(Math.max(queryStmt.getQueryTimeout(), 500000));
+        }
         ResultSet rs = queryStmt.executeQuery();
         while (rs.next()) {
             int id = rs.getInt(1);

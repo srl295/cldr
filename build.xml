@@ -1,0 +1,14 @@
+<!--
+    see readme.txt
+-->
+
+
+<project name="CLDR-top" default="all" basedir=".">
+
+  <target name="all" >
+    <ant dir="tools/java" antfile="build.xml" target="all" />
+    <ant dir="tools/java" antfile="build.xml" target="jar" />
+    <ant dir="tools/cldr-apps" antfile="build.xml" target="war" />
+  </target>
+
+</project>

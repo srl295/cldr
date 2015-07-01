@@ -3968,7 +3968,8 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
             final File list[] = getFileBases();
             CLDRConfig config = CLDRConfig.getInstance();
             // may fail at server startup time- should do this through setup mode
-            ensureOrCheckout(null, "CLDR_DIR", config.getCldrBaseDirectory(), CLDR_DIR_REPOS);
+            final String repository = CLDRConfig.getInstance().getProperty("CLDR_REPOS", CLDR_DIR_REPOS);
+            ensureOrCheckout(null, "CLDR_DIR", config.getCldrBaseDirectory(), repository + "/trunk");
             // verify readable
             File root = new File(config.getCldrBaseDirectory(), "common/main");
             if (!root.isDirectory()) {
@@ -3986,8 +3987,23 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
             busted("Configuration Error: " + param + " is not set.");
         } else if (!dir.isDirectory()) {
             if (o == null) {
-                busted("Not able to checkout " + dir.getAbsolutePath() + " for " + param + " - go into setup mode.");
-                return; /* NOTREACHED */
+                if(CLDRConfigImpl.vcapMode() == false) {
+                    busted("Not able to checkout " + dir.getAbsolutePath() + " for " + param + " - go into setup mode.");
+                    return; /* NOTREACHED */
+                } else {
+                    ElapsedTimer et = new ElapsedTimer();
+                    long res;
+                    try {
+                        res = getOutputFileManager().svnCheckout(dir, url, SVNRevision.UNDEFINED, SVNRevision.HEAD,
+                            SVNDepth.INFINITY, true);
+                        System.out.println("Checked out " + url + " r " + res + " to " + dir.getAbsolutePath() + " - see the value of "
+                            + param + " if you want to have a different location.  Took: " + et);
+                        return; // vcap mode
+                    } catch (SVNException e) {
+                        SurveyMain.busted("Not able to checkout " + url + " to " + dir, e);
+                        return; /* NOTREACHED */
+                    }
+                }
             }
             throw new InternalError("Please run this manually:  'svn checkout " + url + " " + dir.getAbsolutePath()
                 + "' - and restart the server. TODO- this will be fixed by the step-by-step install.");

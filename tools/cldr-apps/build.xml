@@ -1,11 +1,13 @@
-<project name="CLDR Web Apps" default="all" basedir=".">
+<project name="CLDR Web Apps" default="all" basedir="."
+    xmlns:if="ant:if"
+    xmlns:unless="ant:unless">
     <target name="init">
     	<!-- copied from cldr/tools/java's build.xml -->
         <tstamp/>
 
         <property name="src.dir" value="src"/>
         <property name="libs.dir" value="WebContent/WEB-INF/lib"/>
-
+        <property name="libs2.dir" value="libs"/>
         <property name="build.dir" value="build/classes"/>
         <property name="jar.file" value="cldr-apps.jar"/>
         <property name="jarSrc.file" value="cldr-apps-src.jar"/>
@@ -27,6 +29,7 @@
 
         <path id="build.classpath">
             <pathelement path="${build.dir}"/>
+            <pathelement path="${libs2.dir}"/>
         </path>
 
         <property name="ICU4J_JAR" value="${CLDR_TOOLS}/libs/icu4j.jar"/>
@@ -40,12 +43,13 @@
         <!-- from webinit: -->
         <property name="tomcat.home"        value="${CATALINA_HOME}"/>
         <condition property="is.tomcat.home.set" >
-                <isset property="CATALINA_HOME" />
+           <isset property="CATALINA_HOME" />
         </condition>
-        <fail unless="is.tomcat.home.set" message="Please set the CATALINA_HOME property in build.properties to point at your Tomcat installation."/>
-        <property name="SERVLET_JAR"        value="${CATALINA_HOME}/lib/servlet-api.jar"/>
-        <property name="JSP_JAR"        value="${CATALINA_HOME}/lib/jsp-api.jar"/>
-
+        <property if:true="is.tomcat.home.set" name="SERVLET_JAR"        value="${CATALINA_HOME}/lib/servlet-api.jar"/>
+        <property if:true="is.tomcat.home.set" name="JSP_JAR"        value="${CATALINA_HOME}/lib/jsp-api.jar"/>
+        <property unless:true="is.tomcat.home.set" name="SERVLET_JAR"        value="${libs2.dir}/servlet-api.jar"/>
+        <property unless:true="is.tomcat.home.set" name="JSP_JAR"        value="${libs2.dir}/jsp-api.jar"/>
+        
         <!-- Configure the context path for this application -->
         <property name="path"     value="/cldr-apps"/>
         <property name="hostport" value="http://localhost:8080"/>
@@ -101,16 +105,6 @@
 	  </fileset>
         </path>
 
-        <!-- Configure the custom Ant tasks for the Manager application -->
-        <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"><classpath refid="catalina-ant.classpath" /></taskdef>
-        <taskdef name="list"      classname="org.apache.catalina.ant.ListTask"><classpath refid="catalina-ant.classpath" /></taskdef>
-        <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"><classpath refid="catalina-ant.classpath" /></taskdef>
-        <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"><classpath refid="catalina-ant.classpath" /></taskdef>
-        <!-- <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"><classpath refid="catalina-ant.classpath" /></taskdef> -->
-        <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"><classpath refid="catalina-ant.classpath" /></taskdef>
-        <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"><classpath refid="catalina-ant.classpath" /></taskdef>
-        <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"><classpath refid="catalina-ant.classpath" /></taskdef>
-
         <!--
         TODO: do the following for the other env variables above..
         <condition property="is.icu4j.classes.set" >
@@ -120,6 +114,18 @@
         -->
 
         <echo message="Java: ${java.version}. [For verbose list of properties, use the 'properties' target.]"/>
+    </target>
+    
+    <target name="antinit" depends="init">
+            <!-- Configure the custom Ant tasks for the Manager application -->
+            <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+            <taskdef name="list"      classname="org.apache.catalina.ant.ListTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+            <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+            <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+            <!-- <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"><classpath refid="catalina-ant.classpath" /></taskdef> -->
+            <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+            <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"><classpath refid="catalina-ant.classpath" /></taskdef>
+            <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"><classpath refid="catalina-ant.classpath" /></taskdef>
     </target>
 
     <target name="properties" description="dump out properties" depends="init">
@@ -253,33 +259,33 @@
     </target>
 
     <!-- deploy to the server -->
-    <target name="deploy" depends="init,war">
+    <target if:true="is.tomcat.home.set" name="deploy" depends="antinit,war">
         <deploy url="${url}" username="${username}" password="${password}"
             path="${path}" war="${warfile}"/>
     </target>
 
     <!-- reload on the server - doesn't require building -->
-    <target name="reload" description="Reload SurveyTool application"
-          depends="init">
+    <target  if:true="is.tomcat.home.set" name="reload" description="Reload SurveyTool application"
+          depends="antinit">
         <reload  url="${url}" username="${username}" password="${password}"
             path="${path}"/>
     </target>
 
     <!-- un-deploy from the server -->
-    <target name="undeploy" description="Remove SurveyTool application" depends="init">
+    <target  if:true="is.tomcat.home.set" name="undeploy" description="Remove SurveyTool application" depends="antinit">
         <undeploy url="${url}" username="${username}" password="${password}"
             path="${path}"/>
     </target>
 
     <!-- redeploy to the server.  Builds first so we catch trouble early.
         Note, this will fail if you haven't deployed the first time. -->
-    <target name="redeploy" description="Redeploy SurveyTool application"
-        depends="init,war,undeploy,deploy">
+    <target if:true="is.tomcat.home.set"  name="redeploy" description="Redeploy SurveyTool application"
+        depends="antinit,war,undeploy,deploy">
     </target>
 
 	<!-- must use this to initialize the derby DB. -->
-    <target name="create-derby-db" description="Create empty Derby DB"
-	depends="init">
+    <target  name="create-derby-db" description="Create empty Derby DB"
+	depends="antinit">
 	<java classname="org.apache.derby.tools.ij" inputstring="exit;">
          <sysproperty key="derby.system.home" value="${tomcat.home}"/>
          <sysproperty key="ij.database" value="jdbc:derby:cldr/cldrdb;create=true"/>
