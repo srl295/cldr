@@ -320,7 +320,7 @@ final class XmlDataSource extends AbstractDataSource {
             Stream<Entry<String, String>> sortedAttributes =
                 IntStream.range(0, xmlAttributes.getLength())
                     .mapToObj(xmlAttributes::getQName)
-                    .sorted(dataType.getAttributeComparator())
+                    .sorted(dataType.getAttributeComparator(/* TODO: need to pass cldrRootDir here??!! */))
                     .map(s -> Maps.immutableEntry(s, xmlAttributes.getValue(s)));
 
             // New variable needed because of lambdas needing "effectively final" instances.

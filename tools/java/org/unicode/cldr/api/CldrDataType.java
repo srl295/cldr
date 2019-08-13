@@ -1,12 +1,13 @@
 package org.unicode.cldr.api;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import org.unicode.cldr.util.DtdData;
-import org.unicode.cldr.util.DtdData.Attribute;
-import org.unicode.cldr.util.DtdData.Element;
-import org.unicode.cldr.util.DtdType;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
+import static java.util.function.Function.identity;
+import static org.unicode.cldr.util.DtdData.AttributeStatus.distinguished;
+import static org.unicode.cldr.util.DtdData.AttributeStatus.value;
+import static org.unicode.cldr.util.DtdData.Mode.OPTIONAL;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -14,12 +15,13 @@ import java.util.Comparator;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.ImmutableMap.toImmutableMap;
-import static java.util.function.Function.identity;
-import static org.unicode.cldr.util.DtdData.AttributeStatus.distinguished;
-import static org.unicode.cldr.util.DtdData.AttributeStatus.value;
-import static org.unicode.cldr.util.DtdData.Mode.OPTIONAL;
+import org.unicode.cldr.util.DtdData;
+import org.unicode.cldr.util.DtdData.Attribute;
+import org.unicode.cldr.util.DtdData.Element;
+import org.unicode.cldr.util.DtdType;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Data types for non-locale based CLDR data. For the canonical specification for LDML data can
@@ -69,8 +71,6 @@ public enum CldrDataType {
     private final ImmutableList<DtdType> extraTypes;
     private final boolean isLdml;
     private final boolean canResolve;
-    private final Comparator<String> elementComparator;
-    private final Comparator<String> attributeComparator;
 
     CldrDataType(DtdType mainType, boolean isLdml, boolean canResolve, DtdType... extraTypes) {
         this.mainType = mainType;
@@ -78,19 +78,6 @@ public enum CldrDataType {
         checkArgument(!canResolve || isLdml, "inconsistent flags");
         this.isLdml = isLdml;
         this.canResolve = canResolve;
-        // There's no need to cache the DtdData instance since getInstance() already does that.
-        DtdData dtd = DtdData.getInstance(mainType);
-        // Note that the function passed in to the wrapped comparators needs to be fast, since it's
-        // called for each comparison. We assume getElementFromName() and getAttributesFromName()
-        // are efficient, and if not we'll need to cache.
-        this.elementComparator =
-            wrapToHandleUnknownNames(
-                dtd.getElementComparator(),
-                dtd.getElementFromName()::containsKey);
-        this.attributeComparator =
-            wrapToHandleUnknownNames(
-                dtd.getAttributeComparator(),
-                dtd.getAttributesFromName()::containsKey);
     }
 
     String getLdmlName() {
@@ -148,12 +135,26 @@ public enum CldrDataType {
         return attr;
     }
 
-    Comparator<String> getElementComparator() {
-        return elementComparator;
+    Comparator<String> getElementComparator(File cldrRootDir) {
+        // There's no need to cache the DtdData instance since getInstance() already does that.
+        DtdData dtd = DtdData.getInstance(mainType, cldrRootDir);
+        // Note that the function passed in to the wrapped comparators needs to be fast, since it's
+        // called for each comparison. We assume getElementFromName() and getAttributesFromName()
+        // are efficient, and if not we'll need to cache.
+        return wrapToHandleUnknownNames(
+                dtd.getElementComparator(),
+                dtd.getElementFromName()::containsKey);
     }
 
-    Comparator<String> getAttributeComparator() {
-        return attributeComparator;
+    Comparator<String> getAttributeComparator(File cldrRootDir) {
+        // There's no need to cache the DtdData instance since getInstance() already does that.
+        DtdData dtd = DtdData.getInstance(mainType, cldrRootDir);
+        // Note that the function passed in to the wrapped comparators needs to be fast, since it's
+        // called for each comparison. We assume getElementFromName() and getAttributesFromName()
+        // are efficient, and if not we'll need to cache.
+        return wrapToHandleUnknownNames(
+                dtd.getAttributeComparator(),
+                dtd.getAttributesFromName()::containsKey);
     }
 
     // Unknown elements outside the DTD (such as "//ldml/special" icu:xxx elements) are not

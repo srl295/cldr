@@ -1,9 +1,12 @@
 package org.unicode.cldr.api;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import org.unicode.cldr.api.AttributeKey.AttributeSupplier;
+import static com.google.common.base.CharMatcher.anyOf;
+import static com.google.common.base.CharMatcher.inRange;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,13 +16,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.google.common.base.CharMatcher.anyOf;
-import static com.google.common.base.CharMatcher.inRange;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkElementIndex;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.stream.Collectors.toCollection;
+import org.unicode.cldr.api.AttributeKey.AttributeSupplier;
+
+import com.google.common.base.CharMatcher;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * A sequence of CLDR path elements and "distinguishing" attributes.
@@ -473,7 +474,7 @@ public final class CldrPath implements AttributeSupplier, Comparable<CldrPath> {
         }
         if (getAttributeCount() > 0) {
             String lastPathAttributeName = getLocalAttributeName(getAttributeCount() - 1);
-            if (dtdType.getAttributeComparator()
+            if (dtdType.getAttributeComparator(/* TODO: need cldrRootDir?!! */)
                 .compare(lastPathAttributeName, attributeNames.get(0)) > 0) {
                 // Oops, order is not as expected, so must reorder all attributes.
                 appendResortedValueAttributesTo(out, attributeNames, valueAttributes);
@@ -492,7 +493,7 @@ public final class CldrPath implements AttributeSupplier, Comparable<CldrPath> {
         for (int n = 0; n < attributeKeyValuePairs.size(); n += 2) {
             attributeNames.add(attributeKeyValuePairs.get(n));
         }
-        attributeNames.sort(dtdType.getAttributeComparator());
+        attributeNames.sort(dtdType.getAttributeComparator(/* TODO: need cldrRootDir?!!*/));
         for (String attrName : attributeNames) {
             String value = getLocalAttributeValue(attrName);
             if (value == null) {

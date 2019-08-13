@@ -1,10 +1,11 @@
 package org.unicode.cldr.api;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSetMultimap;
-import org.unicode.cldr.util.DtdData;
-import org.unicode.cldr.util.XPathParts;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static java.lang.Integer.signum;
+import static org.unicode.cldr.api.CldrDataType.LDML;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -15,10 +16,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static java.lang.Integer.signum;
-import static org.unicode.cldr.api.CldrDataType.LDML;
+import org.unicode.cldr.util.DtdData;
+import org.unicode.cldr.util.XPathParts;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSetMultimap;
 
 /**
  * Utilities related to CLDR paths. It's possible that one day we might wish to expose the path
@@ -112,9 +114,9 @@ final class CldrPaths {
         private final Comparator<String> elementNameComparator;
         private final Comparator<String> attributeNameComparator;
 
-        private DtdPathComparator(CldrDataType dataType) {
-            this.elementNameComparator = dataType.getElementComparator();
-            this.attributeNameComparator = dataType.getAttributeComparator();
+        private DtdPathComparator(CldrDataType dataType, File cldrRootDir) {
+            this.elementNameComparator = dataType.getElementComparator(cldrRootDir);
+            this.attributeNameComparator = dataType.getAttributeComparator(cldrRootDir);
         }
 
         // This code should only return "signum" values for ordering (i.e. {-1, 0, 1}).

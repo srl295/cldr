@@ -654,20 +654,47 @@ public class DtdData extends XMLFileReader.SimpleHandler {
     /**
      * Normal version of DtdData
      * Note that it always gets the trunk version
+     * @deprecated depends on static configuration (CLDR_DIR)
      */
     public static DtdData getInstance(DtdType type) {
         return CACHE.get(type);
     }
-
+    
     /**
      * Special form using version, used only by tests, etc.
      */
     public static DtdData getInstance(DtdType type, String version) {
-        DtdData simpleHandler = new DtdData(type, version);
-        XMLFileReader xfr = new XMLFileReader().setHandler(simpleHandler);
         File directory = version == null ? CLDRConfig.getInstance().getCldrBaseDirectory()
             : new File(CLDRPaths.ARCHIVE_DIRECTORY + "/cldr-" + version);
 
+        return getInstance(type, version, directory);
+    }
+    
+    private static final Map<Pair<DtdType, File>, DtdData> OTHERCACHE = new  HashMap<>();
+
+    /**
+     * Get a DtdType, given a CLDR root directory.
+     * @param type
+     * @param directory
+     * @return
+     */
+    public static synchronized DtdData getInstance(DtdType type, File directory) {
+        Pair<DtdType, File> key = new Pair<>(type, directory);
+        DtdData data = OTHERCACHE.get(key);
+        if(data == null) {
+            data = make(type, directory);
+            OTHERCACHE.put(key, data);
+        }
+        return data;
+    }
+
+    private static DtdData make(DtdType type, File directory) {
+        return getInstance(type, null, directory);
+    }
+ 
+    private static DtdData getInstance(DtdType type, String version, File directory) {
+        DtdData simpleHandler = new DtdData(type, version);
+        XMLFileReader xfr = new XMLFileReader().setHandler(simpleHandler);
         if (type != type.rootType) {
             // read the real first, then add onto it.
             readFile(type.rootType, xfr, directory);
@@ -1666,7 +1693,7 @@ public class DtdData extends XMLFileReader.SimpleHandler {
     static {
         EnumMap<DtdType, DtdData> temp = new EnumMap<DtdType, DtdData>(DtdType.class);
         for (DtdType type : DtdType.values()) {
-            temp.put(type, getInstance(type, null));
+            temp.put(type, getInstance(type, (String)null));
         }
         CACHE = Collections.unmodifiableMap(temp);
     }
