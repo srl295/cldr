@@ -9,8 +9,6 @@
 
 		<language type="trw"/>
 
-		<script type="Arab"/>
-
 	</identity>
 
 	<layout>
@@ -25,8 +23,7 @@
 
 	<characters>
 
-		<exemplarCharacters draft="confirmed">[ا آ أ ب پ ت ٹ ث ج ݲ چ ڇ څ ح خ د ڈ ذ ر ڑ ز ژ ڙ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں ہ ھ ء ی  ئ ے]</exemplarCharacters>
+		<exemplarCharacters draft="unconfirmed">[ا آ أ ب پ ت ٹ ث ج ݲ چ ڇ څ ح خ د ڈ ذ ر ڑ ز ژ ڙ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں ہ ھ ء ی  ئ ے]</exemplarCharacters>
 
-		<exemplarCharacters type="index" draft="confirmed">[ا آ أ ب پ ت ٹ ث ج ݲ چ ڇ څ ح خ د ڈ ذ ر ڑ ز ژ ڙ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں ہ ھ ء ی  ئ ے]</exemplarCharacters>
-
+		<exemplarCharacters type="index" draft="unconfirmed">[ا آ أ ب پ ت ٹ ث ج ݲ چ ڇ څ ح خ د ڈ ذ ر ڑ ز ژ ڙ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں ہ ھ ء ی  ئ ے]</exemplarCharacters>
 	</characters>
