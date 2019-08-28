@@ -5,9 +5,10 @@
 
 	<identity>
 
-		<version number="$new$"/>
+		<version number="$New$"/>
 
 		<language type="trw"/>
+                <territory type ="PK"/>
 
 	</identity>
 
