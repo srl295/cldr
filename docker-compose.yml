@@ -1,0 +1,24 @@
+tomcat:
+    # image: tomcat:8
+    build: tools/cldr-apps/
+    volumes:
+        - ./tools/cldr-apps/cldr-apps.war:/usr/local/tomcat/webapps/cldr-apps.war:ro
+        - .:/usr/local/tomcat/cldr/cldr-master:ro
+        - .:/usr/local/tomcat/cldr/cldr-trunk:ro
+        - ./tools/cldr-apps/local-cldr:/usr/local/tomcat/cldr
+        - ./tools/cldr-apps/docker-context.xml:/usr/local/tomcat/conf/context.xml:ro
+    links:
+        - mysql
+    ports:
+        - 8080:8080
+    command: ['/bin/sh', '-c', 'echo SLEEP FOR DB && sleep 15 && catalina.sh run']
+mysql:
+    image: mysql:5
+    environment:
+        MYSQL_USER: surveytool
+        MYSQL_PASSWORD: armour,hooligan,peroxide
+        MYSQL_DATABASE: cldrdb
+        MYSQL_RANDOM_ROOT_PASSWORD: 1
+    command:
+        --character-set-server latin1 --collation_server latin1_bin --default-storage-engine MyISAM
+  
