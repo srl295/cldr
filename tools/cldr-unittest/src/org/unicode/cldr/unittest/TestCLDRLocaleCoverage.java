@@ -93,7 +93,7 @@ public class TestCLDRLocaleCoverage extends TestFmwkPlus {
         
         // If this fails, it is because of a mismatch between coverage and the getCLDRLanguageCodes.
         // Usually a problem with coverage.
-        boolean showRegex = !assertContains("localesForNames.containsAll(coverageLocales)", localesForNames, coverageLocales);
+        boolean showRegex = !assertContains("localesForNames.containsAll(coverageLocales) (check coverageLocales for these missing items)", localesForNames, coverageLocales);
         showRegex |= !assertContains("coverageLocales.containsAll(localesForNames)", coverageLocales, localesForNames);
         if (showRegex || true) {
             String simplePattern = MinimizeRegex.simplePattern(localesForNames);
@@ -171,7 +171,7 @@ public class TestCLDRLocaleCoverage extends TestFmwkPlus {
     }
 
     private boolean assertContains(String title, Collection<String> set, Collection<String> subset) {
-        boolean result = assertTrue(title, set.containsAll(subset));
+        boolean result = set.containsAll(subset);
         if (!result) {
             Set<String> temp = new LinkedHashSet<>(subset);
             temp.removeAll(set);
@@ -179,11 +179,11 @@ public class TestCLDRLocaleCoverage extends TestFmwkPlus {
             for (String locale : temp) {
                 temp2.add(locale + "\t" + ENGLISH.getName(locale));
             }
-            warnln("Missing:\t" + temp.size() + "\n\t" + Joiner.on("\n\t").join(temp2));
+            System.err.println(title +" Missing:\t" + temp.size() + "\n\t" + Joiner.on("\n\t").join(temp2));
         }
-        return result;
+        return assertTrue(title, result);
     }
-    
+
     /**
      * Test whether there are any locales for the organization CLDR
      */
