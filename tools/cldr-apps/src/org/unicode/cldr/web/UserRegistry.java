@@ -1544,7 +1544,7 @@ public class UserRegistry {
             insertStmt.setString(5, u.password);
             insertStmt.setString(6, normalizeLocaleList(u.locales));
             if (!insertStmt.execute()) {
-                if (!hushUserMessages) logger.info("Added.");
+                if (!hushUserMessages) logger.info("Added " + u.name + " of " + u.org + ": " + levelAsStr(u.userlevel));
                 conn.commit();
                 if (ctx != null)
                     ctx.println("<p>Added user.<p>");
