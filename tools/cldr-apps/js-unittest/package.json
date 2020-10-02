@@ -1,0 +1,15 @@
+{
+  "name": "js-unittest",
+  "version": "1.0.0",
+  "description": "client side Unit tests for the Survey Tool",
+  "scripts": {
+    "test": "node browser-test.js"
+  },
+  "keywords": [],
+  "author": "Steven R. Loomis <srl295@gmail.com>",
+  "license": "Unicode-DFS-2016",
+  "dependencies": {
+    "xmlserializer": "^0.6.1",
+    "zombie": "^6.1.4"
+  }
+}
