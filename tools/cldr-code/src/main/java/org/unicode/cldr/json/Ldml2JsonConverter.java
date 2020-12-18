@@ -453,9 +453,14 @@ public class Ldml2JsonConverter {
         int totalItemsInFile = 0;
 
         for (JSONSection js : sections) {
+            if (js.section.equals("IGNORE")) {
+                continue;
+            }
             String outFilename;
             if (type == RunType.rbnf) {
                 outFilename = filename.replaceAll("_", "-") + ".json";
+            } else if(js.section.equals("other")) {
+                outFilename = js.section + "-" + filename + ".json";
             } else {
                 outFilename = js.section + ".json";
             }
@@ -809,7 +814,7 @@ public class Ldml2JsonConverter {
         if (type == RunType.supplemental) {
             JsonArray mainPaths = new JsonArray();
             mainPaths.add(new JsonPrimitive("availableLocales.json"));
-            mainPaths.add(new JsonPrimitive("defaultContent.json"));
+            mainPaths.add(new JsonPrimitive("defaultContent.json")); // Handled specially
             mainPaths.add(new JsonPrimitive("scriptMetadata.json"));
             mainPaths.add(new JsonPrimitive(type.toString() + "/*.json"));
             obj.add("main", mainPaths);

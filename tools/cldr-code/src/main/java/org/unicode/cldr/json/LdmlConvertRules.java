@@ -298,7 +298,7 @@ class LdmlConvertRules {
      * <weekendStart day="thu" territories="AF"/>
      * <weekendStart day="thu" territories="IR"/>
      */
-    public static final SplittableAttributeSpec[] SPLITTABLE_ATTRS = {
+    private static final SplittableAttributeSpec[] SPLITTABLE_ATTRS = {
         new SplittableAttributeSpec("calendarPreference", "territories", null),
         new SplittableAttributeSpec("pluralRanges", "locales", null),
         new SplittableAttributeSpec("pluralRules", "locales", null),
@@ -306,6 +306,7 @@ class LdmlConvertRules {
         new SplittableAttributeSpec("firstDay", "territories", "day"),
         new SplittableAttributeSpec("weekendStart", "territories", "day"),
         new SplittableAttributeSpec("weekendEnd", "territories", "day"),
+        new SplittableAttributeSpec("weekOfPreference", "locales", "ordering"),
         new SplittableAttributeSpec("measurementSystem", "territories", "type"),
         new SplittableAttributeSpec("measurementSystem-category-temperature", "territories", "type"),
         new SplittableAttributeSpec("paperSize", "territories", "type"),
@@ -556,5 +557,9 @@ class LdmlConvertRules {
     public final static String getKeyStr(String parent, String name, String key) {
         String keyStr = parent + ":" + name + ":" + key;
         return keyStr;
+    }
+
+    public static SplittableAttributeSpec[] getSplittableAttrs() {
+        return SPLITTABLE_ATTRS;
     }
 }
