@@ -67,7 +67,7 @@ import com.ibm.icu.util.ICUUncheckedIOException;
  *
  * @author davis
  */
-abstract public class CheckCLDR {
+abstract public class CheckCLDR implements CheckCLDRHandler {
 
     public static final boolean LIMITED_SUBMISSION = false; // TODO represent differently
 
@@ -719,7 +719,9 @@ abstract public class CheckCLDR {
             invalidPlaceHolder, asciiQuotesNotAllowed, badMinimumGroupingDigits, inconsistentPeriods,
             inheritanceMarkerNotAllowed, invalidDurationUnitPattern, invalidDelimiter, illegalCharactersInPattern,
             badParseLenient, tooManyValues, invalidSymbol, invalidGenderCode,
-            mismatchedUnitComponent, longPowerWithSubscripts, gapsInPlaceholderNumbers, duplicatePlaceholders, largerDifferences
+            mismatchedUnitComponent, longPowerWithSubscripts, gapsInPlaceholderNumbers, duplicatePlaceholders, largerDifferences,
+
+            invalidZawgyiString
             ;
 
             @Override
@@ -1153,29 +1155,6 @@ abstract public class CheckCLDR {
         List<CheckStatus> result) {
         return this; // NOOP unless overridden
     }
-
-    /**
-     * This is what the subclasses override.
-     * If they ever use pathParts or fullPathParts, they need to call initialize() with the respective
-     * path. Otherwise they must NOT change pathParts or fullPathParts.
-     * <p>
-     * If something is found, a CheckStatus is added to result. This can be done multiple times in one call, if multiple
-     * errors or warnings are found. The CheckStatus may return warnings, errors, examples, or demos. We may expand that
-     * in the future.
-     * <p>
-     * The code to add the CheckStatus will look something like::
-     *
-     * <pre>
-     * result.add(new CheckStatus()
-     *     .setType(CheckStatus.errorType)
-     *     .setMessage(&quot;Value should be {0}&quot;, new Object[] { pattern }));
-     * </pre>
-     *
-     * @param options
-     *            TODO
-     */
-    abstract public CheckCLDR handleCheck(String path, String fullPath, String value,
-        Options options, List<CheckStatus> result);
 
     /**
      * Only for use in ConsoleCheck, for debugging

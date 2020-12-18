@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.unicode.cldr.test.CheckCLDR.CheckStatus.Subtype;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRFile.Status;
+import org.unicode.cldr.util.CLDRLocale;
 import org.unicode.cldr.util.Factory;
 import org.unicode.cldr.util.InternalCldrException;
 import org.unicode.cldr.util.LocaleIDParser;
@@ -39,6 +40,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
 import com.google.common.collect.TreeMultiset;
+import com.google.myanmartools.ZawgyiDetector;
 import com.ibm.icu.impl.Relation;
 import com.ibm.icu.lang.UScript;
 import com.ibm.icu.text.Collator;
@@ -46,6 +48,7 @@ import com.ibm.icu.text.DateTimePatternGenerator;
 import com.ibm.icu.text.Normalizer2;
 import com.ibm.icu.text.PluralRules;
 import com.ibm.icu.text.Transform;
+import com.ibm.icu.text.Transliterator;
 import com.ibm.icu.text.UnicodeSet;
 import com.ibm.icu.util.ULocale;
 
@@ -146,6 +149,8 @@ public class CheckForExemplars extends FactoryCheckCLDR {
     private SupplementalDataInfo sdi;
     private Relation scriptToCurrencies;
 
+    private CheckCLDRHandler subCheck = null;
+
     public CheckForExemplars(Factory factory) {
         super(factory);
         // patternPlaceholders = RegexLookup.of(new PlaceholderTransform())
@@ -239,7 +244,39 @@ public class CheckForExemplars extends FactoryCheckCLDR {
             .setSpaceComparator(col != null ? col : Collator.getInstance(ULocale.ROOT)
                 .setStrength2(Collator.PRIMARY))
             .setCompressRanges(true);
+
+        // Locale specific
+        final CLDRLocale loc = CLDRLocale.getInstance(locale);
+        if(loc.childOf(MYANMAR)) {
+            subCheck = MyanmarHelper.MYANMAR_CHECK;
+        } else {
+            subCheck = null;
+        }
+
         return this;
+    }
+
+    private static final CLDRLocale MYANMAR = CLDRLocale.getInstance("my");
+    private static class MyanmarHelper {
+        private static final CheckCLDRHandler MYANMAR_CHECK = new CheckCLDRHandler() {
+              private final ZawgyiDetector detector = new ZawgyiDetector();
+              private final Transliterator zawgyiUnicodeTransliterator =
+              Transliterator.getInstance("Zawgyi-my");
+
+            @Override
+            public CheckCLDR handleCheck(String path, String fullPath, final String value, Options options, List<CheckStatus> result) {
+                double probability = detector.getZawgyiProbability(value);
+                if(probability > 0.95) {
+                    String converted = zawgyiUnicodeTransliterator.transform(value);
+                    result.add(new CheckStatus().setCause(CheckForExemplars.this)
+                            .setSubtype(Subtype.invalidZawgyiString)
+                            .setMessage("String «"+value+"» may contain Zawgyi (probablility "+probability+"), should instead be «"+converted+"»"));
+                } else if(probability > 0.5) {
+
+                }
+                return CheckForExemplars.this;
+            }
+        };
     }
 
     private UnicodeSet getNumberSystemExemplars() {
@@ -465,6 +502,12 @@ public class CheckForExemplars extends FactoryCheckCLDR {
         // CheckStatus().setCause(this).setMainType(CheckStatus.errorType).setSubtype(Subtype.mustNotStartOrEndWithSpace)
         // .setMessage("This item must not contain two space characters in a row."));
         // }
+
+        // Give the nested test a chance
+        if (subCheck != null) {
+            subCheck.handleCheck(path, fullPath, value, options, result);
+        }
+
         return this;
     }
 

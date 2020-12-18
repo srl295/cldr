@@ -1061,6 +1061,7 @@ const cldrSurveyTable = (function() {
 			var input = document.createElement("input");
 			var popup;
 			input.className = "form-control input-add";
+			setLang(input);
 			input.placeholder = 'Add a translation';
 			var copyWinning = document.createElement("button");
 			copyWinning.className = "copyWinning btn btn-info btn-xs";
