@@ -1,6 +1,6 @@
 # CLDR RDF Tools
 
-This project contains CLDR RDF tools.
+This project contains CLDR RDF (Linked Open Data) tools.
 
 ### License
 
