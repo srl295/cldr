@@ -31,7 +31,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.unicode.cldr.test.CheckCLDR;
 import org.unicode.cldr.test.DisplayAndInputProcessor;
@@ -1707,12 +1706,6 @@ public class WebContext implements Cloneable, Appendable {
             user.touch(); // mark this user as active.
         }
 
-        HttpSession httpSession = request.getSession(true); // create httpsession
-
-        if (myNum.equals(SurveyMain.SURVEYTOOL_COOKIE_NONE)) { // "0"- for testing
-            httpSession.removeAttribute(SurveyMain.SURVEYTOOL_COOKIE_SESSION);
-        }
-
         // we just logged in- see if there's already a user session for this user..
         if (user != null) {
             session = CookieSession.retrieveUser(user.email); // is this user already logged in?
@@ -1720,17 +1713,6 @@ public class WebContext implements Cloneable, Appendable {
                 if (null == CookieSession.retrieve(session.id)) { // double check- is the session still valid?
                     session = null; // don't allow dead sessions to show up
                     // via the user list.
-                }
-            }
-        }
-
-        // Retreive a number from the httpSession if present
-        if ((httpSession != null) && (session == null)) {
-            String aNum = (String) httpSession.getAttribute(SurveyMain.SURVEYTOOL_COOKIE_SESSION);
-            if (aNum != null) {
-                session = CookieSession.retrieve(aNum);
-                if (CookieSession.DEBUG_INOUT) {
-                    System.err.println("From httpsession " + httpSession.getId() + " = ST session " + aNum + " = " + session);
                 }
             }
         }
@@ -1786,17 +1768,8 @@ public class WebContext implements Cloneable, Appendable {
 
         // New up a session, if we don't already have one.
         if (session == null) {
-            session = CookieSession.newSession(user == null, userIP(), httpSession.getId());
+            session = CookieSession.newSession(user == null, userIP());
         }
-
-        // should we add "&s=.#####" to the URL?
-        if (httpSession.isNew()) { // If it's a new session..
-            addQuery(SurveyMain.QUERY_SESSION + "__", session.id);
-        }
-
-        // store the session id in the HttpSession
-        httpSession.setAttribute(SurveyMain.SURVEYTOOL_COOKIE_SESSION, session.id);
-        httpSession.setMaxInactiveInterval(-1); // never expire
 
         if (user != null) {
             session.setUser(user); // this will replace any existing session by this user.
@@ -1844,22 +1817,11 @@ public class WebContext implements Cloneable, Appendable {
 
     /**
      * Logout this req/response (zap cookie)
-     * Zaps http session
+     * No longer modifies http session
      * @param request
      * @param response
      */
     public static void logout(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false); // dont create
-        if (session != null) {
-            String sessionId = (String) session.getAttribute(SurveyMain.SURVEYTOOL_COOKIE_SESSION);
-            if (CookieSession.DEBUG_INOUT) {
-                System.err.println("logout() of session " + session.getId() + " and cookieSession " + sessionId);
-            }
-            if (sessionId != null) {
-                CookieSession.remove(sessionId);
-            }
-            session.removeAttribute(SurveyMain.SURVEYTOOL_COOKIE_SESSION);
-        }
         removeLoginCookies(request, response);
     }
 
@@ -1882,14 +1844,6 @@ public class WebContext implements Cloneable, Appendable {
             // c1.setMaxAge(0);
             response.addCookie(c1);
         }
-        // Hack, but clear JSESSIONID also.
-        Cookie c2 = WebContext.getCookie(request, "JSESSIONID");
-        if (c2 != null) {
-            c2.setValue("");
-            c2.setPath("/");
-            // c2.setMaxAge(0);
-            response.addCookie(c2);
-        }
         // clear non-JSESSIONID session header cookie
         Cookie c3 = WebContext.getCookie(request, Auth.SESSION_HEADER);
         if (c3 != null) {
@@ -1897,14 +1851,6 @@ public class WebContext implements Cloneable, Appendable {
             c3.setPath("/");
             // c1.setMaxAge(0);
             response.addCookie(c3);
-        }
-        try {
-            HttpSession s = request.getSession(false);
-            if (s != null) {
-                s.invalidate();
-            }
-        } catch (IllegalStateException ise) {
-            // ignore: means the session was already logged out
         }
     }
 

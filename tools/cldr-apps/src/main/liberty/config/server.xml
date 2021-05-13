@@ -12,6 +12,9 @@
 	</featureManager>
 	<!-- end::featureManager[] -->
 
+	<!-- not using httpSession anymore, choose a cookie name that won't conflict -->
+	<httpSession cookieName="_X_CLDR_SURVEYTOOL_IGNORED" />
+
 	<!-- tag::httpEndpoint[] -->
 	<httpEndpoint httpPort="9080" id="defaultHttpEndpoint"
 		host="*">

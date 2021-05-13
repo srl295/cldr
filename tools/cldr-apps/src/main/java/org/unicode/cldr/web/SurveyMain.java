@@ -51,7 +51,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 
 import org.json.JSONException;
@@ -3839,12 +3838,6 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
 
         private void setSessionIdAndUser(HttpServletRequest request) {
             sessionId = request.getParameter("s");
-            if (sessionId == null) {
-                HttpSession hsession = request.getSession(false);
-                if (hsession != null) {
-                    sessionId = hsession.getId();
-                }
-            }
             CookieSession mySession = null;
             if (sessionId != null) {
                 mySession = CookieSession.retrieveWithoutTouch(sessionId);
