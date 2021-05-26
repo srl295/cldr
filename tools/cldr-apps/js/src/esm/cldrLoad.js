@@ -868,6 +868,8 @@ function trimNull(x) {
 
 /**
  * @param postData optional - makes this a POST
+ * @param handler function to handle json. If falsy, function returns a promise.
+ * @returns null|Promise
  */
 function myLoad(url, message, handler, postData, headers) {
   const otime = new Date().getTime();
@@ -917,7 +919,21 @@ function myLoad(url, message, handler, postData, headers) {
     postData: postData,
     headers: headers,
   };
-  cldrAjax.sendXhr(xhrArgs);
+  if (!handler) {
+    return new Promise((resolve, reject) => {
+      xhrArgs.load = (json) => {
+        // preserve debug status
+        console.log(
+          "        " + url + " loaded in " + (new Date().getTime() - otime) + "ms"
+        );
+        return resolve(json);
+      };
+      xhrArgs.error = reject;
+      cldrAjax.sendXhr(xhrArgs);
+    });
+  } else {
+    cldrAjax.sendXhr(xhrArgs);
+  }
 }
 
 function appendLocaleLink(subLocDiv, subLoc, subInfo, fullTitle) {
