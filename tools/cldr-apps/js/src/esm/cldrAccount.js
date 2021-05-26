@@ -410,12 +410,21 @@ function getPasswordLink(email, password) {
   );
 }
 
+function getTransferLink(u) {
+  if(cldrStatus.getPermissions().userIsManager) {
+    return `<a href='v?transferFrom=${u.data.id}#transfervotes'>Transfer votes</a><br />`;
+  } else {
+    return "";
+  }
+}
+
 function getUserActions(u, json) {
   return (
     getUserActionMenu(u, json) +
     "<br />\n" +
     getXmlUploadLink(u) +
     "<br />\n" +
+    getTransferLink(u) +
     getUserActivityLink(u)
   );
 }
