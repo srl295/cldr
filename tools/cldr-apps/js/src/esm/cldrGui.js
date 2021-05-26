@@ -1,6 +1,8 @@
 /*
  * cldrGui: encapsulate GUI functions for Survey Tool
  */
+const delay = require('delay');
+
 import * as cldrEvent from "./cldrEvent.js";
 import * as cldrForum from "./cldrForum.js";
 import * as cldrLoad from "./cldrLoad.js";
@@ -64,8 +66,6 @@ async function ensureSession() {
     }
     return; // the session was already set
   }
-  scheduleLoadingWithSessionId();
-
   if (GUI_DEBUG) {
     console.log("cldrGui.ensureSession making login request");
   }
@@ -103,21 +103,19 @@ function haveSession() {
 }
 
 /**
- * Arrange for getInitialMenusEtc to be called soon after we've gotten the session id.
- * Add a short timeout to avoid interrupting the code that sets the session id.
+ * Call getInitialMenusEtc now that we've gotten the session id.
  */
-function scheduleLoadingWithSessionId() {
-  cldrStatus.on("sessionId", () => {
-    setTimeout(function () {
-      cldrLoad.parseHashAndUpdate(cldrLoad.getHash());
-      cldrMenu.getInitialMenusEtc(cldrStatus.getSessionId());
-    }, 100 /* one tenth of a second */);
-  });
+async function loadWithSessionId() {
+  await delay(100);
+  cldrLoad.parseHashAndUpdate(cldrLoad.getHash());
+  await cldrMenu.getInitialMenusEtc(cldrStatus.getSessionId());
 }
-function completeStartupWithSession() {
+
+async function completeStartupWithSession() {
   cldrSurvey.updateStatus();
   cldrLoad.showV();
   cldrEvent.startup();
+  await loadWithSessionId();
 }
 
 /**

@@ -638,17 +638,6 @@ function unspecialLoad(itemLoadInfo, theDiv) {
  */
 function getSpecial(str) {
   const specials = {
-    // These are handled by Vue. When adding a new mapping to cldrGenericVue here, it may also
-    // be necessary to map the special to a specific .vue file in specialToComponentMap.js
-    about: cldrGenericVue,
-    add_user: cldrGenericVue,
-    auto_import: cldrGenericVue,
-    default: cldrGenericVue, // Add this here for testing the '/v#default' page.
-    lookup: cldrGenericVue,
-    menu: cldrGenericVue,
-    test_panel: cldrGenericVue, // Test page
-    vsummary: cldrGenericVue,
-
     // Other special pages.
     account: cldrAccount,
     admin: cldrAdmin,

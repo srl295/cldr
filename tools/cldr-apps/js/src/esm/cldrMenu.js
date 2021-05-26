@@ -62,12 +62,11 @@ const menubuttons = {
   },
 };
 
-function getInitialMenusEtc(sessionId) {
+async function getInitialMenusEtc(sessionId) {
   const theLocale = cldrStatus.getCurrentLocale() || "root";
   const xurl = getMenusAjaxUrl(theLocale, true /* get locmap */);
-  cldrLoad.myLoad(xurl, "initial menus for " + theLocale, function (json) {
-    loadInitialMenusFromJson(json);
-  });
+  const json = await cldrLoad.myLoad(xurl, "initial menus for " + theLocale)
+  await loadInitialMenusFromJson(json);
 }
 
 function loadInitialMenusFromJson(json) {
