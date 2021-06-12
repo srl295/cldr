@@ -215,9 +215,6 @@ public class SurveyTool extends HttpServlet {
         /*
          * Note: cldrForum.css is loaded through webpack
          */
-        // bootstrap.min.css -- cf. bootstrap.min.js elsewhere in this file
-        out.write(
-                "<link rel='stylesheet' href='//stackpath.bootstrapcdn.com/bootswatch/3.1.1/spacelab/bootstrap.min.css' />\n");
         out.write(
                 "<link rel='stylesheet' href='"
                         + contextPath
@@ -281,32 +278,6 @@ public class SurveyTool extends HttpServlet {
                                 + "\"></script>\n");
             }
         }
-
-        includeJqueryJavaScript(request, out);
-        includeCldrJavaScript(request, out);
-    }
-
-    private static void includeJqueryJavaScript(HttpServletRequest request, Writer out)
-            throws IOException {
-        // Per https://en.wikipedia.org/wiki/JQuery#Release_history --
-        // jquery 3.5.1: May 4, 2020
-        out.write(
-                "<script src='//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>\n");
-
-        // Per https://en.wikipedia.org/wiki/JQuery_UI#Release_history --
-        // jquery-ui 1.12.1: Sep 14, 2016 -- that's the newest
-        // Per https://jqueryui.com/ -- Current stable "v1.12.1 jQuery 1.7+"
-        out.write(
-                "<script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>\n");
-    }
-
-    private static void includeCldrJavaScript(HttpServletRequest request, Writer out)
-            throws IOException {
-        final String prefix = "<script src='" + request.getContextPath() + "/js/";
-        final String tail = "'></script>\n";
-        // Autosize 4.0.2 (2018-04-30 per changelog.md), see http://www.jacklmoore.com/autosize
-        out.write(prefix + "autosize.min.js" + tail);
-        out.write(prefix + "bootstrap.min.js" + tail);
     }
 
     /**

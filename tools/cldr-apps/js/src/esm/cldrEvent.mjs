@@ -8,6 +8,7 @@ import * as cldrGui from "./cldrGui.mjs";
 import * as cldrLoad from "./cldrLoad.mjs";
 import * as cldrStatus from "./cldrStatus.mjs";
 import * as cldrText from "./cldrText.mjs";
+const $ = require('jquery');
 
 let sentenceFilter;
 

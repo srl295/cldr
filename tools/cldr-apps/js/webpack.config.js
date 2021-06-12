@@ -66,6 +66,11 @@ module.exports = (env, argv) => {
         __VUE_OPTIONS_API__: JSON.stringify(true),
       }),
       new SurveyToolPlugin(),
+      new webpack.ProvidePlugin({
+        "$":"jquery",
+        "jQuery":"jquery",
+        "window.jQuery":"jquery"
+      }),
     ]
   };
 };
