@@ -32,5 +32,11 @@ module.exports = {
       // see <https://github.com/vuejs/vue-next/tree/master/packages/vue#bundler-build-feature-flags>
       __VUE_PROD_DEVTOOLS__: JSON.stringify(true),
       __VUE_OPTIONS_API__:   JSON.stringify(true),
-    })],
+    }),
+    new webpack.ProvidePlugin({
+      "$":"jquery",
+      "jQuery":"jquery",
+      "window.jQuery":"jquery"
+    }),
+  ],
 };
