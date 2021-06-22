@@ -29,11 +29,13 @@ jobs:
         run: >
           echo "::set-output name=tag::$(env TZ=UTC date +'production/%Y-%m-%d-%H%Mz')"
       - name: Tag Commit
-        uses: tvdias/github-tagger@2949d204e2f571a709c2af13a90759460fb56595
+        uses: simpleactions/create-tag@d5c32a2d86b1f96142bbe1ebe8b3b62b0a0587ff
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          commit-sha: ${{ github.event.inputs.git-ref }}
+          sha: ${{ github.event.inputs.git-ref }}
           tag: "${{ steps.tagname.outputs.tag }}"
+          message: "Deployed via GitHub by ${{ GITHUB_ACTOR }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: FAIL
         run: "false"
       - name: Set up JDK 1.8
