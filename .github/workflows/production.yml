@@ -33,7 +33,7 @@ jobs:
         with:
           sha: ${{ github.event.inputs.git-ref }}
           tag: "${{ steps.tagname.outputs.tag }}"
-          message: "Deployed via GitHub by ${{ GITHUB_ACTOR }}"
+          message: "Deployed via GitHub by @${{ github.actor }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: FAIL
