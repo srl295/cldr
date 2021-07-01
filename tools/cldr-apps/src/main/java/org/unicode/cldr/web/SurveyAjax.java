@@ -2545,8 +2545,15 @@ public class SurveyAjax extends HttpServlet {
                 try {
                     xp = sm.xpt.getByStringID(strid);
                 } catch (Throwable t) {
+                    final String strid2 = strid;
+                    logger.log(java.util.logging.Level.FINE, t, () ->
+                        "bad section for stringid " + strid2);
                     new JSONWriter(out).object().key("err").value("Exception getting stringid " + strid)
-                        .key("err_code").value("E_BAD_SECTION").endObject();
+                        .key("err_code")
+                        .value("E_BAD_SECTION")
+                        .key("exception")
+                        .value(t.toString())
+                        .endObject();
                     return;
                 }
                 if (xp != null) {

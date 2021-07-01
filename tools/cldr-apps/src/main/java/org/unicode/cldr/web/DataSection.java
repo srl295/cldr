@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -75,6 +76,7 @@ import com.ibm.icu.util.Output;
  * This class was formerly named DataPod
  */
 public class DataSection implements JSONString {
+    Logger logger = SurveyLog.forClass(DataSection.class);
 
     /*
      * For debugging only (so far), setting USE_CANDIDATE_HISTORY to true causes
@@ -211,9 +213,7 @@ public class DataSection implements JSONString {
                 try {
                     return getProcessor().processForDisplay(xpath, rawValue);
                 } catch (Throwable t) {
-                    if (SurveyLog.DEBUG) {
-                        SurveyLog.logException(t, "While processing " + xpath + ":" + rawValue);
-                    }
+                    logger.log(java.util.logging.Level.FINE, t, () -> "While processing " + xpath + ":" + rawValue);
                     return rawValue;
                 }
             }
@@ -356,8 +356,7 @@ public class DataSection implements JSONString {
                     if (!status.getType().equals(CheckStatus.exampleType)) {
                         // skip codefallback exemplar complaints (i.e. 'JPY'
                         // isn't in exemplars).. they'll show up in missing
-                        if (DEBUG)
-                            System.err.println("err: " + status.getMessage() + ", test: " + status.getClass() + ", cause: "
+                        logger.fine( () -> "err: " + status.getMessage() + ", test: " + status.getClass() + ", cause: "
                                 + status.getCause() + " on " + xpath);
                         weHaveTests = true;
                         if (status.getType().equals(CheckStatus.errorType)) {
@@ -1002,7 +1001,7 @@ public class DataSection implements JSONString {
         public String toJSONString() throws JSONException {
 
             try {
-                if (DEBUG) {
+                if (logger.isLoggable(java.util.logging.Level.FINE)) {
                     checkDataRowConsistency();
                 }
 
@@ -1164,12 +1163,12 @@ public class DataSection implements JSONString {
          */
         private void checkDataRowConsistency() {
             if (winningValue == null) {
-                System.out.println("Error in checkDataRowConsistency: winningValue is null; xpath = " + xpath +
-                    "; inheritedValue = " + inheritedValue);
+                logger.fine("Error in checkDataRowConsistency: winningValue is null; xpath = " + xpath +
+                    "; inheritedValue = " + inheritedValue + " * ");
             }
             if (getItem(winningValue) == null) {
-                System.out.println("Error in checkDataRowConsistency: getItem(winningValue) is null; xpath = " + xpath +
-                    "; inheritedValue = " + inheritedValue);
+                logger.fine("Error in checkDataRowConsistency: getItem(winningValue) is null; xpath = " + xpath +
+                    "; inheritedValue = " + inheritedValue + " * ");
             }
             /*
              * It is probably a bug if we have an item with INHERITANCE_MARKER
@@ -1178,8 +1177,8 @@ public class DataSection implements JSONString {
              * See showItemInfoFn in survey.js
              */
             if (inheritedItem != null && getInheritedLocale() == null && pathWhereFound == null) {
-                System.out.println("Error in checkDataRowConsistency: inheritedItem without inheritedLocale or pathWhereFound" +
-                    "; xpath = " + xpath + "; inheritedValue = " + inheritedValue);
+                logger.fine("Error in checkDataRowConsistency: inheritedItem without inheritedLocale or pathWhereFound" +
+                    "; xpath = " + xpath + "; inheritedValue = " + inheritedValue + " * ");
             }
         }
 
@@ -1470,8 +1469,6 @@ public class DataSection implements JSONString {
      */
     public static final String CONTINENT_DIVIDER = "~";
 
-    private static final boolean DEBUG = false || CldrUtility.getProperty("TEST", false);
-
     /*
      * A Pattern matching paths that are always excluded
      */
@@ -1701,9 +1698,6 @@ public class DataSection implements JSONString {
     private PageId pageId;
     private CLDRFile diskFile;
 
-    private static final boolean DEBUG_DATA_SECTION = false;
-    private String creationTime = null; // only used if DEBUG_DATA_SECTION
-
     /**
      * Create a DataSection
      *
@@ -1726,10 +1720,10 @@ public class DataSection implements JSONString {
         ballotBox = sm.getSTFactory().ballotBoxForLocale(locale);
         this.pageId = pageId;
 
-        if (DEBUG_DATA_SECTION) {
-            creationTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Calendar.getInstance().getTime());
-            System.out.println("🌴 Created new DataSection for loc " + loc + " at " + creationTime);
-        }
+        logger.log(java.util.logging.Level.FINE, () -> {
+            String creationTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Calendar.getInstance().getTime());
+            return ("🌴 Created new DataSection for loc " + loc + " at " + creationTime);
+        });
     }
 
     /**
@@ -1975,9 +1969,7 @@ public class DataSection implements JSONString {
                 if (continentStart > 0) {
                     continent = xpathPrefix.substring(xpathPrefix.indexOf(DataSection.CONTINENT_DIVIDER) + 1);
                 }
-                if (DEBUG) {
-                    System.err.println(xpathPrefix + ": -> continent " + continent);
-                }
+                logger.fine(xpathPrefix + ": -> continent " + continent);
                 if (!xpathPrefix.contains("@type")) {
                     // if it's not a zoom-in..
                     workPrefix = "//ldml/dates/timeZoneNames/metazone";
@@ -1993,6 +1985,10 @@ public class DataSection implements JSONString {
             // iterate over everything in this prefix ..
             Set<String> baseXpaths = stf.getPathsForFile(locale, xpathPrefix);
 
+            if (baseXpaths.size() == 0) {
+                logger.fine(() -> "Warning: getPathsForFile("+locale+","+xpathPrefix+") = 0");
+            }
+
             allXpaths.addAll(baseXpaths);
             if (ourSrc.getSupplementalDirectory() == null) {
                 throw new InternalError("?!! ourSrc hsa no supplemental dir!");
@@ -2002,9 +1998,7 @@ public class DataSection implements JSONString {
             allXpaths.addAll(extraXpaths);
 
             // Process extra paths.
-            if (DEBUG) {
-                System.err.println("@@X@ base[" + workPrefix + "]: " + baseXpaths.size() + ", extra: " + extraXpaths.size());
-            }
+            logger.fine("@@X@ base[" + workPrefix + "]: " + baseXpaths.size() + ", extra: " + extraXpaths.size());
         }
         populateFromAllXpaths(allXpaths, workPrefix, ourSrc, extraXpaths, stf, checkCldr);
     }
@@ -2032,17 +2026,13 @@ public class DataSection implements JSONString {
                     continue;
                 }
                 if (!xpath.startsWith(workPrefix)) {
-                    if (DEBUG && SurveyMain.isUnofficial()) {
-                        System.err.println("@@ BAD XPATH " + xpath);
-                    }
+                    logger.fine("@@ BAD XPATH " + xpath);
                     continue;
                 } else if (ourSrc.isPathExcludedForSurvey(xpath)) {
-                    if (DEBUG && SurveyMain.isUnofficial()) {
-                        System.err.println("@@ excluded:" + xpath);
-                    }
+                    logger.finer("@@ excluded:" + xpath);
                     continue;
-                } else if (DEBUG) {
-                    System.err.println("allPath: " + xpath);
+                } else {
+                    logger.finest("allPath: " + xpath);
                 }
             }
 
@@ -2127,10 +2117,8 @@ public class DataSection implements JSONString {
              *
              * getStringValue calls getFallbackPath which calls getRawExtraPaths which contains xpath
              */
-            if (DEBUG) {
-                System.err.println("warning: populateFromThisXpath " + this + ": " + locale + ":" + xpath + " = NULL! wasExtraPath="
+            logger.fine("warning: populateFromThisXpath " + this + ": " + locale + ":" + xpath + " = NULL! wasExtraPath="
                     + isExtraPath);
-            }
             isExtraPath = true;
         }
 
@@ -2317,9 +2305,7 @@ public class DataSection implements JSONString {
         if (ourValue != null) {
             if (!ourValue.equals(row.inheritedValue) || row.items.get(ourValue) != null) {
                 myItem = row.addItem(ourValue, "our");
-                if (DEBUG) {
-                    System.err.println("Added item " + ourValue + " - now items=" + row.items.size());
-                }
+                logger.finest("Added item " + ourValue + " - now items=" + row.items.size());
             }
         }
 
