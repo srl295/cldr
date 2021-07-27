@@ -1,4 +1,7 @@
 
+-- Note: This is only used for unit tests
+-- Do not use for running Survey Tool
+
 drop schema if exists cldrtest;
 create schema cldrtest;
 flush privileges;
