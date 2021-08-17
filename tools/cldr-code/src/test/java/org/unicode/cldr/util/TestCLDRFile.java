@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -63,5 +65,27 @@ public class TestCLDRFile {
             () -> assertEquals(status, DraftStatus.forString(status.name())),
             () -> assertEquals(status, DraftStatus.forString(status.name().toUpperCase()))
         );
+    }
+
+    @Test
+    public void TestReadBCP47() {
+        Path bcp47Path = CLDRConfig.getInstance().getCldrBaseDirectory().toPath().resolve("common/bcp47");
+        Factory factory = Factory.make(bcp47Path.toString(), ".*");
+        assertNotNull(factory);
+        for (final String id : factory.getAvailable()) {
+            System.out.println(id);
+            CLDRFile file = factory.make(id, false);
+            assertNotNull(file, id);
+            for (final String xpath : file.fullIterable()) {
+                assertNotNull(xpath, id + ":" + xpath);
+                /*final String value = */ file.getStringValue(xpath);
+            }
+
+            for (Iterator<String> i = file.iterator(); i.hasNext(); ) {
+                final String xpath = i.next();
+                assertNotNull(xpath, id + ":" + xpath);
+                /*final String value = */ file.getStringValue(xpath);
+            }
+        }
     }
 }
