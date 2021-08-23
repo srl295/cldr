@@ -78,7 +78,7 @@ public class Ldml2JsonConverter {
     private enum RunType {
         main,
         supplemental(false), // aka 'core'
-        segments, rbnf(false), annotations, annotationsDerived;
+        segments, rbnf(false), annotations, annotationsDerived, bcp47;
 
         private final boolean isTiered;
         RunType() {
