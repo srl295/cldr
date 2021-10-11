@@ -16,6 +16,9 @@ annotations.
 		<language type="en"/>
 	</identity>
 	<annotations>
+		<annotation cp="&#x200C;" type="tts">zwinj</annotation>
+		<annotation cp="&#x200D;" type="tts">zwij</annotation>
+		<annotation cp="&#x200D;" type="tts" alt="variant">zawj</annotation>
 		<annotation cp="{">brace | bracket | curly brace | curly bracket | gullwing | open curly bracket</annotation>
 		<annotation cp="{" type="tts">open curly bracket</annotation>
 		<annotation cp="🏻">light skin tone | skin tone | type 1–2</annotation>
