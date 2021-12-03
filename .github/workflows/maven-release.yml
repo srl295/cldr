@@ -23,7 +23,7 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build with Maven
         run: >
-          mvn -s .github/workflows/mvn-settings.xml -B compile source:jar install package --file tools/pom.xml
+          mvn -s .github/workflows/mvn-settings.xml -B compile install package --file tools/pom.xml
           -DskipTests=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,8 +34,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload to GitHub maven
         # only for head fork
-        if: github.repository == 'unicode-org/cldr'
+        if: github.repository == 'srl295/cldr'  # TEMP
         run: |
-          mvn -s .github/workflows/mvn-settings.xml  --file tools/pom.xml deploy
+          mvn -s .github/workflows/mvn-settings.xml  --file tools/pom.xml source:jar -DskipTests=true deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
