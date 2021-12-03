@@ -15,7 +15,7 @@ import java.util.SortedSet;
 import com.ibm.icu.text.Transform;
 
 /**
- * Convenience class for building collections and maps. Allows them to be built by chaining, making it simpler to
+ * {@code Convenience class for building collections and maps. Allows them to be built by chaining, making it simpler to
  * set as parameters and fields. Also supplies some operations that are missing on the JDK maps and collections,
  * and provides finer control for what happens with equal elements.
  * <p>
@@ -42,7 +42,7 @@ import com.ibm.icu.text.Transform;
  *        x      x    clear().addAll(B)
  * x             x    xor(B)
  * x      x      x    addAll(B)
- * </pre>
+ * </pre>}
  *
  * @author markdavis
  */

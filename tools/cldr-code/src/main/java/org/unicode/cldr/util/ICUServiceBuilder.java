@@ -524,7 +524,7 @@ public class ICUServiceBuilder {
          * rounding is done by this currency.
          *
          * @return the non-negative rounding increment, or 0.0 if none
-         * @stable ICU 2.2
+         * stable ICU 2.2
          */
         @Override
         public double getRoundingIncrement() {

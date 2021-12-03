@@ -62,7 +62,7 @@ public class TestMixedScript {
     /**
      * Determines the mixed-script level in the source text. For best results, the input text should be in NFKD already.
      * From http://www.unicode.org/reports/tr36/#Security_Levels_and_Alerts, but with modifications as
-     * described under {@link #MixedScriptLevel}.
+     * described under #MixedScriptLevel
      * <p>
      * <b>Note:</b> thread-safe call
      *

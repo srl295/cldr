@@ -14,7 +14,7 @@ import com.ibm.icu.util.ULocale;
  * separately). The class is not subclassable.
  *
  * @author markdavis
- * @internal
+ *
  */
 final public class ListFormat {
     private final String two;
@@ -38,7 +38,7 @@ final public class ListFormat {
      * @param end
      *            string for the end of a list items, containing {0} for the
      *            first part of the list, and {1} for the last item.
-     * @internal
+     *
      */
     public ListFormat(String two, String start, String middle, String end) {
         this.two = two;
@@ -53,7 +53,7 @@ final public class ListFormat {
      * @param locale
      *            the locale in question.
      * @return ListFormatter
-     * @internal
+     *
      */
     public static ListFormat getInstance(ULocale locale) {
         // These can be cached, since they are read-only
@@ -76,7 +76,7 @@ final public class ListFormat {
      * @param locale
      *            the locale in question.
      * @return ListFormatter
-     * @internal
+     *
      */
     public static ListFormat getInstance(Locale locale) {
         return getInstance(ULocale.forLocale(locale));
@@ -88,7 +88,7 @@ final public class ListFormat {
      * @param items
      *            items to format. The toString() method is called on each.
      * @return items formatted into a string
-     * @internal
+     *
      */
     public String format(Object... items) {
         return format(Arrays.asList(items));
@@ -100,7 +100,7 @@ final public class ListFormat {
      * @param items
      *            items to format. The toString() method is called on each.
      * @return items formatted into a string
-     * @internal
+     *
      */
     public String format(Collection<Object> items) {
         // TODO optimize this for the common case that the patterns are all of the

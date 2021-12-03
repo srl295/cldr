@@ -235,30 +235,30 @@ public class UTF16Util {
     }
     /**
      * Lead surrogate maximum value
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static final int LEAD_SURROGATE_MAX_VALUE = 0xDBFF;
     /**
      * Lead surrogate minimum value
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static final int LEAD_SURROGATE_MIN_VALUE = 0xD800;
 
     /**
      * Trail surrogate minimum value
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static final int TRAIL_SURROGATE_MIN_VALUE = 0xDC00;
     /**
      * Trail surrogate maximum value
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static final int TRAIL_SURROGATE_MAX_VALUE = 0xDFFF;
     /**
      * Determines whether the code value is a surrogate.
      * @param char16 the input character.
      * @return true iff the input character is a surrogate.
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static boolean isSurrogate(char char16)
     {
@@ -270,7 +270,7 @@ public class UTF16Util {
      * Determines whether the character is a trail surrogate.
      * @param char16 the input character.
      * @return true iff the input character is a trail surrogate.
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static boolean isTrailSurrogate(char char16)
     {
@@ -282,7 +282,7 @@ public class UTF16Util {
      * Determines whether the character is a lead surrogate.
      * @param char16 the input character.
      * @return true iff the input character is a lead surrogate
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static boolean isLeadSurrogate(char char16)
     {
@@ -308,7 +308,7 @@ public class UTF16Util {
      *         <code>bounds32()</code>.
      * @exception IndexOutOfBoundsException thrown if offset16 is not within
      *            the range of start and limit.
-     * @stable ICU 2.1
+     * stable ICU 2.1
      */
     public static int charAt(char source[], int start, int limit,
                              int offset16)

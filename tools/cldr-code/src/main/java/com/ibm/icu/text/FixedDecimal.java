@@ -10,7 +10,7 @@ import com.ibm.icu.text.PluralRules.IFixedDecimal;
 import com.ibm.icu.text.PluralRules.Operand;
 
 /**
- * @internal CLDR
+ *
  * @deprecated This API is ICU internal only.
  */
 @Deprecated
@@ -38,7 +38,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     private final int baseFactor;
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -47,7 +47,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -56,7 +56,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -65,7 +65,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -74,7 +74,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -83,7 +83,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -92,7 +92,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -101,7 +101,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -110,7 +110,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -121,7 +121,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     static final long MAX = (long)1E18;
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      * @param n is the original number
      * @param v number of digits to the right of the decimal place. e.g 1.00 = 2 25. = 0
@@ -170,7 +170,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -179,7 +179,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -188,7 +188,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -210,7 +210,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -219,7 +219,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -232,7 +232,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
      * Return a guess as to the number of decimals that would be displayed. This is only a guess; callers should
      * always supply the decimals explicitly if possible. Currently, it is up to 6 decimals (without trailing zeros).
      * Returns 0 for infinities and nans.
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      *
      */
@@ -280,7 +280,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only
      */
     @Deprecated
@@ -303,7 +303,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -313,7 +313,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
 //    /**
-//     * @internal CLDR
+//     *
 //     * @deprecated This API is ICU internal only
 //     */
 //    @Deprecated
@@ -396,7 +396,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     /**
      * {@inheritDoc}
      *
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Override
@@ -415,7 +415,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -425,7 +425,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
 
     /**
      * We're not going to care about NaN.
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Override
@@ -451,7 +451,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -472,7 +472,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -516,7 +516,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -579,7 +579,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
 //    }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -588,7 +588,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -599,7 +599,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -613,7 +613,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -623,7 +623,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -633,7 +633,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     }
 
     /**
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -655,7 +655,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     /**
      * {@inheritDoc}
      *
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -667,7 +667,7 @@ public class FixedDecimal extends Number implements Comparable<FixedDecimal>, IF
     /**
      * {@inheritDoc}
      *
-     * @internal CLDR
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated

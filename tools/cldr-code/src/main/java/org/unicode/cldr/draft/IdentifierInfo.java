@@ -28,7 +28,7 @@ import com.ibm.icu.text.UnicodeSet;
  * </ol>
  *
  * @author markdavis
- * @internal
+ *
  */
 public class IdentifierInfo {
 
@@ -350,11 +350,6 @@ public class IdentifierInfo {
 
     /**
      * Sets a number of values at once. Should be on BitSet.
-     *
-     * @param container
-     * @param containee
-     * @return
-     * @return
      */
     public static final BitSet set(BitSet bitset, int... values) {
         for (int value : values) {

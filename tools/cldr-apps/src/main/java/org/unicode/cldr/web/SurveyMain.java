@@ -2265,7 +2265,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
     /**
      * destroy the ST Factory - testing use only!
      *
-     * @internal
+     *
      */
     public final synchronized STFactory TESTING_removeSTFactory() {
         STFactory oldFactory = gSTFactory;

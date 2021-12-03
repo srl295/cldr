@@ -57,12 +57,7 @@ public class RegexTransformState {
     }
 
     /**
-     * return true if the rule matches at offset in text, without touching text before start or after finish
-     *
-     * @param text
-     * @param offset
-     * @param start
-     * @param finish
+     * @return true if the rule matches at offset in text, without touching text before start or after finish
      */
     public Status match(Rule rule) {
         // fix to use real API

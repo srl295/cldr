@@ -374,7 +374,7 @@ public class LenientDateParser {
          * @param startDate
          *            During parsing, two digit years will be placed in the range <code>startDate</code> to
          *            <code>startDate + 100 years</code>.
-         * @stable ICU 2.0
+         * stable ICU 2.0
          */
         public void set2DigitYearStart(Date startDate) {
             twoDigitYearOffset = startDate.getYear() + 1900;

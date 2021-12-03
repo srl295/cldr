@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableMap;
 
 /**
  * Data types for non-locale based CLDR data. For the canonical specification for LDML data can
- * be found at <a href="https://unicode.org/reports/tr35">Unicode Locale Data Markup Language<\a>.
+ * be found at <a href="https://unicode.org/reports/tr35">Unicode Locale Data Markup Language</a>.
  *
  * <p>This enum is largely a wrapper for functionality found in the underlying CLDR classes, but
  * repackaged for convenience and to minimize surface area (and to avoid anyone needing to import

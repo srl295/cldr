@@ -1025,12 +1025,6 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
     /**
      * Removes all items with same value
      *
-     * @param keepIfMatches
-     *            TODO
-     * @param removedItems
-     *            TODO
-     * @param keepList
-     *            TODO
      */
     public CLDRFile removeDuplicates(CLDRFile other, boolean butComment, RetentionTest keepIfMatches,
         Collection<String> removedItems) {

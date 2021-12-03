@@ -25,17 +25,16 @@ package org.unicode.cldr.util;
  */
 public interface CharSource {
     /**
-     * Determine whether there is a char at the position. When converting from
+     * {@code Determine whether there is a char at the position. When converting from
      * code that uses String or other CharSequence:
      * <ul>
      * <li>replace index < x.length() with x.hasCharAt(index)
      * <li>replace index >= x.length() with !x.hasCharAt(index)
      * <li>replace index == x.length() also with !x.hasCharAt(index) <b> [whenever we are iterating index upwards]</b>
      * </ul>
-     * Throws an exception if index < 0.
+     * Throws an exception if index < 0.}
      *
      * @param index
-     * @return
      */
     public boolean hasCharAt(int index);
 

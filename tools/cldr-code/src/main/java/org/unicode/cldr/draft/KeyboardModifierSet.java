@@ -21,7 +21,7 @@ import org.unicode.cldr.util.SetComparator;
  * transformed into {@code optR+caps, optR,
  * cmd+shiftL, cmd+shiftR, cmd+shiftL+shiftR} .
  *
- * <h1>Usage</h1>
+ * Usage
  * <p>
  * There is a 1 to 1 relationship between a {@link KeyboardModifierSet} and a particular key map (a mapping from
  * physical keys to their output).

@@ -16,7 +16,7 @@ import java.util.Set;
  * like "am fr_CA zh" (meaning "Amharic, Canadian French, and Chinese"). Survey Tool uses this compact
  * representation for storage in the user database, and for browser inputting/editing forms, etc.
  *
- * Otherwise the preferred representation is a LocaleSet, which encapsulates a Set<CLDRLocale> along
+ * Otherwise the preferred representation is a LocaleSet, which encapsulates a {@code Set<CLDRLocale>} along
  * with special handling for isAllLocales.
  */
 public class LocaleNormalizer {

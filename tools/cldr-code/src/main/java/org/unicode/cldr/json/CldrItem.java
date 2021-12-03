@@ -226,12 +226,12 @@ public class CldrItem implements Comparable<CldrItem> {
     }
 
     /**
-     * Some CLDR items have attributes that should be split before
+     * {@code Some CLDR items have attributes that should be split before
      * transformation. For examples, item like:
      * <calendarPreference territories="CN CX" ordering="gregorian chinese"/>
      * should really be treated as 2 separate items:
      * <calendarPreference territories="CN" ordering="gregorian chinese"/>
-     * <calendarPreference territories="CX" ordering="gregorian chinese"/>
+     * <calendarPreference territories="CX" ordering="gregorian chinese"/>}
      *
      * @return Array of CldrItem if it can be split, otherwise null if nothing to split.
      */

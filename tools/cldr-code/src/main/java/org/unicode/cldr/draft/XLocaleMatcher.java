@@ -318,7 +318,7 @@ public class XLocaleMatcher {
 
     /**
      * Get the best match between the desired languages and supported languages
-     * @param desiredLanguages Typically the supplied user's languages, in order of preference, with best first.
+     * @param desiredLocale Typically the supplied user's languages, in order of preference, with best first.
      * @param outputBestDesired The one of the desired languages that matched best.
      * Set to null if the best match was not below the threshold distance.
      * @return
@@ -464,7 +464,7 @@ public class XLocaleMatcher {
      * for likelySubtags.
      * @param ulocale language/locale code
      * @return ULocale with remapped subtags.
-     * @stable ICU 4.4
+     * stable ICU 4.4
      */
     public ULocale canonicalize(ULocale ulocale) {
         // TODO

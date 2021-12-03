@@ -319,7 +319,7 @@ public final class CLDRLocale implements Comparable<CLDRLocale> {
      *
      * @param baseName
      * @return
-     * @internal
+     *
      */
     private String process(String baseName) {
         return baseName.replaceAll("__", "_");

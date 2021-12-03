@@ -81,7 +81,7 @@ public class LDML2ICUBinaryWriter {
      * Numeric constants for types of resource items.
      *
      * @see ures_getType
-     * @stable ICU 2.0
+     * stable ICU 2.0
      */
 
     // **************************** ENUM Below is ported from C. See ures.h ***********************
@@ -104,7 +104,7 @@ public class LDML2ICUBinaryWriter {
      * storing the data (can be in a different resource bundle).
      * Resolved internally before delivering the actual resource through the API.
      *
-     * @stable ICU 2.6
+     * stable ICU 2.6
      */
     public static final int URES_ALIAS = 3;
 
@@ -113,7 +113,7 @@ public class LDML2ICUBinaryWriter {
      * Alternative resource type constant for tables of key-value pairs.
      * Never returned by ures_getType().
      *
-     * @internal
+     *
      */
     public static final int URES_TABLE32 = 4;
 
@@ -121,9 +121,9 @@ public class LDML2ICUBinaryWriter {
      * Resource type constant for a single 28-bit integer, interpreted as
      * signed or unsigned by the ures_getInt() or ures_getUInt() function.
      *
-     * @see ures_getInt
-     * @see ures_getUInt
-     * @stable ICU 2.6
+     * see ures_getInt
+     * see ures_getUInt
+     * stable ICU 2.6
      */
     public static final int URES_INT = 7;
 
@@ -133,8 +133,8 @@ public class LDML2ICUBinaryWriter {
     /**
      * Resource type constant for vectors of 32-bit integers.
      *
-     * @see ures_getIntVector
-     * @stable ICU 2.6
+     * see ures_getIntVector
+     * stable ICU 2.6
      */
     public static final int URES_INT_VECTOR = 14;
 

@@ -142,7 +142,7 @@ public class UnicodeSetFormat extends Format {
          * Is called every time an unquoted $ is found. Should parse out variables as appropriate
          * and return how far we got, and the replacement string. Returns null if doesn't match a variable.
          *
-         * @pos on input should be set to the position just before the dollar sign.
+         * @param pos on input should be set to the position just before the dollar sign.
          *      On output should be set to the end of the text to replace.
          */
         public abstract String replaceVariable(String pattern, ParsePosition pos);

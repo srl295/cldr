@@ -104,11 +104,11 @@ public final class TestUtil {
         return !(c >= 0x20 && c <= 0x7E);
     }
     /**
-     * Escape unprintable characters using <backslash>uxxxx notation
+     * {@code Escape unprintable characters using <backslash>uxxxx notation
      * for U+0000 to U+FFFF and <backslash>Uxxxxxxxx for U+10000 and
      * above.  If the character is printable ASCII, then do nothing
      * and return FALSE.  Otherwise, append the escaped notation and
-     * return TRUE.
+     * return TRUE.}
      */
     public static boolean escapeUnprintable(StringBuffer result, int c) {
         if (isUnprintable(c)) {

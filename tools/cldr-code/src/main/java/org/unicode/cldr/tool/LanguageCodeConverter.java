@@ -34,7 +34,7 @@ public class LanguageCodeConverter {
     /**
      * Public only for testing.
      *
-     * @internal
+     *
      */
     public static final Map<String, String> GOOGLE_CLDR = Builder.with(new LinkedHashMap<String, String>()) // preserve order
         .put("iw", "he")
@@ -61,7 +61,7 @@ public class LanguageCodeConverter {
     /**
      * Public only for testing.
      *
-     * @internal
+     *
      */
     public static final Map<String, String> CLDR_GOOGLE = Builder.with(new HashMap<String, String>())
         .putAllTransposed(GOOGLE_CLDR)
@@ -70,7 +70,7 @@ public class LanguageCodeConverter {
     /**
      * Public only for testing.
      *
-     * @internal
+     *
      */
     public static final Map<String, String> EXTRA_SCRIPTS = Builder.with(new HashMap<String, String>())
         .on("crs", "pcm", "tlh").put("Latn")

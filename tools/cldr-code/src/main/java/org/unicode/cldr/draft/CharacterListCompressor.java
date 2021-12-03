@@ -16,10 +16,12 @@ import com.ibm.icu.text.UCharacterIterator;
  * into a Base88 string.
  *
  * Compression usage:
- * String encodedStr = base88EncodeList(List<Interval>);
+ * {@code encodedStr = base88EncodeList(List<Interval>);
+ * }
  *
  * Decompression usage:
- * List<Interval> decodedStrList = base88DecodeList(encodedStr);
+ * {@code List<Interval> decodedStrList = base88DecodeList(encodedStr);
+ * }
  *
  * Interval has two integers - first, last - to represent the range.
  */

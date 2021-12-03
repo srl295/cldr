@@ -15,21 +15,21 @@ import com.ibm.icu.util.VersionInfo;
 
 public abstract class AbstractTestLog implements TestLog {
     /**
-     * Returns true if ICU_Version < major.minor.
+     * @return true if ICU_Version &lt; major.minor.
      */
     static public boolean isICUVersionBefore(int major, int minor) {
         return isICUVersionBefore(major, minor, 0);
     }
 
     /**
-     * Returns true if ICU_Version < major.minor.milli.
+     * @return true if ICU_Version &lt; major.minor.milli.
      */
     static public boolean isICUVersionBefore(int major, int minor, int milli) {
         return VersionInfo.ICU_VERSION.compareTo(VersionInfo.getInstance(major, minor, milli)) < 0;
     }
 
     /**
-     * Returns true if ICU_Version >= major.minor.
+     * @return true if ICU_Version >= major.minor.
      */
     static public boolean isICUVersionAtLeast(int major, int minor) {
         return isICUVersionAtLeast(major, minor, 0);

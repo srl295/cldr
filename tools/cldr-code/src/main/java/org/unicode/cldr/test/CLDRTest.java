@@ -54,12 +54,12 @@ import com.ibm.icu.util.ULocale;
  * To show more information (logln), add -verbose
  * <p>
  * There are some environment variables that can be used with the test. <br>
- * -DSHOW_FILES=<anything> shows all create/open of files. <br>
- * -DXML_MATCH=<regular expression> skips all locales that don't match the regular expression <br>
- * -DXML_MAIN_DIR=<filesystem directory> resets to a different main directory (eg not cldr/common/main. For example,
+ * -DSHOW_FILES=anything shows all create/open of files. <br>
+ * -DXML_MATCH=regular-expression skips all locales that don't match the regular expression <br>
+ * -DXML_MAIN_DIR=filesystem-directory resets to a different main directory (eg not cldr/common/main. For example,
  * some of the tools generate into a locale directory like -DXML_MAIN_DIR=C:\Unicode-CVS2\cldr\common\gen\main\ so this
  * can be used to check that directory. <br>
- * -DSKIP_DRAFT=<boolean> skips draft locales if <boolean> is a string starting with T or t
+ * -DSKIP_DRAFT=boolean skips draft locales if boolean is a string starting with T or t
  */
 public class CLDRTest extends TestFmwk {
     /**

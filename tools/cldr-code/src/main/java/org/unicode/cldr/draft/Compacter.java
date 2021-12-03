@@ -19,7 +19,7 @@ public class Compacter {
     static boolean useCibus = true;
 
     /**
-     * @param result
+     * @return
      *            output buffer for compacted form
      * @param set2
      *            input is collection of strings, where each string is exactly one codepoint. The collection is read in
@@ -50,9 +50,9 @@ public class Compacter {
     }
 
     /**
-     * @param result
+     * @return
      *            output buffer for compacted form
-     * @param set2
+     * @param encodedString
      *            input is collection of strings, where each string is exactly one codepoint. The collection is read in
      *            Iterator order.
      */

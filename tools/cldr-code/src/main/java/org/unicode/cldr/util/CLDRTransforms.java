@@ -75,15 +75,8 @@ public class CLDRTransforms {
     }
 
     /**
-     *
-     * @param dir
-     *            TODO
-     * @param namesMatchingRegex
-     *            TODO
      * @param showProgress
      *            null if no progress needed
-     * @param skipDashTIds TODO
-     * @return
      */
 
     public static void registerCldrTransforms(String dir, String namesMatchingRegex, Appendable showProgress, boolean keepDashTIds) {

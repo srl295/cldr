@@ -46,7 +46,7 @@ import com.ibm.icu.impl.Row.R3;
  * default languages based on additional information, such as the domain.
  *
  * @author markdavis@google.com
- * @stable ICU 4.4
+ * stable ICU 4.4
  */
 public class LocaleMatcher {
 
@@ -78,7 +78,7 @@ public class LocaleMatcher {
      * of the page.
      *
      * @param languagePriorityList weighted list
-     * @stable ICU 4.4
+     * stable ICU 4.4
      */
     public LocaleMatcher(LocalePriorityList languagePriorityList) {
         this(languagePriorityList, defaultWritten);
@@ -89,7 +89,7 @@ public class LocaleMatcher {
      * language is the default.
      *
      * @param languagePriorityListString String form of LanguagePriorityList
-     * @stable ICU 4.4
+     * stable ICU 4.4
      */
     public LocaleMatcher(String languagePriorityListString) {
         this(LocalePriorityList.add(languagePriorityListString).build());
@@ -99,7 +99,7 @@ public class LocaleMatcher {
      * Internal testing function; may expose API later.
      * @param languagePriorityList LocalePriorityList to match
      * @param matcherData Internal matching data
-     * @internal
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -111,7 +111,7 @@ public class LocaleMatcher {
      * Internal testing function; may expose API later.
      * @param languagePriorityList LocalePriorityList to match
      * @param matcherData Internal matching data
-     * @internal
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -136,7 +136,6 @@ public class LocaleMatcher {
      * @param supported Supported locale
      * @param supportedMax Maximized locale (using likely subtags)
      * @return value between 0 and 1, inclusive.
-     * @stable ICU 4.4
      */
     public double match(ULocale desired, ULocale desiredMax, ULocale supported, ULocale supportedMax) {
         return matcherData.match(desired, desiredMax, supported, supportedMax);
@@ -148,7 +147,6 @@ public class LocaleMatcher {
      * for likelySubtags.
      * @param ulocale language/locale code
      * @return ULocale with remapped subtags.
-     * @stable ICU 4.4
      */
     public ULocale canonicalize(ULocale ulocale) {
         // TODO Get the data from CLDR, use Java conventions.
@@ -172,7 +170,6 @@ public class LocaleMatcher {
      *
      * @param languageList list to match
      * @return best matching language code
-     * @stable ICU 4.4
      */
     public ULocale getBestMatch(LocalePriorityList languageList) {
         double bestWeight = 0;
@@ -199,7 +196,6 @@ public class LocaleMatcher {
      *
      * @param languageList String form of language priority list
      * @return best matching language code
-     * @stable ICU 4.4
      */
     public ULocale getBestMatch(String languageList) {
         return getBestMatch(LocalePriorityList.add(languageList).build());
@@ -210,14 +206,14 @@ public class LocaleMatcher {
      *
      * @param ulocale locale/language code to match
      * @return best matching language code
-     * @stable ICU 4.4
+     * stable ICU 4.4
      */
     public ULocale getBestMatch(ULocale ulocale) {
         return getBestMatchInternal(ulocale, null);
     }
 
     /**
-     * @internal
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -227,7 +223,6 @@ public class LocaleMatcher {
 
     /**
      * {@inheritDoc}
-     * @stable ICU 4.4
      */
     @Override
     public String toString() {
@@ -588,7 +583,7 @@ public class LocaleMatcher {
 
     /**
      * Only for testing and use by tools. Interface may change!!
-     * @internal
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -600,7 +595,7 @@ public class LocaleMatcher {
         private volatile boolean frozen = false;
 
         /**
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Deprecated
@@ -608,7 +603,7 @@ public class LocaleMatcher {
         }
 
         /**
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Deprecated
@@ -617,7 +612,7 @@ public class LocaleMatcher {
         }
 
         /**
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Override
@@ -627,7 +622,7 @@ public class LocaleMatcher {
         }
 
         /**
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Deprecated
@@ -660,7 +655,7 @@ public class LocaleMatcher {
          * symmetric. We don't bother producing an equivalence class because there are
          * so few cases; this function depends on the other permutations being
          * added specifically.
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @SuppressWarnings("unused")
@@ -670,7 +665,7 @@ public class LocaleMatcher {
         }
 
         /**
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Deprecated
@@ -679,7 +674,7 @@ public class LocaleMatcher {
         }
 
         /**
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Deprecated
@@ -747,7 +742,7 @@ public class LocaleMatcher {
 
         /**
          * {@inheritDoc}
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Override
@@ -768,7 +763,7 @@ public class LocaleMatcher {
 
         /**
          * {@inheritDoc}
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Override
@@ -784,7 +779,7 @@ public class LocaleMatcher {
 
         /**
          * {@inheritDoc}
-         * @internal
+         *
          * @deprecated This API is ICU internal only.
          */
         @Override
@@ -825,7 +820,7 @@ public class LocaleMatcher {
     }
 
     /**
-     * @internal
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated
@@ -838,7 +833,7 @@ public class LocaleMatcher {
     }
 
     /**
-     * @internal
+     *
      * @deprecated This API is ICU internal only.
      */
     @Deprecated

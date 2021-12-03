@@ -149,7 +149,7 @@ public class UDataInfo {
     /**
      * Returns a byte array representing the UDataStructure so that it can be written byte by byte.
      *
-     * @returns a byte array of the contents of this UDataStructure.
+     * @return a byte array of the contents of this UDataStructure.
      */
     public byte[] getByteArray() {
         // This size may change, see get size method above.

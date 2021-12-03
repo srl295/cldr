@@ -18,7 +18,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
 
     /**
      * Internal class for mapping from two Count values to another.
-     * @internal
+     *
      * @deprecated
      */
     @Deprecated
@@ -32,7 +32,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
 
         /**
          * Internal method for setting.
-         * @internal
+         *
          * @deprecated
          */
         @Deprecated
@@ -42,7 +42,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
 
         /**
          * Internal method for setting; throws exception if already set.
-         * @internal
+         *
          * @deprecated
          */
         @Deprecated
@@ -57,7 +57,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
 
         /**
          * Internal method for getting.
-         * @internal
+         *
          * @deprecated
          */
         @Deprecated
@@ -68,7 +68,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
 
         /**
          * Internal method to see if <*,end> values are all the same.
-         * @internal
+         *
          * @deprecated
          */
         @Deprecated
@@ -92,7 +92,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
 
         /**
          * Internal method to see if <start,*> values are all the same.
-         * @internal
+         *
          * @deprecated
          */
         @Deprecated
@@ -171,7 +171,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
      * @param rangeStart
      * @param rangeEnd
      * @param result
-     * @internal
+     *
      * @deprecated
      */
     @Deprecated
@@ -206,7 +206,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
      * @param end
      * @param result
      * @return
-     * @internal
+     *
      * @deprecated
      */
     @Deprecated
@@ -245,7 +245,7 @@ public final class PluralRanges implements Comparable<PluralRanges>, Freezable<P
      * Internal method to determines whether the Count was explicitly used in any add statement.
      * @param count
      * @return
-     * @internal
+     *
      * @deprecated
      */
     @Deprecated

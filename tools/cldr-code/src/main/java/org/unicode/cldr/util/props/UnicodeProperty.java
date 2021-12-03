@@ -113,7 +113,7 @@ public abstract class UnicodeProperty extends UnicodeLabel {
     /**
      * Reset the cache properties. Must be done if the version of Unicode is different than the ICU one, AND any UnicodeProperty has already been instantiated.
      * TODO make this a bit more robust.
-     * @internal
+     *
      */
     public static synchronized void ResetCacheProperties() {
         UNASSIGNED = null;
