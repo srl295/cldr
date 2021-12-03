@@ -922,6 +922,8 @@
 
 
 
+
+
 <div class="header"><table class="header" cellpadding="0" cellspacing="0" width="100%">
   <tbody>
       <tr>
@@ -931,21 +933,21 @@
           <td class="gray">&nbsp;</td>
       </tr>
   </tbody>
-  </table></div><div class="body"><h2 class="uaxtitle"> Unicode Technical Standard #35</h2><h1 id="unicode-locale-data-markup-language-ldml">Unicode Locale Data Markup Language (LDML)</h1><!-- HTML: no header --><table class="simple" width="90%"><tbody>
-<tr><td>Version</td><td>40</td></tr>
+  </table></div><div class="body"><h2 id="proposed-update-unicode-technical-standard-35">Proposed Update Unicode Technical Standard #35</h2><h1 id="unicode-locale-data-markup-language-ldml">Unicode Locale Data Markup Language (LDML)</h1><!-- HTML: no header --><table class="simple" width="90%"><tbody>
+<tr><td>Version</td><td>41</td></tr>
 <tr><td>Editors</td><td>Mark Davis (<a href="mailto:markdavis@google.com">markdavis@google.com</a>) and <a href="tr35.html#Acknowledgments">other CLDR committee members</a></td></tr>
-<tr><td>Date</td><td>2021-10-26</td></tr>
-<tr><td>This Version</td><td><a href="https://www.unicode.org/reports/tr35/tr35-65/tr35.html">https://www.unicode.org/reports/tr35/tr35-65/tr35.html</a></td></tr>
-<tr><td>Previous Version</td><td><a href="https://www.unicode.org/reports/tr35/tr35-63/tr35.html">https://www.unicode.org/reports/tr35/tr35-63/tr35.html</a></td></tr>
+<tr><td>Date</td><td>2021-11-10</td></tr>
+<tr><td>This Version</td><td><a href="https://www.unicode.org/reports/tr35/tr35-66/tr35.html">https://www.unicode.org/reports/tr35/tr35-66/tr35.html</a></td></tr>
+<tr><td>Previous Version</td><td><a href="https://www.unicode.org/reports/tr35/tr35-65/tr35.html">https://www.unicode.org/reports/tr35/tr35-65/tr35.html</a></td></tr>
 <tr><td>Latest Version</td><td><a href="https://www.unicode.org/reports/tr35/">https://www.unicode.org/reports/tr35/</a></td></tr>
 <tr><td>Corrigenda</td><td><a href="https://cldr.unicode.org/index/corrigenda-and-errata">https://cldr.unicode.org/index/corrigenda-and-errata</a></td></tr>
 <tr><td>Latest Proposed Update</td><td><a href="https://unicode-org.github.io/cldr/ldml/tr35.html">https://unicode-org.github.io/cldr/ldml/tr35.html</a></td></tr>
 <tr><td>Namespace</td><td><a href="https://unicode.org/cldr/">https://unicode.org/cldr/</a></td></tr>
-<tr><td>DTDs</td><td><a href="http://www.unicode.org/cldr/dtd/40/">http://www.unicode.org/cldr/dtd/40/</a></td></tr>
-<tr><td>Revision</td><td><a href="#Modifications">65</a></td></tr>
+<tr><td>DTDs</td><td><a href="https://www.unicode.org/cldr/dtd/41/">https://www.unicode.org/cldr/dtd/41/</a></td></tr>
+<tr><td>Revision</td><td><a href="#Modifications">66</a></td></tr>
 </tbody></table><h3 id="summary"><em>Summary</em></h3><p>This document describes an XML format (<em>vocabulary</em>) for the exchange of structured locale data. This format is used in the <a href="https://unicode.org/cldr/">Unicode Common Locale Data Repository</a>.</p><h3 id="status"><em>Status</em></h3><p><em>This is a draft document which may be updated, replaced, or superseded by other documents at any time. Publication does not imply endorsement by the Unicode Consortium. This is not a stable document; it is inappropriate to cite this document as other than a work in progress.</em></p><blockquote>
 <p><em><strong>A Unicode Technical Standard (UTS)</strong> is an independent specification. Conformance to the Unicode Standard does not imply conformance to any UTS.</em></p>
-</blockquote><p><em>Please submit corrigenda and other comments with the CLDR bug reporting form [<a href="http://cldr.unicode.org/index/bug-reports">Bugs</a>]. Related information that is useful in understanding this document is found in the <a href="#References">References</a>. For the latest version of the Unicode Standard see [<a href="https://www.unicode.org/versions/latest/">Unicode</a>]. For a list of current Unicode Technical Reports see [<a href="https://www.unicode.org/reports/">Reports</a>]. For more information about versions of the Unicode Standard, see [<a href="https://www.unicode.org/versions/">Versions</a>].</em></p><blockquote>
+</blockquote><p><em>Please submit corrigenda and other comments with the CLDR bug reporting form [<a href="https://cldr.unicode.org/index/bug-reports">Bugs</a>]. Related information that is useful in understanding this document is found in the <a href="#References">References</a>. For the latest version of the Unicode Standard see [<a href="https://www.unicode.org/versions/latest/">Unicode</a>]. For a list of current Unicode Technical Reports see [<a href="https://www.unicode.org/reports/">Reports</a>]. For more information about versions of the Unicode Standard, see [<a href="https://www.unicode.org/versions/">Versions</a>].</em></p><blockquote>
 <p><strong><em>NOTE: The source for the LDML specification has been converted to Github Markdown (GFM) instead of HTML. The formatting is now simpler, but some features — such as formatting for table captions — may not be complete by the release date. Improvements in the formatting for the v39 specification are planned for after the release, but no substantive changes would be made to the content.</em></strong></p>
 </blockquote><h2 id="parts"><a name="Parts" href="#Parts">Parts</a></h2><p>The LDML specification is divided into the following parts:</p><ul>
 <li>  Part 1: <a href="tr35.html#Contents">Core</a> (languages, locales, basic structure)</li>
@@ -4657,7 +4659,9 @@ See §3.8.2 <a href="#Legacy_Variants">Legacy Variants</a>.</p>
 <li>Markus Scherer for a major rewrite of Part 5, Collation.</li>
 <li><a href="https://www.sffc.xyz/">Shane Carr</a> for his work on numbers and measurement units.</li>
 <li>Robin Leroy for his work on compact plurals: Part 3, Section 5, <a href="tr35-numbers.html#Language_Plural_Rules">Language Plural Rules</a></li>
-</ul><p>Other contributors to CLDR are listed on the <a href="https://www.unicode.org/cldr/">CLDR Project Page</a>.</p><h2 id="modifications"><a name="Modifications" href="#Modifications">Modifications</a></h2><p><strong>Revision 65</strong></p><ul>
+</ul><p>Other contributors to CLDR are listed on the <a href="https://www.unicode.org/cldr/">CLDR Project Page</a>.</p><h2 id="modifications"><a name="Modifications" href="#Modifications">Modifications</a></h2><p><strong>Revision 66</strong></p><ul>
+<li>Proposed Update for CLDR Version 40.</li>
+</ul><p><strong>Revision 65</strong></p><ul>
 <li>Locale Identifiers<ul>
 <li>In <a href="#BCP_47_Language_Tag_Conversion">BCP 47 Language Tag Conversion</a>, extended the minimum support size for locale and language identifiers to 255 <a href="https://unicode-org.atlassian.net/browse/CLDR-13729">CLDR-13729</a><ul>
 <li>In <a href="#Canonical_Unicode_Locale_Identifiers">Canonical Unicode Locale Identifiers</a>, provided an explanation for the use of alphabetical order of variants <a href="https://unicode-org.atlassian.net/browse/CLDR-13729">CLDR-13729</a></li>
