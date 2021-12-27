@@ -1,3 +1,5 @@
 # the Vagrant playbook is used for testing, see Vagrantfile
 - import_playbook: setup-playbook.yml
+- import_playbook: openliberty-staging-playbook.yml
+- import_playbook: cldr-apps-staging-playbook.yml
 # Note: any additional setup specifically for vagrant could be done here, such as adding a self-signed ssl cert

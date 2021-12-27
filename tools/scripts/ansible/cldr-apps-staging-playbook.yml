@@ -4,20 +4,20 @@
     - vars/main.yml
     - local-vars/local.yml
   tasks:
-    - name: Create CLDR dir
+    - name: STAGING Create CLDR dir
       file:
-        path: "{{ cldr_path }}{{ cldr_staging }}"
+        path: "{{ cldr_staging_path }}"
         state: directory
         owner: "{{ cldr_openliberty_user }}"
         group: "{{ cldr_openliberty_group }}"
         mode: 0775
-    - name: Rotate CLDR logs
+    - name: STAGING Rotate CLDR logs
       blockinfile:
         path: "/etc/logrotate.d/surveytool-logs{{ cldr_staging }}"
         owner: root
         mode: "0644"
         block: |
-          {{ cldr_path }}{{ cldr_staging }}/cldrmail.log {{ cldr_path }}{{ cldr_staging }}/exception.log {
+          {{ cldr_staging_path }}/cldrmail.log {{ cldr_staging_path }}/exception.log {
             su {{ cldr_openliberty_user }} {{ cldr_openliberty_group }}
             daily
             rotate 14
@@ -28,29 +28,29 @@
             create
           }
         create: true
-    - name: create st/README.md
+    - name: STAGING create st/README.md
       template:
-        dest: "{{ cldr_st_path }}{{ cldr_staging }}/README.md"
+        dest: "{{ cldr_st_staging_path }}/README.md"
         src: templates/st-readme.j2
         force: yes # want this to reflect the latest
         owner: "{{ cldr_openliberty_user }}"
         group: "{{ cldr_openliberty_group }}"
         mode: "0644"
-    - name: Create cldr.properties
+    - name: STAGING Create cldr.properties
       template:
-        dest: "{{ cldr_path }}{{ cldr_staging }}/cldr.properties"
+        dest: "{{ cldr_staging_path }}/cldr.properties"
         src: templates/cldr-properties.j2
         force: no
         owner: "{{ cldr_openliberty_user }}"
         group: "{{ cldr_openliberty_group }}"
         mode: "0644"
       notify: Restart OpenLiberty
-    - name: Checkout CLDR trunk
+    - name: STAGING Checkout CLDR trunk
       become: yes
       become_user: "{{ cldr_surveytool_user }}"
       git:
         repo: https://github.com/unicode-org/cldr.git
-        dest: "{{ cldr_trunk_path }}{{ cldr_staging }}"
+        dest: "{{ cldr_trunk_staging_path }}"
         force: no
         update: no
         version: main

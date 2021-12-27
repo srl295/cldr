@@ -17,9 +17,12 @@ cldr_surveytool_group: "{{ cldr_openliberty_group }}"
 
 # this is the path to the server config
 cldr_st_path: /srv/st
+cldr_st_staging_path: "/srv/st{{ cldr_staging }}"
 cldr_path: "{{ cldr_st_path }}/config"
+cldr_staging_path: "{{ cldr_st_staging_path }}/config"
 # this is the path to the CLDR checkout
 cldr_trunk_path: "{{ cldr_st_path }}/src/cldr"
+cldr_trunk_staging_path: "{{ cldr_st_staging_path }}/src/cldr"
 
 # Java
 adoptopenjdk_package: adoptopenjdk-11-openj9
