@@ -22,11 +22,10 @@
         mode: '0770'
         owner: "{{ cldr_openliberty_user }}"
         group: "{{ cldr_openliberty_group }}"
-    - name: "STAGING Copy defaultServer to cldr if needed"
-      ansible.builtin.copy:
+    - name: "STAGING Copy server.xml to cldr if needed"
+      template:
         force: no
-        remote_src: true
-        src: /var/lib/openliberty/usr/servers/defaultServer/server.xml
+        src: templates/server.xml.j2
         dest: /var/lib/openliberty/usr/servers/{{ cldr_openliberty_server }}{{ cldr_staging }}/server.xml
         owner: "{{ cldr_openliberty_user }}"
         group: "{{ cldr_openliberty_group }}"

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The purpose of this server is simply to bootstrap openliberty
+     while waiting for the first SurveyTool deploy, which will replace
+     this server.xml file.
+
+     It just verifies that OpenLiberty is working.
+-->
+
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+    </featureManager>
+
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+        httpPort="${default.http.port}"
+    />
+
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+</server>
