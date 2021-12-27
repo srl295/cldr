@@ -22,6 +22,15 @@
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $remote_addr;
           }
+          # Only present on smoketest
+          location /staging/cldr-apps/ {
+            rewrite ^/(.+)\._[\da-f]+_\.(js|css)$ /$1.$2 break;
+            allow all;
+            proxy_pass http://localhost:9081/cldr-apps/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $remote_addr;
+          }
           location /openapi/ {
             allow all;
             proxy_pass http://localhost:9080/openapi/;

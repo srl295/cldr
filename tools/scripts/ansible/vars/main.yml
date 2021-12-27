@@ -1,5 +1,6 @@
 ansible_python_interpreter: python3
 
+cldr_staging: staging
 cldr_database_name: cldrdb
 cldr_db_backup_host: corp.unicode.org
 cldr_db_backup_user: cldrbackup
