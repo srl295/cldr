@@ -34,13 +34,13 @@ jobs:
       timeout-minutes: 10
       run: (cd tools/cldr-apps/js && npm t)
   build:
-    runs-on: macos-latest
+    runs-on: macos-10.15  # see https://github.com/actions/virtual-environments/issues/4060
     steps:
     - uses: actions/checkout@v2
       with:
         lfs: false # not needed for this job, as we don’t currently do a Java build
-    - name: Install Vagrant and Ansible
-      run: brew install ansible virtualbox vagrant
+    - name: Install Ansible
+      run: brew install ansible
     - name: Prepare the provision
       run: (cd tools/scripts/ansible && ansible-galaxy install -r requirements.yml && ln -sv test-local-vars local-vars && vagrant validate)
     - name: Try the provision (ignored, see CLDR-14757)
