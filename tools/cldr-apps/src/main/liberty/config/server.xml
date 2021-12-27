@@ -12,8 +12,12 @@
 	</featureManager>
 	<!-- end::featureManager[] -->
 
+	<!--
+		Set default.http.port in bootstrap.properties
+	-->
 	<!-- tag::httpEndpoint[] -->
-	<httpEndpoint httpPort="9080" id="defaultHttpEndpoint"
+	<httpEndpoint id="defaultHttpEndpoint"
+		httpPort="${default.http.port}"
 		host="*">
 		<samesite id="cldr" strict="*" />
 	</httpEndpoint>

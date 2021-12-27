@@ -1,0 +1,15 @@
+# Copy this to src/main/liberty/config/bootstrap.properties
+# Edit if desired
+#
+# default.http.port sets the HTTP port that the SurveyTool will listen on.
+default.http.port=9080
+
+# org.unicode.cldr.util.CLDRConfigImpl.cldrHome sets the 'home' directory
+# for the SurveyTool's configuration data. This will default to a 'cldr' directory
+# inside of the server's home.  This directory will be created if it
+# does not exist.
+#org.unicode.cldr.util.CLDRConfigImpl.cldrHome=/path/to/my/config
+
+# com.ibm.ws.logging.trace.specification can be used to set logging directives. Below is an example.
+#com.ibm.ws.logging.trace.specification=org.unicode.cldr.web.*=finest:com.ibm.ws.session.WASSessionCore=severe:org.unicode.cldr.web.MailSender=finest:org.unicode.cldr.web.SurveyProgressManager=severe:org.unicode.cldr.web.DataSection=finest::org.unicode.cldr.web.SurveyForum=finest
+

@@ -34,7 +34,7 @@
       notify: Restart OpenLiberty
     - name: STAGING set up cldr/server.env
       template:
-        src: templates/server-env.j2
+        src: templates/server-env-staging.j2
         dest: "/var/lib/openliberty/usr/servers/{{ cldr_openliberty_server }}{{ cldr_staging }}/server.env"
         owner: "{{ cldr_openliberty_user }}"
         group: "{{ cldr_openliberty_group }}"
@@ -42,7 +42,7 @@
       notify: Restart OpenLiberty
     - name: STAGING set up cldr/bootstrap.properties
       template:
-        src: templates/bootstrap-properties.j2
+        src: templates/bootstrap-properties-staging.j2
         dest: "/var/lib/openliberty/usr/servers/{{ cldr_openliberty_server }}{{ cldr_staging }}/bootstrap.properties"
         owner: "{{ cldr_openliberty_user }}"
         group: "{{ cldr_openliberty_group }}"

@@ -12,6 +12,7 @@ Please use the parent [CLDR/tools/pom.xml](../pom.xml) with maven to build and r
 
 - Copy `src/main/liberty/config/server.env.sample` to `src/main/liberty/config/server.env`
 - Edit that `server.env` file to contain the MySQL credentials for the ST database
+- Copy `src/main/liberty/config/bootstrap.properties.sample` to `src/main/liberty/config/bootstrap.properties`
 - Use `mvn --file=tools/pom.xml -pl cldr-apps liberty:dev` to run a development
 web server, listening on port 9080
 - Navigate to http://localhost:9080/cldr-apps to view the app
