@@ -3,3 +3,8 @@
 {{ cldr_surveytool_user }} ALL=(root) NOPASSWD: /usr/sbin/service {{ cldr_openliberty_service }} stop
 {{ cldr_surveytool_user }} ALL=(root) NOPASSWD: /usr/sbin/service {{ cldr_openliberty_service }} restart
 {{ cldr_surveytool_user }} ALL=(root) NOPASSWD: /usr/sbin/service {{ cldr_openliberty_service }} status
+# and for staging
+{{ cldr_surveytool_user }} ALL=(root) NOPASSWD: /usr/sbin/service {{ cldr_openliberty_service }}{{ cldr_staging }} start
+{{ cldr_surveytool_user }} ALL=(root) NOPASSWD: /usr/sbin/service {{ cldr_openliberty_service }}{{ cldr_staging }} stop
+{{ cldr_surveytool_user }} ALL=(root) NOPASSWD: /usr/sbin/service {{ cldr_openliberty_service }}{{ cldr_staging }} restart
+{{ cldr_surveytool_user }} ALL=(root) NOPASSWD: /usr/sbin/service {{ cldr_openliberty_service }}{{ cldr_staging }} status

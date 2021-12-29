@@ -153,20 +153,44 @@ vagrant up
 
 - To iterate, trying to reapply ansible, run `vagrant provision --provision-with=ansible`
 
-- to deploy ST to this, use the following:
+- to deploy ST to this, use the following (assuming the vagrant box is up and provisioned):
 
 ```shell
-(cd ../.. ; mvn package) # go to the tools folder and build ST (cldr-apps.war, etc.) if not already built
-vagrant ssh -- sudo -u surveytool /usr/local/bin/deploy-to-tomcat.sh $(git rev-parse HEAD) < ../../cldr-apps/target/cldr-apps.war
+# we assume you are in tools/scripts/ansible for this
+$ cd tools/scripts/ansible
+# go to the tools folder and build the server zip tools/cldr-apps/target/cldr-apps.zip
+$ mvn -f ../../pom.xml -pl cldr-apps -DskipTests=true package liberty:create liberty:deploy liberty:package -Dinclude=usr
+# setup the DB (including staging)
+$ vagrant ssh -t -c 'mysql -usurveytool -p'
+Enter password: <enter surveytool sql password here>
+mysql> drop schema if exists cldrdb;
+mysql> create schema cldrdb;
+mysql> \q
+Bye
+# clean up some stuff for deploy
+$ vagrant ssh -- sudo rm -rf /srv/st/config/.cache
+# do the deploy
+$ vagrant ssh -- sudo -u surveytool /usr/local/bin/deploy-to-openliberty.sh $(git rev-parse HEAD) < ../../cldr-apps/target/cldr-apps.zip --override
 ```
+- Now you should be able to login at <http://127.0.0.1:8880/cldr-apps/v>
+- If you need to get directly to the openliberty server, use port 9180 such as <http://127.0.0.1:9180>
 
-- Now you should be able to login at <http://127.0.0.1:8880/cldr-apps/>
+## Staging Test
 
-- If you need to get directly to the tomcat server, use:
+- Ensure that 'Local Test' works above.
+- Setup the staging DB is setup
 
 ```shell
-vagrant ssh -- -L 9080:127.0.0.1:9080
-# leave this shell window open.
+$ vagrant ssh -t -c 'mysql -usurveytoolstaging -p'
+Enter password: <enter surveytoolstaging sql password here>
+mysql> drop schema if exists cldrdbstaging;
+mysql> create schema cldrdbstaging;
+mysql> \q
+Bye
 ```
+- Deploy
 
-Then, you can go to <http://127.0.0.1:9080> and directly access tomcat.
+```shell
+vagrant ssh -- sudo rm -rf /srv/ststaging/config/.cache
+vagrant ssh -- sudo -u surveytool /usr/local/bin/deploy-to-openliberty.sh --staging $(git rev-parse HEAD) < ../../cldr-apps/target/cldr-apps.zip --override
+```
