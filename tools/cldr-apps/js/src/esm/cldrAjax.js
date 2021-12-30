@@ -194,7 +194,7 @@ function mediumTimeout() {
  * @return the URL string
  */
 function makeUrl(p) {
-  return cldrStatus.getContextPath() + "/SurveyAjax?" + p.toString();
+  return "SurveyAjax?" + p.toString();
 }
 
 /**
@@ -206,7 +206,7 @@ function makeUrl(p) {
  */
 function makeApiUrl(api, p) {
   const queryString = p ? "?" + p.toString() : "";
-  return cldrStatus.getContextPath() + SLASH_API_SLASH + api + queryString;
+  return "." + SLASH_API_SLASH + api + queryString;
 }
 
 /**

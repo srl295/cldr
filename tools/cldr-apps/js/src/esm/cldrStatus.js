@@ -355,7 +355,7 @@ function setPermissions(p) {
 
 function stopIcon() {
   // 🛑️
-  const src = getContextPath() + "/stop.png";
+  const src = "stop.png";
   return (
     "<img alt='[stop]' style='width: 16px; height: 16px; border: 0;' src='" +
     src +
@@ -365,7 +365,7 @@ function stopIcon() {
 
 function warnIcon() {
   // ⚠
-  const src = getContextPath() + "/warn.png";
+  const src = "warn.png";
   return (
     "<img alt='[warn]' style='width: 16px; height: 16px; border: 0;' src='" +
     src +
@@ -383,7 +383,7 @@ function logoIcon() {
 }
 
 function getSurvUrl() {
-  return getContextPath() + "/survey";
+  return "./survey";
 }
 
 function isVisitor() {

@@ -211,7 +211,7 @@ const leftSidebar =
 const st_notices =
   "          <div class='topnotices'>\n" +
   "            <div id='stchanged' style='display:none;' class='stchanged' title='st has changed'>\n" +
-  "              <img alt='[warn]' style='width: 16px; height: 16px; border: 0;' src='/cldr-apps/warn.png' title='Locale Changed' />\n" +
+  "              <img alt='[warn]' style='width: 16px; height: 16px; border: 0;' src='./warn.png' title='Locale Changed' />\n" +
   "              The locale, <span id='stchanged_loc'>YOUR LOCALE</span>, has changed due to your or other's actions.\n" +
   "              Please <a href='javascript:window.location.reload(true);'>refresh</a> the page to \n" +
   "              view the new changes..\n" +

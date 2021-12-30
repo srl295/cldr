@@ -53,7 +53,7 @@ function load() {
   cldrInfo.showNothing();
   cldrEvent.hideOverlayAndSidebar();
   if (!errInfo.location) {
-    window.location.href = "/cldr-apps/v";
+    window.location.href = "v";
     return;
   }
   const ourDiv = document.createElement("div");

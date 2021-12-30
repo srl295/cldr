@@ -479,8 +479,7 @@ function makeUpdateStatusUrl() {
     surveySessionUrl = "&s=" + sessionId;
   }
   return (
-    cldrStatus.getContextPath() +
-    "/SurveyAjax?what=status" +
+    "SurveyAjax?what=status" +
     surveyLocaleUrl +
     surveySessionUrl +
     cacheKill()

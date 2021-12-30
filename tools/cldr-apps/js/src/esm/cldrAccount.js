@@ -51,7 +51,7 @@ const doActionButton =
   "<button type='button' class='doActionButton'>Do Action</button>\n";
 
 const zoomImage =
-  "<img alt='[zoom]' style='width: 16px; height: 16px; border: 0;' src='/cldr-apps/zoom.png' title='More on this user...' />";
+  "<img alt='[zoom]' style='width: 16px; height: 16px; border: 0;' src='zoom.png' title='More on this user...' />";
 
 const passwordActions = {
   // brackets around keys are for computed property names (ECMAScript 2015)
