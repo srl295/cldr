@@ -89,6 +89,9 @@ Add three files inside local-vars/cldrbackup-vars: id_rsa, id_rsa.pub, and known
 
 ```yaml
 cldradmin_pw: hunter46 # needs to match cldradmin pw below
+mysql_databases:
+  - cldrdb # this will be created iff it doesn't already exist
+  - cldrdbstaging # included in case staging is used
 mysql_users:
   # this is the account used by the survey tool itself
   # password will match /var/lib/openliberty/usr/servers/cldr/server.env
@@ -160,13 +163,6 @@ vagrant up
 $ cd tools/scripts/ansible
 # go to the tools folder and build the server zip tools/cldr-apps/target/cldr-apps.zip
 $ mvn -f ../../pom.xml -pl cldr-apps -DskipTests=true package liberty:create liberty:deploy liberty:package -Dinclude=usr
-# setup the DB (including staging)
-$ vagrant ssh -t -c 'mysql -usurveytool -p'
-Enter password: <enter surveytool sql password here>
-mysql> drop schema if exists cldrdb;
-mysql> create schema cldrdb;
-mysql> \q
-Bye
 # clean up some stuff for deploy
 $ vagrant ssh -- sudo rm -rf /srv/st/config/.cache
 # do the deploy
@@ -178,16 +174,6 @@ $ vagrant ssh -- sudo -u surveytool /usr/local/bin/deploy-to-openliberty.sh $(gi
 ## Staging Test
 
 - Ensure that 'Local Test' works above.
-- Setup the staging DB is setup
-
-```shell
-$ vagrant ssh -t -c 'mysql -usurveytoolstaging -p'
-Enter password: <enter surveytoolstaging sql password here>
-mysql> drop schema if exists cldrdbstaging;
-mysql> create schema cldrdbstaging;
-mysql> \q
-Bye
-```
 - Deploy
 
 ```shell
