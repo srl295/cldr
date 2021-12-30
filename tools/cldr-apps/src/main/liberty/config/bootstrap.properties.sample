@@ -13,3 +13,5 @@ default.http.port=9080
 # com.ibm.ws.logging.trace.specification can be used to set logging directives. Below is an example.
 #com.ibm.ws.logging.trace.specification=org.unicode.cldr.web.*=finest:com.ibm.ws.session.WASSessionCore=severe:org.unicode.cldr.web.MailSender=finest:org.unicode.cldr.web.SurveyProgressManager=severe:org.unicode.cldr.web.DataSection=finest::org.unicode.cldr.web.SurveyForum=finest
 
+# set this to /cldr-apps for the usual server context
+org.unicode.cldr.web.context=/cldr-apps

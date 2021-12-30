@@ -32,7 +32,7 @@
 
 	<!-- tag::webApplication[] -->
 	<webApplication location="cldr-apps.war"
-		contextRoot="/cldr-apps" />
+		contextRoot="${org.unicode.cldr.web.context}" />
 	<!-- end::webApplication[] -->
 
 	<!-- TO SET UP: Create a "server.env" file next to this xml (that is, tools/cldr-apps/src/main/liberty/config/server.env)
