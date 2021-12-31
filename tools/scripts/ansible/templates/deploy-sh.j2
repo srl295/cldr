@@ -93,4 +93,8 @@ fi
 # exclude these two files
 rsync -r --exclude server.env --exclude workarea --exclude bootstrap.properties -v \
       --delete ./wlp/usr/servers/cldr/* /var/lib/openliberty/usr/servers/cldr${STAGING}/ || exit 1
+if [[ "${1}" = "--staging" ]];
+then
+
+fi
 sudo -u root /usr/sbin/service ${SERVICE} start || exit 1
