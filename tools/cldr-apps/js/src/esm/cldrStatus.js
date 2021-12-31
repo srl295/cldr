@@ -95,8 +95,9 @@ function runningStampChanged(stamp) {
  * A string such as '/cldr-apps'
  * It may be set from (on the server) HttpServletRequest.getContextPath()
  * a.k.a. status.contextPath
+ * Defaults to '.' if it has not been set yet
  */
-let contextPath = "/cldr-apps";
+let contextPath = ".";
 
 function getContextPath() {
   return contextPath;
