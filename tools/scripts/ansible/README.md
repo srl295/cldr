@@ -163,7 +163,7 @@ vagrant up
 $ cd tools/scripts/ansible
 # go to the tools folder and build the server zip tools/cldr-apps/target/cldr-apps.zip
 $ mvn -f ../../pom.xml -pl cldr-apps -DskipTests=true package liberty:create liberty:deploy liberty:package -Dinclude=usr
-# clean up some stuff for deploy
+# clean up some stuff for deploy (TODO fix)
 $ vagrant ssh -- sudo rm -rf /srv/st/config/.cache
 # do the deploy
 $ vagrant ssh -- sudo -u surveytool /usr/local/bin/deploy-to-openliberty.sh $(git rev-parse HEAD) < ../../cldr-apps/target/cldr-apps.zip --override
@@ -177,6 +177,7 @@ $ vagrant ssh -- sudo -u surveytool /usr/local/bin/deploy-to-openliberty.sh $(gi
 - Deploy
 
 ```shell
+# TODO fix cache
 vagrant ssh -- sudo rm -rf /srv/ststaging/config/.cache
 vagrant ssh -- sudo -u surveytool /usr/local/bin/deploy-to-openliberty.sh --staging $(git rev-parse HEAD) < ../../cldr-apps/target/cldr-apps.zip --override
 ```
