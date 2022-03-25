@@ -19,7 +19,7 @@ public class TestVettingViewerQueue {
     @Test
     void testSummaryResponse() throws IOException, JSONException, SQLException, InterruptedException {
         String str[] = new String[0];
-        TestAll.doResetDb(str);
+//        TestAll.doResetDb(str);
         TestAll.setupTestDb();
 
         VettingViewerQueue.Status[] status = new VettingViewerQueue.Status[1];
@@ -44,19 +44,29 @@ public class TestVettingViewerQueue {
         // sr.message = message;
         // sr.percent = vvq.getPercent();
         // sr.output = sb.toString();
-        int patience = 10;
+        int patience = 80; // * 10 second = 6 minutes patience
 
         while (sb.length() == 0) {
             patience--;
             assertTrue(patience > 0, "Ran out of patience waiting for VVQ");
-            Thread.sleep(5000);
+            Thread.sleep(10000);
             message = vvq.getPriorityItemsSummaryOutput(cs, status, LoadingPolicy.NOSTART, sb);
-            System.out.println(message);
-            assertFalse(message.startsWith("Stopped"), "VVQ stopped");
+            if (sb.length() == 0) {
+                System.out.println("Tries remaining: " + patience + " - " + message);
+                // could be stopped because we are done.
+            	assertFalse(message.startsWith("Stopped"), "VVQ stopped");
+            }
+            System.out.println("mem free: " + Runtime.getRuntime().freeMemory() + " / " + Runtime.getRuntime().totalMemory());
         }
 
         System.out.println(sb.toString());
         System.out.println("sb length: " + sb.length());
     }
 
+    /**
+     * Call this directly to run the test.
+     */
+    public static void main(String args[]) throws JSONException, IOException, SQLException, InterruptedException {
+    	new TestVettingViewerQueue().testSummaryResponse();
+    }
 }

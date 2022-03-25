@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Fri Mar 25 14:14:26 CDT 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-017f-c280-5a7f-00003fd4c1c8 
+on database directory memory:/Users/srl295/src/cldr/tools/cldr-apps/sttest with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@531d72ca 
+Loaded from file:/Users/srl295/.m2/repository/org/apache/derby/derby/10.10.1.1/derby-10.10.1.1.jar
+java.vendor=Eclipse Adoptium
+java.runtime.version=17.0.2+8
+user.dir=/Users/srl295/src/cldr/tools/cldr-apps
+os.name=Mac OS X
+os.arch=x86_64
+os.version=12.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
