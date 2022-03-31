@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.unicode.cldr.draft.FileUtilities;
+import org.unicode.cldr.test.CheckCLDR;
+import org.unicode.cldr.test.CheckCLDR.Phase;
 import org.unicode.cldr.unittest.web.TestAll.WebTestInfo;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRFile.DraftStatus;
@@ -47,8 +49,24 @@ public class TestSTFactory extends TestFmwk {
     STFactory gFac = null;
     UserRegistry.User gUser = null;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         new TestSTFactory().run(TestAll.doResetDb(args));
+    }
+
+    public void TestAllLocales() throws SQLException {
+        STFactory fac = getFactory();
+        // Load ALL
+        System.out.println("Getting ready to load all.");
+        for (final CLDRLocale locale : fac.getAvailableCLDRLocales()) {
+            System.out.println("Loading: " + locale);
+            CLDRFile mt = fac.make(locale, false);
+            BallotBox<User> box = fac.ballotBoxForLocale(locale);
+            mt.iterator();
+            final String somePath = "//ldml/localeDisplayNames/keys/key[@type=\"collation\"]";
+            box.getValues(somePath);
+            fac.getTestResult(locale, new CheckCLDR.Options(locale, Phase.VETTING, "modern", "modern"));
+        }
+        System.out.println("All loaded.");
     }
 
     public void TestBasicFactory() throws SQLException {
