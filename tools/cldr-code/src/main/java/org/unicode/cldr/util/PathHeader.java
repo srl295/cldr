@@ -1851,6 +1851,51 @@ public class PathHeader implements Comparable<PathHeader> {
                     return source;
                 }
             });
+
+            functionMap.put("personNameOrder", new Transform<String, String>() {
+                @Override
+                public String transform(String source) {
+                    // The various personName attribute values in desired sort order
+                    final List<String> allValues = Arrays.asList(
+                        "long", "medium", "short", "monogram", "monogramNarrow", // length values
+                        "addressing", "referring", // usage values
+                        "formal", "informal", // style values
+                        "sorting", "givenFirst", "surnameFirst"); //order values
+
+                    List<String> parts = HYPHEN_SPLITTER.splitToList(source);
+                    order = 0;
+                    for (String part: parts) {
+                        if (allValues.contains(part)) {
+                            order += (1 << allValues.indexOf(part));
+                        } else {
+                            order += (1 << allValues.size());
+                        }
+                    }
+                    return source;
+                }
+            });
+
+            functionMap.put("sampleNameOrder", new Transform<String, String>() {
+                @Override
+                public String transform(String source) {
+                    final List<String> allValues = Arrays.asList(
+                        "givenSurname", "given2Surname", "givenSurname2", "informal", "full", "multiword", // values for sampleName item
+                        "prefix", "given", "given2", "surname", "surname2", "suffix", // values for nameField type
+                        "informal"); // modifiers for nameField type
+
+                    List<String> parts = HYPHEN_SPLITTER.splitToList(source);
+                    order = 0;
+                    for (String part: parts) {
+                        if (allValues.contains(part)) {
+                            order += (1 << allValues.indexOf(part));
+                        } else {
+                            order += (1 << allValues.size());
+                        }
+                    }
+                    return source;
+                }
+            });
+
             functionMap.put("alphaOrder", new Transform<String, String>() {
                 @Override
                 public String transform(String source) {

@@ -378,13 +378,21 @@ public class PathDescription {
         + "Minimal pairs for genders. For more information, please see "
         + CLDRURLS.GRAMMATICAL_INFLECTION + ".\n"
 
-        + "^//ldml/personNames/nameOrder\\[@nameLocales=\"([^\"]*)\"]"
+        + "^//ldml/personNames/nameOrderLocales\\[@order=\"([^\"]*)\"]"
         + RegexLookup.SEPARATOR
-        + "Person name order for languages. For more information, please see "
+        + "Person name order for locales. For more information, please see "
+        + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
+        + "^//ldml/personNames/initialPattern\\[@type=\"([^\"]*)\"]"
+        + RegexLookup.SEPARATOR
+        + "Initials patterns for person name formats. For more information, please see "
         + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
         + "^//ldml/personNames/personName"
         + RegexLookup.SEPARATOR
         + "Person name formats by length, usage, style, order. For more information, please see "
+        + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
+        + "^//ldml/personNames/sampleName"
+        + RegexLookup.SEPARATOR
+        + "Sample names for person name forma examples (enter ∅∅∅ for unused fields). For more information, please see "
         + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
 
         + "^//ldml/numbers/([a-z]*)Formats(\\[@numberSystem=\"([^\"]*)\"])?/\\1FormatLength/\\1Format\\[@type=\"standard\"]/pattern\\[@type=\"standard\"]$"

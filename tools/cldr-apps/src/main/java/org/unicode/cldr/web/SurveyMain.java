@@ -91,6 +91,7 @@ import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.util.XMLSource;
 import org.unicode.cldr.web.UserRegistry.User;
 import org.unicode.cldr.web.WebContext.HTMLDirection;
+import org.unicode.cldr.web.api.Summary;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -410,53 +411,68 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         logger.info("SurveyMain.init() " + uptime);
         System.out.println("SurveyMain.init() " + uptime);
         try {
-            new com.ibm.icu.text.SimpleDateFormat(); // Ensure that ICU is
-            // available before we get
-            // any farther
+            ensureIcuIsAvailable();
             super.init(config);
             CLDRConfigImpl.setCldrHome(config.getInitParameter("cldr.home"));
             SurveyMain.config = config;
-
-            // verify config sanity
-            CLDRConfig cconfig = CLDRConfigImpl.getInstance();
-            try(InputStream is = config.getServletContext().getResourceAsStream(JarFile.MANIFEST_NAME)) {
-                Manifest mf = new Manifest(is);
-                String s = mf.getMainAttributes().getValue("CLDR-Apps"+"-Git-Commit");
-                if(s != null && !s.isEmpty()) {
-                    SurveyMain.CLDR_SURVEYTOOL_HASH  = s;
-                    ((CLDRConfigImpl)cconfig).setCldrAppsHash(s);
-                    logger.info("Updated CLDR_APPS_HASH to " + s);
-                } else {
-                    logger.warning("CLDR_APPS_HASH = unknown (no value in manifest)");
-                }
-            } catch(Throwable t) {
-                logger.log(java.util.logging.Level.WARNING, "CLDR_APPS_HASH = unknown", t);
-            }
-            isConfigSetup = true; // we have a CLDRConfig - so config is setup.
-
-            stopIfMaintenance();
-
-            cconfig.getSupplementalDataInfo(); // will fail if CLDR_DIR is broken.
-
-            // make sure cldr-tools is functioning
-            PathHeader.PageId.forString(PathHeader.PageId.Africa.name());
-
+            verifyConfigSanity();
+            ensureCldrToolsIsFunctioning();
+            getDbInstance();
             SurveyThreadManager.getExecutorService().submit(() -> doStartup());
         } catch (Throwable t) {
             SurveyLog.logException(logger, t, "Initializing SurveyTool");
             SurveyMain.busted("Error initializing SurveyTool.", t);
             return;
         }
+    }
 
+    private void verifyConfigSanity() {
+        CLDRConfig cconfig = CLDRConfigImpl.getInstance();
+        try(InputStream is = config.getServletContext().getResourceAsStream(JarFile.MANIFEST_NAME)) {
+            Manifest mf = new Manifest(is);
+            String s = mf.getMainAttributes().getValue("CLDR-Apps"+"-Git-Commit");
+            if (s != null && !s.isEmpty()) {
+                SurveyMain.CLDR_SURVEYTOOL_HASH  = s;
+                ((CLDRConfigImpl)cconfig).setCldrAppsHash(s);
+                logger.info("Updated CLDR_APPS_HASH to " + s);
+            } else {
+                logger.warning("CLDR_APPS_HASH = unknown (no value in manifest)");
+            }
+        } catch(Throwable t) {
+            logger.log(java.util.logging.Level.WARNING, "CLDR_APPS_HASH = unknown", t);
+        }
+        isConfigSetup = true; // we have a CLDRConfig - so config is setup.
+        stopIfMaintenance();
+        cconfig.getSupplementalDataInfo(); // will fail if CLDR_DIR is broken.
+    }
+
+    /**
+     * Ensure that ICU is available before we get any farther
+     */
+    private void ensureIcuIsAvailable() {
+        new com.ibm.icu.text.SimpleDateFormat();
+    }
+
+    /**
+     * Ensure that CLDR Tools is functioning
+     */
+    private void ensureCldrToolsIsFunctioning() {
+        PathHeader.PageId.forString(PathHeader.PageId.Africa.name());
+    }
+
+    /**
+     * Initialize dbUtils
+     *
+     * This needs to be run in the same thread as init(), before doStartupDB
+     */
+    private void getDbInstance() {
         try {
             dbUtils = DBUtils.getInstance();
         } catch (Throwable t) {
             SurveyLog.logException(logger, t, "Starting up database");
-
             String dbBroken = DBUtils.getDbBrokenMessage();
-
             SurveyMain.busted("Error starting up database - " + dbBroken, t);
-            return;
+            throw new InternalError("Couldn't get dbUtils instance");
         }
     }
 
@@ -2785,17 +2801,10 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
             getFileBase();
             getFileBaseSeed();
 
-            // static
-            // -
-            // may
-            // change
-            // lager
-            specialMessage = survprops.getProperty("CLDR_MESSAGE"); // not
-            // static -
-            // may
-            // change
-            // lager
+            // static - may change later
+            specialMessage = survprops.getProperty("CLDR_MESSAGE");
 
+            // not static - may change later
             lockOut = survprops.getProperty("CLDR_LOCKOUT");
 
             if (!new File(fileBase).isDirectory()) {
@@ -2836,16 +2845,22 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
 
             progress.update("Wake up the database..");
 
+            if (dbUtils == null) {
+                // This can happen if the server gets shut down in the middle of initialization,
+                // when dbUtils has been set to null by doShutdownDB.
+                // liberty:dev can cause this when compileWait has its default value of 0.5 seconds
+                return;
+            }
             doStartupDB(); // will take over progress 50-60
 
             progress.update("Making your Survey Tool happy..");
 
             if (isBusted == null) {
                 MailSender.getInstance();
+                Summary.scheduleAutomaticSnapshots();
             } else {
                 progress.update("Not loading mail - SurveyTool already busted.");
             }
-
         } catch (Throwable t) {
             t.printStackTrace();
             SurveyLog.logException(logger, t, "StartupThread");
@@ -2987,10 +3002,8 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
     public synchronized File getVetdir() {
         if (_vetdir == null) {
             CLDRConfig survprops = CLDRConfig.getInstance();
-            vetdata = survprops.getProperty("CLDR_VET_DATA", SurveyMain.getSurveyHome() + "/vetdata"); // dir
-            // for
-            // vetted
-            // data
+            // directory for vetted data
+            vetdata = survprops.getProperty("CLDR_VET_DATA", SurveyMain.getSurveyHome() + "/vetdata");
             File v = new File(vetdata);
             if (!v.isDirectory()) {
                 v.mkdir();
@@ -3105,6 +3118,8 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
             logger.warning("SurveyTool shutting down.. r" + getCurrevCldrApps());
             progress.update("shutting down mail... " + destroyTimer);
             MailSender.shutdown();
+            progress.update("shutting down summary snapshots... " + destroyTimer);
+            Summary.shutdown();
             progress.update("shutting down SurveyThreadManager... " + destroyTimer);
             startupThread.shutdown();
             progress.update("Shutting down database..." + destroyTimer);
@@ -3446,6 +3461,9 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         if (isMaintenance()) {
             throw new InternalError("SurveyTool is in setup mode.");
         }
+        if (dbUtils == null) {
+            throw new InternalError("doStartupDB called when dbUtils is null");
+        }
         CLDRProgressTask progress = openProgress("Database Setup");
         try {
             progress.update("begin.."); // restore
@@ -3678,6 +3696,10 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         return new StatusForFrontEnd(this, request).toJSONObject();
     }
 
+    /**
+     * NOTE: the data in this status object is actually used by Prometheus monitoring.
+     * Do not remove fields without care. See CLDR-15040
+     */
     private class StatusForFrontEnd implements JSONString {
         private String contextPath = null;
         private int dbopen = DBUtils.db_number_open;
@@ -3700,6 +3722,10 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         private User user = null;
         private int users = CookieSession.getUserCount();
         private String sessionMessage = null;
+
+        private Runtime r = Runtime.getRuntime();
+        double memtotal = r.totalMemory() / 1024000.0;
+        double memfree = r.freeMemory() / 1024000.0;
 
         private JSONObject toJSONObject() throws JSONException {
             /*
@@ -3726,6 +3752,8 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
                 .put("specialHeader", specialHeader)
                 .put("surveyRunningStamp", surveyRunningStamp)
                 .put("sysload", sysload)
+                .put("memtotal", memtotal)
+                .put("memfree", memfree)
                 .put("uptime", uptime)
                 .put("user", user) // allowed since User implements JSONString?
                 .put("users", users)
