@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -238,6 +239,7 @@ public class XMLValidator {
             // First, attempt to parse as XML (preferred)...
             DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
             docBuilder.setErrorHandler(nullHandler);
+            docBuilder.setEntityResolver(new SpecialEntityResolver());
             // if(docBuilder.isValidating()){
             // System.out.println("The parser is a validating parser");
             // }
