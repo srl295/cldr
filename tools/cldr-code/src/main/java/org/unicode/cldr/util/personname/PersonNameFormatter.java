@@ -167,6 +167,7 @@ public class PersonNameFormatter {
         informal,
         full,
         multiword,
+        mononym,
     }
 
     public static final Splitter SPLIT_SPACE = Splitter.on(' ').trimResults();
@@ -541,26 +542,26 @@ public class PersonNameFormatter {
             final int patternLength = patternString.length();
             int i = 0;
             while (i < patternLength) {
-                final Character currentCharacter = patternString.charAt(i);
+                final Character currentCharacter = patternString.charAt(i); // this is safe, since syntax is ASCII
 
                 switch (currentCharacter) {
                 case '\\':
                     if (i + 1 < patternLength) {
                         final Character nextCharacter = patternString.charAt(i + 1);
                         if (!ALLOWED_ESCAPED_CHARACTERS.contains(nextCharacter)) {
-                            throw new IllegalArgumentException(String.format("Escaping character '%c' is not supported", nextCharacter));
+                            throwParseError(String.format("Escaping character '%c' is not supported", nextCharacter), patternString, i);
                         }
 
                         rawValue += nextCharacter;
                         i += 2;
                         continue;
                     } else {
-                        throw new IllegalArgumentException("Invalid escape sequence");
+                        throwParseError("Invalid character: ", patternString, i);
                     }
 
                 case '{':
                     if (curlyStarted) {
-                        throw new IllegalArgumentException("Unexpected {");
+                        throwParseError("Unexpected {: ", patternString, i);
                     }
                     curlyStarted = true;
                     if (!rawValue.isEmpty()) {
@@ -571,13 +572,17 @@ public class PersonNameFormatter {
 
                 case '}':
                     if (!curlyStarted) {
-                        throw new IllegalArgumentException("Unexpected }");
+                        throwParseError("Unexpected }", patternString, i);
                     }
                     curlyStarted = false;
                     if (rawValue.isEmpty()) {
-                        throw new IllegalArgumentException("Empty field is not allowed");
+                        throwParseError("Empty field '{}' is not allowed ", patternString, i);
                     } else {
-                        result.add(new NamePatternElement(ModifiedField.from(rawValue)));
+                        try {
+                            result.add(new NamePatternElement(ModifiedField.from(rawValue)));
+                        } catch (Exception e) {
+                            throwParseError("Invalid field: ", rawValue, 0);
+                        }
                         rawValue = "";
                     }
                     break;
@@ -591,13 +596,19 @@ public class PersonNameFormatter {
             }
 
             if (curlyStarted) {
-                throw new IllegalArgumentException("Unmatched {");
+                throwParseError("Unmatched {", patternString, patternString.length());
             }
             if (!rawValue.isEmpty()) {
                 result.add(new NamePatternElement(rawValue));
             }
 
             return result;
+        }
+
+        private static String BAD_POSITION = "❌";
+
+        private static void throwParseError(String message, String patternString, int i) {
+            throw new IllegalArgumentException(message + ": " +  "«" + patternString.substring(0,i) + BAD_POSITION + patternString.substring(i) + "»");
         }
 
         private static List<NamePatternElement> makeList(Object... elements2) {
@@ -915,7 +926,7 @@ public class PersonNameFormatter {
             String usage = null;
             String order = null;
             if (string.isBlank()) {
-                return MATCH_ALL;
+                throw new IllegalArgumentException("must have at least one of length, style, usage, or order");
             }
             for (String part : SPLIT_SEMI.split(string)) {
                 List<String> parts = SPLIT_EQUALS.splitToList(part);
@@ -975,7 +986,7 @@ public class PersonNameFormatter {
                 toAddTo.add(title + "='" + JOIN_SPACE.join(set) + "'");
             }
         }
-        public static final ParameterMatcher MATCH_ALL = new ParameterMatcher((Set<Length>)null, null, null, null);
+        //public static final ParameterMatcher MATCH_ALL = new ParameterMatcher((Set<Length>)null, null, null, null);
 
         public static final Comparator<Iterable<ParameterMatcher>> ITERABLE_COMPARE = Comparators.lexicographical(Comparator.<ParameterMatcher>naturalOrder());
 
@@ -994,12 +1005,6 @@ public class PersonNameFormatter {
 
         @Override
         public int compareTo(ParameterMatcher other) {
-            // special case MATCH_ALL to put at end
-            if (this.equals(MATCH_ALL)) {
-                return other.equals(MATCH_ALL) ? 0 : 1;
-            } else if (other.equals(MATCH_ALL)) {
-                return -1;
-            }
             return ComparisonChain.start()
                 .compare(lengths, other.lengths, Length.ITERABLE_COMPARE)
                 .compare(usages, other.usages, Usage.ITERABLE_COMPARE)
@@ -1137,7 +1142,6 @@ public class PersonNameFormatter {
          * <ul>
          * <li>Every possible FormatParameters value must match at least one ParameterMatcher</li>
          * <li>No ParameterMatcher is superfluous; the ones before it must not mask it.</li>
-         * <li>The final ParameterMatcher must be MATCH_ALL.</li>
          * </ul>
          * The multimap values must retain the order they are built with!
          */
@@ -1159,7 +1163,6 @@ public class PersonNameFormatter {
                 Collection<NamePattern> values = entry.getValue();
 
                 // TODO Mark No ParameterMatcher should be completely masked by any previous ones
-                // Except for the final MATCH_ALL
                 // The following code starts with a list of all the items, and removes any that match
                 int matchCount = 0;
                 for (Iterator<FormatParameters> rest = remaining.iterator(); rest.hasNext(); ) {
@@ -1172,7 +1175,7 @@ public class PersonNameFormatter {
                         }
                     }
                 }
-                if (matchCount == 0 && !key.equals(ParameterMatcher.MATCH_ALL)) {
+                if (matchCount == 0) {
                     throw new IllegalArgumentException("key is masked by previous values: " + key
                         + ",\n\t" + JOIN_LFTB.join(formatParametersToNamePattern.entries()));
                 }
@@ -1182,11 +1185,6 @@ public class PersonNameFormatter {
                     throw new IllegalArgumentException("key has no values: " + key);
                 }
                 lastKey = key;
-            }
-
-            // The final entry must have MATCH_ALL as the key
-            if (!lastKey.equals(ParameterMatcher.MATCH_ALL)) {
-                throw new IllegalArgumentException("last key is not MATCH_ALL" + lastKey);
             }
         }
 
@@ -1334,7 +1332,7 @@ public class PersonNameFormatter {
      */
     public static Pair<ParameterMatcher, NamePattern> fromPathValue(XPathParts parts, String value) {
 
-        //ldml/personNames/personName[@length="long"][@usage="sorting"]/namePattern[alt="2"]
+        //ldml/personNames/personName[@length="long"][@usage="referring"][@order="sorting"]/namePattern[alt="2"]
         // value = {surname}, {given} {given2} {suffix}
         final String altValue = parts.getAttributeValue(-1, "alt");
         int rank = altValue == null ? 0 : Integer.parseInt(altValue);
@@ -1357,21 +1355,21 @@ public class PersonNameFormatter {
      * @param cldrFile
      * @return
      */
-    public static Map<SampleType, NameObject> loadSampleNames(CLDRFile cldrFile) {
+    public static Map<SampleType, SimpleNameObject> loadSampleNames(CLDRFile cldrFile) {
         M3<SampleType, ModifiedField, String> names = ChainedMap.of(new TreeMap<SampleType, Object>(), new TreeMap<ModifiedField, Object>(), String.class);
         for (String path : cldrFile) {
             if (path.startsWith("//ldml/personNames/sampleName")) {
                 //ldml/personNames/sampleName[@item="full"]/nameField[@type="prefix"]
                 String value = cldrFile.getStringValue(path);
-                if (!value.equals("∅∅∅")) { // TODO is this how we want to handle ∅∅∅?
+                if (value != null && !value.equals("∅∅∅")) {
                     XPathParts parts = XPathParts.getFrozenInstance(path);
                     names.put(SampleType.valueOf(parts.getAttributeValue(-2, "item")), ModifiedField.from(parts.getAttributeValue(-1, "type")), value);
                 }
             }
         }
-        Map<SampleType, NameObject> result = new TreeMap<>();
+        Map<SampleType, SimpleNameObject> result = new TreeMap<>();
         for (Entry<SampleType, Map<ModifiedField, String>> entry : names) {
-            NameObject name = new SimpleNameObject(new ULocale(cldrFile.getLocaleID()), entry.getValue());
+            SimpleNameObject name = new SimpleNameObject(new ULocale(cldrFile.getLocaleID()), entry.getValue());
             result.put(entry.getKey(), name);
         }
         return ImmutableMap.copyOf(result);
@@ -1439,7 +1437,6 @@ public class PersonNameFormatter {
                 result.putAll(matcher, patterns);
             }
         }
-        result.putAll(ParameterMatcher.MATCH_ALL, optimalAny);
         return result;
     }
 

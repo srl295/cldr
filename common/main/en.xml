@@ -5654,6 +5654,11 @@ annotations.
 				<displayName count="one">Sierra Leonean leone</displayName>
 				<displayName count="other">Sierra Leonean leones</displayName>
 			</currency>
+			<currency type="SLE">
+				<displayName>Sierra Leonean New Leone</displayName>
+				<displayName count="one">Sierra Leonean new leone</displayName>
+				<displayName count="other">Sierra Leonean new leones</displayName>
+			</currency>
 			<currency type="SOS">
 				<displayName>Somali Shilling</displayName>
 				<displayName count="one">Somali shilling</displayName>
@@ -9133,9 +9138,6 @@ annotations.
 		<nameOrderLocales order="surnameFirst">ja zh ko</nameOrderLocales>
 		<initialPattern type="initial">{0}.</initialPattern>
 		<initialPattern type="initialSequence">{0} {1}</initialPattern>
-		<personName>
-			<namePattern>{given-informal} {surname}</namePattern>
-		</personName>
 		<personName length="long" usage="addressing" style="formal" order="sorting">
 			<namePattern>{surname}, {given} {given2} {suffix}</namePattern>
 		</personName>
@@ -9333,6 +9335,15 @@ annotations.
 			<nameField type="given-informal">∅∅∅</nameField>
 			<nameField type="given2">Hans Carl Maria</nameField>
 			<nameField type="surname">von Stroheim</nameField>
+			<nameField type="surname2">∅∅∅</nameField>
+			<nameField type="suffix">∅∅∅</nameField>
+		</sampleName>
+		<sampleName item="mononym">
+			<nameField type="prefix">∅∅∅</nameField>
+			<nameField type="given">Sinbad</nameField>
+			<nameField type="given-informal">∅∅∅</nameField>
+			<nameField type="given2">∅∅∅</nameField>
+			<nameField type="surname">∅∅∅</nameField>
 			<nameField type="surname2">∅∅∅</nameField>
 			<nameField type="suffix">∅∅∅</nameField>
 		</sampleName>

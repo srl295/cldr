@@ -53,9 +53,11 @@ import org.unicode.cldr.util.Validity.Status;
 import org.unicode.cldr.util.XListFormatter.ListTypeLength;
 import org.unicode.cldr.util.XPathParts;
 import org.unicode.cldr.util.personname.PersonNameFormatter;
+import org.unicode.cldr.util.personname.PersonNameFormatter.FallbackFormatter;
 import org.unicode.cldr.util.personname.PersonNameFormatter.FormatParameters;
 import org.unicode.cldr.util.personname.PersonNameFormatter.NameObject;
 import org.unicode.cldr.util.personname.PersonNameFormatter.NamePattern;
+import org.unicode.cldr.util.personname.SimpleNameObject;
 
 import com.google.common.collect.ImmutableList;
 import com.ibm.icu.impl.Row.R3;
@@ -470,34 +472,94 @@ public class ExampleGenerator {
         return result;
     }
 
-    Map<PersonNameFormatter.SampleType, NameObject> sampleNames = null;
-    PersonNameFormatter personNameFormatter = null;
+    /**
+     * Holds a map and an object that are relatively expensive to build,
+     * so we don't want to do that on each call.
+     * TODO clean up the synchronization model.
+     */
+    private class PersonNamesCache implements ExampleCache.ClearableCache {
+        Map<PersonNameFormatter.SampleType, SimpleNameObject> sampleNames = null;
+        PersonNameFormatter personNameFormatter = null;
+        @Override
+        public void clear() {
+            sampleNames = null;
+            personNameFormatter = null;
+        }
+        Map<PersonNameFormatter.SampleType, SimpleNameObject> getSampleNames(CLDRFile cldrFile) {
+            synchronized (this) {
+                if (sampleNames == null) {
+                    sampleNames = PersonNameFormatter.loadSampleNames(cldrFile);
+                }
+                return sampleNames;
+            }
+        }
+        PersonNameFormatter getPersonNameFormatter(CLDRFile cldrFile) {
+            synchronized (this) {
+                if (personNameFormatter == null) {
+                    personNameFormatter = new PersonNameFormatter(cldrFile);
+                }
+                return personNameFormatter;
+            }
+        }
+    }
+
+    /**
+     * Register the cache, so that it gets cleared when any of the paths change
+     */
+    PersonNamesCache personNamesCache = exCache.registerCache(new PersonNamesCache(),
+        "//ldml/personNames/sampleName[@item=\"*\"]/nameField[@type=\"*\"]",
+        "//ldml/personNames/initialPattern[@type=\"*\"]");
 
     private String handlePersonName(XPathParts parts, String value) {
         //ldml/personNames/personName[@length="long"][@usage="addressing"][@style="formal"][@order="givenFirst"]/namePattern => {prefix} {surname}
-        FormatParameters formatParameters = FormatParameters.from(parts);
+        String debugState = "start";
+        try {
+            FormatParameters formatParameters = FormatParameters.from(parts);
 
-        if (parts.contains("nameOrderLocales") || parts.contains("initialPattern") || parts.contains("sampleName")) {
-            return null; // TODO: we do not handle these yet
-        }
+            List<String> examples = null;
+            final CLDRFile cldrFile2 = getCldrFile();
+            switch(parts.getElement(2)) {
+            case "nameOrderLocales":
+                examples = new ArrayList<>();
+                for (String localeId : PersonNameFormatter.SPLIT_SPACE.split(value)) {
+                    final String name = localeId.equals("und") ? "«any other»" :  cldrFile2.getName(localeId);
+                    examples.add(localeId + " = " + name);
+                }
+                break;
+            case "initialPattern":
+                return null;
+            case "sampleName":
+                return null;
+            case "personName":
+                examples = new ArrayList<>();
+                Map<PersonNameFormatter.SampleType, SimpleNameObject> sampleNames = personNamesCache.getSampleNames(cldrFile2);
+                PersonNameFormatter personNameFormatter = personNamesCache.getPersonNameFormatter(cldrFile2);
 
-        if (sampleNames == null) {
-            sampleNames = PersonNameFormatter.loadSampleNames(getCldrFile());
-            personNameFormatter = new PersonNameFormatter(getCldrFile());
-        }
+                // We might need the alt, however: String alt = parts.getAttributeValue(-1, "alt");
 
-        // We might need the alt, however: String alt = parts.getAttributeValue(-1, "alt");
-        List<String> examples = new ArrayList<>();
-        //TODO Peter extract from sampleName data once that is in en.xml
-        // eventually, this will cycle through the types of sample names, and extract from CLDRFile
-        for (NameObject sampleNameObject1 : sampleNames.values()) {
-            // TODO Remove initial periods from en.xml
-            NamePattern namePattern = NamePattern.from(0, value.replace(".", ""));
-            ULocale locale = new ULocale(getCldrFile().getLocaleID());
-            String result = namePattern.format(sampleNameObject1, formatParameters, personNameFormatter.getFallbackInfo());
-            examples.add(result);
+                for (NameObject sampleNameObject1 : sampleNames.values()) {
+                    NamePattern namePattern = NamePattern.from(0, value);
+                    debugState = "<NamePattern.from: " + namePattern;
+                    final FallbackFormatter fallbackInfo = personNameFormatter.getFallbackInfo();
+                    debugState = "<getFallbackInfo: " + fallbackInfo;
+                    String result = namePattern.format(sampleNameObject1, formatParameters, fallbackInfo);
+                    debugState = "<namePattern.format: " + result;
+                    examples.add(result);
+                }
+                break;
+            }
+            return formatExampleList(examples);
+        } catch (Exception e) {
+            StringBuffer stackTrace = null;
+            try (StringWriter sw = new StringWriter();
+                PrintWriter p = new PrintWriter(sw)) {
+                e.printStackTrace(p);
+                stackTrace = sw.getBuffer();
+            } catch (Exception e2) {
+                stackTrace = new StringBuffer("internal error");
+            }
+            return "Internal error: " + e.getMessage() + "\n" + debugState + "\n" +  stackTrace;
         }
-        return formatExampleList(examples);
     }
 
     private String handleLabelPattern(XPathParts parts, String value) {
@@ -1851,6 +1913,12 @@ public class ExampleGenerator {
                 value = cf.format(NUMBER_SAMPLE);
             }
             String result;
+            if (value == null) {
+                throw new NullPointerException(
+                    cldrFile.getSourceLocation(fullPath) +
+                    ": " + cldrFile.getLocaleID()+ ": " +
+                    ": Error: no currency symbol for " + currency);
+            }
             DecimalFormat x = icuServiceBuilder.getCurrencyFormat(currency, value);
             result = x.format(NUMBER_SAMPLE);
             result = setBackground(result).replace(value, backgroundEndSymbol + value + backgroundStartSymbol);

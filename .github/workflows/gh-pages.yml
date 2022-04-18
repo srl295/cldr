@@ -14,11 +14,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           lfs: false
       - name: Cache local npm repository
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-nodetr-${{ hashFiles('tools/scripts/tr-archive/package-lock.json') }}
@@ -30,14 +30,14 @@ jobs:
           node-version: '16'
       - name: Run TR archiver
         # Note: will update ToC if out of date
-        run: 'cd tools/scripts/tr-archive/ && bash make-tr-archive.sh'
+        run: 'cd tools/scripts/tr-archive/ && npm ci && npm run build'
       - name: Lint Markdown
         # Warn, don't fail yet
         run: npx markdownlint-cli *.md {specs,docs}/*.md $(find .github -name '*.md') || (echo Warning, please fix these ; true)
       - name: Note any changes
         run: git status ; git diff
       - name: Ruby cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/vendor
           key: ${{ runner.os }}-gems-${{ hashFiles('docs/**/Gemfile.lock') }}
