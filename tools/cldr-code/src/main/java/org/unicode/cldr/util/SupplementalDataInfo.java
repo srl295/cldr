@@ -2787,7 +2787,12 @@ public class SupplementalDataInfo {
         ApprovalRequirementMatcher(String xpath) {
             XPathParts parts = XPathParts.getFrozenInstance(xpath);
             if (parts.containsElement("approvalRequirement")) {
-                requiredVotes = Integer.parseInt(parts.getAttributeValue(-1, "votes"));
+                final String votesStr = parts.getAttributeValue(-1, "votes");
+                if (votesStr.charAt(0) == '=') {
+                    requiredVotes = VoteResolver.Level.valueOf(votesStr.substring(1)).getVotes();
+                } else {
+                    requiredVotes = Integer.parseInt(votesStr);
+                }
                 String localeAttrib = parts.getAttributeValue(-1, "locales");
                 if (localeAttrib == null || localeAttrib.equals(STAR) || localeAttrib.isEmpty()) {
                     locales = null; // no locale listed == '*'

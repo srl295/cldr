@@ -121,8 +121,9 @@ public class VoteResolver<T> {
         street(   1 /* votes */, 10  /* stlevel */),
         anonymous(0 /* votes */, 8   /* stlevel */),
         vetter(   4 /* votes */, 5   /* stlevel */),
+        tcorgvetter(6/*votes */, 3   /* stlevel */),
         manager(  4 /* votes */, 2   /* stlevel */),
-        tc(      20 /* votes */, 1   /* stlevel */),
+        tc(      50 /* votes */, 1   /* stlevel */),
         admin(  100 /* votes */, 0   /* stlevel */);
 
         /**
@@ -216,9 +217,13 @@ public class VoteResolver<T> {
          * on more than this user's level and the other user's desired new level
          */
         public boolean canCreateOrSetLevelTo(Level otherLevel) {
-            return
-                canManageSomeUsers() && // must be some sort of manager
-                otherLevel.getSTLevel() >= getSTLevel(); // can't gain higher privs
+            // Must be a manager at all
+            if (!canManageSomeUsers()) return false;
+            // Cannot elevate privilege
+            if (getSTLevel() > otherLevel.getSTLevel()) return false;
+            // only TC can create tcorgvetter
+            if (otherLevel == tcorgvetter && !isTC()) return false;
+            return true;
         }
 
         /**

@@ -2,6 +2,7 @@ org, level, operation, expected, otherOrg, otherLevel
 adlam, admin, isAdminForOrg, true, adlam,
 adlam, tc, isAdminForOrg, true, adlam,
 adlam, manager, isAdminForOrg, true, adlam,
+adlam, tcorgvetter, isAdminForOrg, false, adlam,
 adlam, vetter, isAdminForOrg, false, adlam,
 adlam, street, isAdminForOrg, false, adlam,
 adlam, locked, isAdminForOrg, false, adlam,
@@ -14,7 +15,8 @@ adlam, street, isAdminForOrg, false, wod_nko,
 adlam, locked, isAdminForOrg, false, wod_nko,
 adlam, anonymous, isAdminForOrg, false, wod_nko,
 adlam, admin, votes,100, ,
-adlam, tc, votes,20, ,
+adlam, tc, votes,50, ,
+adlam, tcorgvetter, votes,6, ,
 adlam, manager, votes,4, ,
 adlam, vetter, votes,4, ,
 adlam, street, votes,1, ,
@@ -22,7 +24,7 @@ adlam, locked, votes,0, ,
 adlam, anonymous, votes,0, ,
 adlam, admin, canVoteWithCount, 100, ,
 adlam, admin, canVoteWithCount, 4, ,
-adlam, tc, canVoteWithCount, 20, ,
+adlam, tc, canVoteWithCount, 50, ,
 adlam, tc, canVoteWithCount, 4, ,
 adlam, tc, canVoteWithCount, 1000, ,
 adlam, manager, canVoteWithCount, 4, ,
@@ -49,6 +51,7 @@ adlam, locked, canImportOldVotesSUBMISSION, false, ,
 adlam, anonymous, canImportOldVotesSUBMISSION, false, ,
 adlam, admin,userCanDoList, true, ,
 adlam, tc,userCanDoList, true, ,
+adlam, tcorgvetter,userCanDoList, true, ,
 adlam, manager,userCanDoList, true, ,
 adlam, vetter,userCanDoList, true, ,
 adlam, street,userCanDoList, false, ,
@@ -56,6 +59,7 @@ adlam, locked,userCanDoList, false, ,
 adlam, anonymous,userCanDoList, false, ,
 adlam, admin,userCanCreateUsers, true, ,
 adlam, tc,userCanCreateUsers, true, ,
+adlam, tcorgvetter,userCanCreateUsers, false, ,
 adlam, manager,userCanCreateUsers, true, ,
 adlam, vetter,userCanCreateUsers, false, ,
 adlam, street,userCanCreateUsers, false, ,
@@ -64,12 +68,14 @@ adlam, anonymous,userCanCreateUsers, false, ,
 adlam, admin,userCanEmailUsers, true, ,
 adlam, tc,userCanEmailUsers, true, ,
 adlam, manager,userCanEmailUsers, true, ,
+adlam, tcorgvetter,userCanEmailUsers, false, ,
 adlam, vetter,userCanEmailUsers, false, ,
 adlam, street,userCanEmailUsers, false, ,
 adlam, locked,userCanEmailUsers, false, ,
 adlam, anonymous,userCanEmailUsers, false, ,
 adlam, admin,userCanModifyUsers, true, ,
 adlam, tc,userCanModifyUsers, true, ,
+adlam, tcorgvetter,userCanModifyUsers, false, ,
 adlam, manager,userCanModifyUsers, true, ,
 adlam, vetter,userCanModifyUsers, false, ,
 adlam, street,userCanModifyUsers, false, ,
@@ -77,6 +83,7 @@ adlam, locked,userCanModifyUsers, false, ,
 adlam, anonymous,userCanModifyUsers, false, ,
 adlam, admin,userCreateOtherOrgs, true, ,
 adlam, tc,userCreateOtherOrgs, false, ,
+adlam, tcorgvetter,userCreateOtherOrgs, false, ,
 adlam, manager,userCreateOtherOrgs, false, ,
 adlam, vetter,userCreateOtherOrgs, false, ,
 adlam, street,userCreateOtherOrgs, false, ,
@@ -92,6 +99,7 @@ adlam, anonymous,userIsExactlyManager, false, ,
 adlam, admin,userIsManagerOrStronger, true, ,
 adlam, tc,userIsManagerOrStronger, true, ,
 adlam, manager,userIsManagerOrStronger, true, ,
+adlam, tcorgvetter,userIsManagerOrStronger, false, ,
 adlam, vetter,userIsManagerOrStronger, false, ,
 adlam, street,userIsManagerOrStronger, false, ,
 adlam, locked,userIsManagerOrStronger, false, ,
@@ -99,6 +107,7 @@ adlam, anonymous,userIsManagerOrStronger, false, ,
 adlam, admin,userIsVetter, true, ,
 adlam, tc,userIsVetter, true, ,
 adlam, manager,userIsVetter, true, ,
+adlam, tcorgvetter,userIsVetter, true, ,
 adlam, vetter,userIsVetter, true, ,
 adlam, street,userIsVetter, false, ,
 adlam, locked,userIsVetter, false, ,
@@ -182,6 +191,7 @@ adlam, locked,userCanGetEmailList, false, ,
 adlam, anonymous,userCanGetEmailList, false, ,
 adlam, admin,canManageSomeUsers, true, ,
 adlam, tc,canManageSomeUsers, true, ,
+adlam, tcorgvetter,canManageSomeUsers, false, ,
 adlam, manager,canManageSomeUsers, true, ,
 adlam, vetter,canManageSomeUsers, false, ,
 adlam, street,canManageSomeUsers, false, ,
@@ -259,20 +269,31 @@ adlam, locked,isManagerFor, false, adlam, manager
 adlam, anonymous,isManagerFor, false, adlam, manager
 adlam, admin, isManagerFor, true, adlam, vetter
 adlam, tc, isManagerFor, true, adlam, vetter
+adlam, tcorgvetter, isManagerFor, false, adlam, vetter
 adlam, manager,isManagerFor, true, adlam, vetter
 adlam, vetter,isManagerFor, false, adlam, vetter
 adlam, street,isManagerFor, false, adlam, vetter
 adlam, locked,isManagerFor, false, adlam, vetter
 adlam, anonymous,isManagerFor, false, adlam, vetter
+adlam, admin, isManagerFor, true, adlam, tcorgvetter
+adlam, tc, isManagerFor, true, adlam, tcorgvetter
+adlam, tcorgvetter, isManagerFor, false, adlam, tcorgvetter
+adlam, manager,isManagerFor, true, adlam, tcorgvetter
+adlam, vetter,isManagerFor, false, adlam, tcorgvetter
+adlam, street,isManagerFor, false, adlam, tcorgvetter
+adlam, locked,isManagerFor, false, adlam, tcorgvetter
+adlam, anonymous,isManagerFor, false, adlam, tcorgvetter
 adlam, admin, isManagerFor, true, adlam, street
 adlam, tc, isManagerFor, true, adlam, street
 adlam, manager,isManagerFor, true, adlam, street
+adlam, tcorgvetter, isManagerFor, false, adlam, street
 adlam, vetter,isManagerFor, false, adlam, street
 adlam, street,isManagerFor, false, adlam, street
 adlam, locked,isManagerFor, false, adlam, street
 adlam, anonymous,isManagerFor, false, adlam, street
 adlam, admin, isManagerFor, true, adlam, locked
 adlam, tc, isManagerFor, true, adlam, locked
+adlam, tcorgvetter, isManagerFor, false, adlam, locked
 adlam, manager,isManagerFor, true, adlam, locked
 adlam, vetter,isManagerFor, false, adlam, locked
 adlam, street,isManagerFor, false, adlam, locked
@@ -280,6 +301,7 @@ adlam, locked,isManagerFor, false, adlam, locked
 adlam, anonymous,isManagerFor, false, adlam, locked
 adlam, admin, isManagerFor, true, adlam, anonymous
 adlam, tc, isManagerFor, true, adlam, anonymous
+adlam, tcorgvetter, isManagerFor, false, adlam, anonymous
 adlam, manager,isManagerFor, true, adlam, anonymous
 adlam, vetter,isManagerFor, false, adlam, anonymous
 adlam, street,isManagerFor, false, adlam, anonymous
@@ -306,6 +328,13 @@ adlam, vetter,canCreateOrSetLevelTo, false, adlam, manager
 adlam, street,canCreateOrSetLevelTo, false, adlam, manager
 adlam, locked,canCreateOrSetLevelTo, false, adlam, manager
 adlam, anonymous,canCreateOrSetLevelTo, false, adlam, manager
+adlam, admin, canCreateOrSetLevelTo, true, adlam, tcorgvetter
+adlam, tc, canCreateOrSetLevelTo, true, adlam, tcorgvetter
+adlam, manager,canCreateOrSetLevelTo, false, adlam, tcorgvetter
+adlam, vetter,canCreateOrSetLevelTo, false, adlam, tcorgvetter
+adlam, street,canCreateOrSetLevelTo, false, adlam, tcorgvetter
+adlam, locked,canCreateOrSetLevelTo, false, adlam, tcorgvetter
+adlam, anonymous,canCreateOrSetLevelTo, false, adlam, tcorgvetter
 adlam, admin, canCreateOrSetLevelTo, true, adlam, vetter
 adlam, tc, canCreateOrSetLevelTo, true, adlam, vetter
 adlam, manager,canCreateOrSetLevelTo, true, adlam, vetter

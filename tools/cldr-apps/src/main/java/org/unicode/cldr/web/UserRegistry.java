@@ -189,13 +189,6 @@ public class UserRegistry {
     private static final String INTERNAL = "INTERNAL";
 
     /**
-     * List of all user levels - for UI presentation
-     *
-     * Code related to UserRegistry.EXPERT removed 2021-05-18 per CLDR-14597
-     */
-    public static final int ALL_LEVELS[] = { ADMIN, TC, MANAGER, VETTER, STREET, LOCKED };
-
-    /**
      * get a level as a string - presentation form
      **/
     public static String levelToStr(int level) {

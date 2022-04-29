@@ -241,7 +241,7 @@ public class TestUtilities extends TestFmwkPlus {
 
     public void TestCounter() {
         Counter<String> counter = new Counter<>(true);
-        Comparator<String> uca = new Comparator<String>() {
+        Comparator<String> uca = new Comparator<>() {
             Collator col = Collator.getInstance(ULocale.ENGLISH);
 
             @Override
@@ -623,7 +623,7 @@ public class TestUtilities extends TestFmwkPlus {
                 .fromPath(xpath);
         }
         resolver.setLocale(CLDRLocale.getInstance(locale), ph);
-        assertEquals(ph.toString(), required, resolver.getRequiredVotes());
+        assertEquals("verifyRequiredVotes: " + ph.toString(), required, resolver.getRequiredVotes());
     }
 
     public void TestRequiredVotes() {
@@ -983,7 +983,7 @@ public class TestUtilities extends TestFmwkPlus {
     public void TestUnicodeMapCompose() {
         logln("Getting Scripts");
 
-        UnicodeMap.Composer<String> composer = new UnicodeMap.Composer<String>() {
+        UnicodeMap.Composer<String> composer = new UnicodeMap.Composer<>() {
             @Override
             public String compose(int codepoint, String string, String a, String b) {
                 return a.toString() + "_" + b.toString();
