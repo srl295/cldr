@@ -1,11 +1,14 @@
 ## Unicode Technical Standard #35
 
+# Heads Up!
+
+This is a very early draft of the '3.0' spec. Please pardon our dust!
 # Unicode Locale Data Markup Language (LDML)<br/>Part 7: Keyboards
 
 <!-- HTML: no th -->
 <table><tbody>
-<tr><td>Version</td><td>41</td></tr>
-<tr><td>Editors</td><td>Steven Loomis (<a href="mailto:srl@icu-project.org">srl@icu-project.org</a>) and <a href="tr35.html#Acknowledgments">other CLDR committee members</a></td></tr>
+<tr><td>Version</td><td>3.0 PREDRAFT</td></tr>
+<tr><td>Editors</td><td>Steven R. Loomis (<a href="mailto:srloomis@unicode.org">srloomis@unicode.org</a>) (for this draft), the <a href="https://cldr.unicode.org/index/keyboard-workgroup">CLDR Keyboard-SC</a>, and <a href="tr35.html#Acknowledgments">other CLDR committee members</a></td></tr>
 </tbody></table>
 
 For the full header, summary, and status, see [Part 1: Core](tr35.md).
@@ -29,11 +32,14 @@ See <https://cldr.unicode.org> for up-to-date CLDR release data.
 
 ### _Status_
 
+_THIS DOCUMENT IS AN EARLY DRAFT_
+
+<!--
 _This document has been reviewed by Unicode members and other interested parties, and has been approved for publication by the Unicode Consortium. This is a stable document and may be used as reference material or cited as a normative reference by other specifications._
 
 > _**A Unicode Technical Standard (UTS)** is an independent specification. Conformance to the Unicode Standard does not imply conformance to any UTS._
 
-_Please submit corrigenda and other comments with the CLDR bug reporting form [[Bugs](tr35.md#Bugs)]. Related information that is useful in understanding this document is found in the [References](tr35.md#References). For the latest version of the Unicode Standard see [[Unicode](tr35.md#Unicode)]. For a list of current Unicode Technical Reports see [[Reports](tr35.md#Reports)]. For more information about versions of the Unicode Standard, see [[Versions](tr35.md#Versions)]._
+_Please submit corrigenda and other comments with the CLDR bug reporting form [[Bugs](tr35.md#Bugs)]. Related information that is useful in understanding this document is found in the [References](tr35.md#References). For the latest version of the Unicode Standard see [[Unicode](tr35.md#Unicode)]. For a list of current Unicode Technical Reports see [[Reports](tr35.md#Reports)]. For more information about versions of the Unicode Standard, see [[Versions](tr35.md#Versions)]._ -->
 
 ## <a name="Parts" href="#Parts">Parts</a>
 
@@ -98,7 +104,16 @@ The LDML specification is divided into the following parts:
 
 ## 1 <a name="Introduction" href="#Introduction">Keyboards</a>
 
-The CLDR keyboard format provides for the communication of keyboard mapping data between different modules, and the comparison of data across different vendors and platforms. The standardized identifier for keyboards can be used to communicate, internally or externally, a request for a particular keyboard mapping that is to be used to transform either text or keystrokes. The corresponding data can then be used to perform the requested actions.
+The Unicode Standard and related technologies such as CLDR have dramatically improved the path to language support. However, keyboard support remains platform and vendor specific, causing inconsistencies in implementation as well as timeline.
+
+> “More and more language communities are determining that digitization is vital to their approach to language preservation and that engagement with Unicode is essential to becoming fully digitized. For many of these communities, however, getting new characters or a new script added to The Unicode Standard is not the end of their journey. The next, often more challenging stage is to get device makers, operating systems, apps and services to implement the script requirements that Unicode has just added to support their language. …
+>
+> “However, commensurate improvements to streamline new language support on the input side have been lacking. CLDR’s new Keyboard Subcommittee has been established to address this very gap.”
+> _(Cornelius et. al, “Standardizing Keyboards with CLDR,” presented at the 45th Internationalization and Unicode Conference, Santa Clara, California, October 2021)_
+
+
+
+<!-- The CLDR keyboard format provides for the communication of keyboard mapping data between different modules, and the comparison of data across different vendors and platforms. The standardized identifier for keyboards can be used to communicate, internally or externally, a request for a particular keyboard mapping that is to be used to transform either text or keystrokes. The corresponding data can then be used to perform the requested actions.
 
 For example, a web-based virtual keyboard may transform text in the following way. Suppose the user types a key that produces a "W" on a qwerty keyboard. A web-based tool using an azerty virtual keyboard can map that text ("W") to the text that would have resulted from typing a key on an azerty keyboard, by transforming "W" to "Z". Such transforms are in fact performed in existing web applications.
 
@@ -106,65 +121,8 @@ The data can also be used in analysis of the capabilities of different keyboards
 
 To illustrate this specification, here is an abridged layout representing the English US 101 keyboard on the Mac OSX operating system (with an inserted long-press example). For more complete examples, and information collected about keyboards, see keyboard data in XML.
 
-```xml
-<keyboard locale="en-t-k0-osx">
-    <version platform="10.4" number="$Revision: 8294 $" />
-    <names>
-        <name value="U.S." />
-    </names>
-    <keyMap>
-        <map iso="E00" to="`" />
-        <map iso="E01" to="1" />
-        <map iso="D01" to="q" />
-        <map iso="D02" to="w" />
-        <map iso="D03" to="e" longPress="é è ê ë" />
-        …
-    </keyMap>
-    <keyMap modifiers="caps">
-        <map iso="E00" to="`" />
-        <map iso="E01" to="1" />
-        <map iso="D01" to="Q" />
-        <map iso="D02" to="W" />
-        …
-    </keyMap>
-    <keyMap modifiers="opt">
-        <map iso="E00" to="`" />
-        <map iso="E01" to="¡" /> <!-- key=1 -->
-        <map iso="D01" to="œ" /> <!-- key=Q -->
-        <map iso="D02" to="∑" /> <!-- key=W -->
-        …
-    </keyMap>
-    <transforms type="simple">
-        <transform from="` " to="`" />
-        <transform from="`a" to="à" />
-        <transform from="`A" to="À" />
-        <transform from="´ " to="´" />
-        <transform from="´a" to="á" />
-        <transform from="´A" to="Á" />
-        <transform from="˜ " to="˜" />
-        <transform from="˜a" to="ã" />
-        <transform from="˜A" to="Ã" />
-        …
-    </transforms>
-</keyboard>
-```
+-->
 
-And its associated platform file (which includes the hardware mapping):
-
-```xml
-<platform id="osx">
-    <hardwareMap>
-        <map keycode="0" iso="C01" />
-        <map keycode="1" iso="C02" />
-        <map keycode="6" iso="B01" />
-        <map keycode="7" iso="B02" />
-        <map keycode="12" iso="D01" />
-        <map keycode="13" iso="D02" />
-        <map keycode="18" iso="E01" />
-        <map keycode="50" iso="E00" />
-    </hardwareMap>
-</platform>
-```
 
 * * *
 
@@ -172,17 +130,31 @@ And its associated platform file (which includes the hardware mapping):
 
 Some goals of this format are:
 
+1. Physical and virtual keyboard layouts defined in a single file
+2. Provide definitive platform-independent definitions for new keyboard layouts.
+    * For example, a new French standard keyboard layout would have a single definition which would be usable across all implementations.
+3. Allow platforms to be able to use CLDR keyboard data for the character-emitting keys (non-frame) aspects of keyboard layouts.
+    * For example, platform-specific keys such as Fn, Numpad, IME swap keys, and cursor keys are out of scope.
+4. Deprecate & archive existing LDML platform-specific layouts so they are not part of future releases
+
+<!--
 1. Make the XML as readable as possible.
 2. Represent faithfully keyboard data from major platforms: it should be possible to create a functionally-equivalent data file (such that given any input, it can produce the same output).
-3. Make as much commonality in the data across platforms as possible to make comparison easy.
+3. Make as much commonality in the data across platforms as possible to make comparison easy. -->
 
 Some non-goals (outside the scope of the format) currently are:
 
-1. Display names or symbols for keycaps (eg, the German name for "Return"). If that were added to LDML, it would be in a different structure, outside the scope of this section.
-2. Advanced IME features, handwriting recognition, etc.
-3. Roundtrip mappings—the ability to recover precisely the same format as an original platform's representation. In particular, the internal structure may have no relation to the internal structure of external keyboard source data, the only goal is functional equivalence.
+1. Adaptation for screen scaling resolution. Instead, keyboards should define layouts based on physical size. Platforms may interpret physical size definitions and adapt for different physical screen sizes with different resolutions.
+2. Unify the world's vkey and scan code mapping information
+3. Unify pre-existing platform layouts themselves (i.e. existing fr-azerty on platform a, b, c)
+4. Support for prior (pre 3.0) CLDR keyboard files
 
-Note: During development of this section, it was considered whether the modifier RAlt (=AltGr) should be merged with Option. In the end, they were kept separate, but for comparison across platforms implementers may choose to unify them.
+
+<!-- 1. Display names or symbols for keycaps (eg, the German name for "Return"). If that were added to LDML, it would be in a different structure, outside the scope of this section.
+2. Advanced IME features, handwriting recognition, etc.
+3. Roundtrip mappings—the ability to recover precisely the same format as an original platform's representation. In particular, the internal structure may have no relation to the internal structure of external keyboard source data, the only goal is functional equivalence. -->
+
+<!-- Note: During development of this section, it was considered whether the modifier RAlt (=AltGr) should be merged with Option. In the end, they were kept separate, but for comparison across platforms implementers may choose to unify them. -->
 
 Note that in parts of this document, the format `@x` is used to indicate the _attribute_ **x**.
 
@@ -256,12 +228,20 @@ Characters of general category of Combining Mark (M), Control characters (Cc), F
 
 ## 4 <a name="File_and_Dir_Structure" href="#File_and_Dir_Structure">File and Directory Structure</a>
 
-Each platform has its own directory, where a "platform" is a designation for a set of keyboards available from a particular source, such as Windows or ChromeOS. This directory name is the platform name (see Table 2 located further in the document). Within this directory there are two types of files:
+* New collection of layouts that are prescriptive, and define the common core for a keyboard that can be consumed as data for implementation on different platforms. This collection will be in a different location than the existing CLDR keyboard files under main/keyboards. We should remove the existing data files, but keep the old DTD in the same place for compatibility, and also so that conversion tools can use it to read older files.
+* New layouts are designed to be used outside of the CLDR source tree, and so need to use a URN or FPI. See <https://unicode-org.atlassian.net/browse/CLDR-15505> for discussion.
+* New layouts will have version metadata to indicate their spec compliance versi​​on number:
+
+```xml
+<keyboard conformsTo="42"/>
+```
+
+<!-- Each platform has its own directory, where a "platform" is a designation for a set of keyboards available from a particular source, such as Windows or ChromeOS. This directory name is the platform name (see Table 2 located further in the document). Within this directory there are two types of files:
 
 1. A single platform file (see XML structure for Platform file), this file includes a mapping of hardware key codes to the ISO layout positions. This file is also open to expansion for any configuration elements that are valid across the whole platform and that are not layout specific. This file is simply called `_platform.xml`.
 2. Multiple layout files named by their locale identifiers. (eg. `lt-t-k0-chromeos.xml` or `ne-t-k0-windows.xml`).
 
-Keyboard data that is not supported on a given platform, but intended for use with that platform, may be added to the directory `/und/`. For example, there could be a file `/und/lt-t-k0-chromeos.xml`, where the data is intended for use with ChromeOS, but does not reflect data that is distributed as part of a standard ChromeOS release.
+Keyboard data that is not supported on a given platform, but intended for use with that platform, may be added to the directory `/und/`. For example, there could be a file `/und/lt-t-k0-chromeos.xml`, where the data is intended for use with ChromeOS, but does not reflect data that is distributed as part of a standard ChromeOS release. -->
 
 * * *
 
@@ -282,7 +262,7 @@ This is the top level element. All other elements defined below are under this e
 > <small>
 >
 > Parents: _none_
-> Children: [version](#Element_version), [~~generation~~](#Element_generation), [info](#Element_info), [names](#Element_names), [settings](#Element_settings), [import](#Element_import), [keyMap](#Element_KeyMap), [displayMap](#Element_DisplayMap), [layer](#Element_layer), [vkeys](#Element_vkeys), [transforms](#Element_transforms), [reorders](#Element_reorder), [backspaces](#Element_backspaces)
+<!-- > Children: [version](#Element_version), [~~generation~~](#Element_generation), [info](#Element_info), [names](#Element_names), [settings](#Element_settings), [import](#Element_import), [keyMap](#Element_KeyMap), [displayMap](#Element_DisplayMap), [layer](#Element_layer), [vkeys](#Element_vkeys), [transforms](#Element_transforms), [reorders](#Element_reorder), [backspaces](#Element_backspaces) -->
 > Occurence: required, single
 >
 > </small>
@@ -302,6 +282,17 @@ This mandatory attribute represents the locale of the keyboard using Unicode loc
 <keyboard locale="fr-CH-t-k0-android">
   …
 </keyboard>
+```
+
+_Attribute:_ `conformsTo` (required)
+
+This attribute distinguishes the keyboard from prior versions,
+and it also specifies the minimum CLDR version required.
+
+For purposes of this current draft spec, the value should always be `techpreview`
+
+```xml
+<keyboard … conformsTo="techpreview"/>
 ```
 
 * * *
