@@ -551,7 +551,7 @@ Here is an exhaustive list of all possible modifier keys:
 | Modifier Keys |          | Comments                        |
 |---------------|----------|---------------------------------|
 | `altL`        | `altR`   | xAlty → xAltR+AltL? xAltR?AltLy |
-| `ctrlL`       | `ctrlR`  | ditto for Ctrl                  |
+| `ctrlL`       | `ctrlR`  | ditto for Ctrl                  |[](re:%20survey%20tool%20hosed)
 | `shiftL`      | `shiftR` | ditto for Shift                 |
 | `optL`        | `optR`   | ditto for Opt                   |
 | `caps`        |          | Caps Lock                       |
@@ -593,7 +593,7 @@ If the `modifiers` attribute is not present on a `keyMap` then that particular k
 
 * * *
 
-### 5.9 <a name="Element_map" href="#Element_map">Element: map</a>
+### 5.9 <a name="Element_key" href="#Element_key">Element: key</a>
 
 This element defines a mapping between the base character and the output for a particular set of active modifier keys. This element must have the `keyMap` element as its parent.
 
@@ -603,74 +603,59 @@ If a `map` element for a particular ISO layout position has not been defined the
 
 ```xml
 <map
- iso="{the iso position}"
+ id="{key id}"
  to="{the output}"
  [longPress="{long press keys}"]
+ [longPressDefault="{default longpress target}"]
  [transform="no"]
  [multitap="{the output on subsequent taps}"]
- [longPress-status="optional"]
- [optional="{optional mappings}"]
- [hint="{hint to long press content}"]
+ [gap="gap width"]
+ [flicks="{flicks identifier}"]
+ [width="key width"]
+ [switch="otherLayer"]
  /><!-- {Comment to improve readability (if needed)} -->
 ```
 
 > <small>
 >
-> Parents: [keyMap](#Element_keyMap)
+> Parents: [keys](#Element_keys)
 > Children: _none_
 > Occurence: optional, multiple
->
 > </small>
 
-_Attribute:_ `iso` (exactly one of base and iso is required)
+_Attribute:_ `id`
 
-> The `iso` attribute represents the ISO layout position of the key (see the definition at the beginning of the document for more information).
+> The `id` attribute uniquely identifies the key. NMTOKEN, restricted to "[a-zA-Z0-9_.-]". It can (but needn't be) the Latin key name for a Latn script keyboard (a, b, c, A, B, C, …), or any other valid token (e-acute, alef, alif, alpha, …)
 
 _Attribute:_ `to` (required)
 
-> The `to` attribute contains the output sequence of characters that is emitted when pressing this particular key. Control characters, whitespace (other than the regular space character) and combining marks in this attribute are escaped using the `\u{...}` notation.
+> The `to` attribute contains the output sequence of characters that is emitted when pressing this particular key. Control characters, whitespace (other than the regular space character) and combining marks in this attribute are escaped using the `\u{...}` notation. More than one key may output the same output.
 
 _Attribute:_ `longPress="optional"` (optional)
 
 > The `longPress` attribute contains any characters that can be emitted by "long-pressing" a key, this feature is prominent in mobile devices. The possible sequences of characters that can be emitted are whitespace delimited. Control characters, combining marks and whitespace (which is intended to be a long-press option) in this attribute are escaped using the `\u{...}` notation.
 
-_Attribute:_ `transform="no"` (optional)
+_Attribute:_ `longPressDefault` (optional)
 
-> The `transform` attribute is used to define a key that never participates in a transform but its output shows up as part of a transform. This attribute is necessary because two different keys could output the same characters (with different keys or modifier combinations) but only one of them is intended to be a dead-key and participate in a transform. This attribute value must be no if it is present.
+> Indicates which of the `longPress` target characters is the default long presstarget, which could be different than the first element. Ignored if not in the `longPress` list. Characters in this attribute can be escaped using the `\u{...}` notation.
+> For example, if the `longPressDefault` is a key whose [display](#Element_displayMap) appears as `{` an implementation might render the key as follows:
+>
+> ![keycap hint](images/keycapHint.png)
 
 _Attribute:_ `multitap` (optional)
-
 > A space-delimited list of strings, where each successive element of the list is produced by the corresponding number of quick taps. For example, three taps on the key C01 will produce a “c” in the following example (first tap produces “a”, two taps produce “bb” etc.).
 >
 > _Example:_
 >
 > ```xml
-> <map iso="C01" to="a" multitap="bb c d">
+> <key id="a" to="a" multitap="bb c d">
 > ```
+>
 > Control characters, combining marks and whitespace (which is intended to be a multitap option) in this attribute are escaped using the `\u{...}` notation.
 
-_Attribute:_ `longPress-status` (optional)
+_Attribute:_ `transform="no"` (optional)
 
-> Indicates optional `longPress` values. Must only occur with a `longPress` value. May be suppressed or shown, depending on user settings. There can be two `map` elements that differ only by `longPress-status`, allowing two different sets of `longPress` values.
->
-> _Example:_
->
-> ```xml
-> <map iso="D01" to="a" longPress="à â % æ á ä ã å ā ª" />
-> <map iso="D01" to="a" longPress="à â á ä ã å ā" longPress-status="optional" />
-> ```
-
-_Attribute:_ `optional` (optional)
-
-> Indicates optional mappings. May be suppressed or shown, depending on user settings.
-
-_Attribute:_ `hint` (optional)
-
-> Indicates a hint as to long-press contents, such as the first character of the `longPress` value, that can be displayed on the key. May be suppressed or shown, depending on user Settings. Characters in this attribute can be escaped using the `\u{...}` notation.
->
-> _Example:_ where the hint is "{":
->
-> ![keycap hint](images/keycapHint.png)
+> The `transform` attribute is used to define a key that never participates in a transform but its output shows up as part of a transform. This attribute is necessary because two different keys could output the same characters (with different keys or modifier combinations) but only one of them is intended to be a dead-key and participate in a transform. This attribute value must be no if it is present.
 
 For example, suppose there are the following keys, their output and one transform:
 
@@ -682,40 +667,35 @@ Option+E00 outputs ` (the dead-version which participates in transforms).
 
 Then the first key must be tagged with `transform="no"` to indicate that it should never participate in a transform.
 
-Comment: US key equivalent, base key, escaped output and escaped longpress
+_Attribute:_ `switch="shift"` (optional)
 
-In the generated files, a comment is included to help the readability of the document. This comment simply shows the English key equivalent (with prefix `key=`), the base character (`base=`), the escaped output (`to=`) and escaped long-press keys (`long=`). These comments have been inserted strategically in places to improve readability. Not all comments include all components since some of them may be obvious.
+> The `switch` attribute indicates that this key switches to another `layerMap` with the specified id (such as `<layerMap id="shift"/>` in this example).
+> Note that a key may have both a `switch=` and a `to=` attribute, indicating that the key outputs prior to switching layers.
 
-**Example**
+_Attribute:_ `gap="1.5"` (optional)
 
-```xml
-<keyboard locale="fr-BE-t-k0-windows">
-    …
-    <keyMap modifiers="shift">
-        <map iso="D01" to="A" /> <!-- key=Q -->
-        <map iso="D02" to="Z" /> <!-- key=W -->
-        <map iso="D03" to="E" />
-        <map iso="D04" to="R" />
-        <map iso="D05" to="T" />
-        <map iso="D06" to="Y" />
-        …
-    </keyMap>
-     …
-</keyboard>
-```
+> The `gap` attribute indicates that this key does not have any appearance, but represents a "gap" of the specified number of key widths.
 
 ```xml
-<keyboard locale="ps-t-k0-windows">
-    …
-    <keyMap modifiers='altR+caps? ctrl+alt+caps?'>
-        <map iso="D04" to="\u{200e}" /> <!-- key=R base=ق -->
-        <map iso="D05" to="\u{200f}" /> <!-- key=T base=ف -->
-        <map iso="D08" to="\u{670}" /> <!-- key=I base=ه to= ٰ -->
-        …
-    </keyMap>
-    …
-</keyboard>
+<key id="mediumgap" gap="1.5"/>
 ```
+
+_Attribute:_ `width="1.2"` (optional, default "1.0")
+
+> The `width` attribute indicates that this key has a different width than other keys, by the specified number of key widths.
+
+```xml
+<key id="wide-a" to="a" width="1.2"/>
+```
+
+_Attribute:_ `switch="shift"` (optional)
+
+> The `switch` attribute indicates that this key switches to another `layerMap` with the specified id (such as `<layerMap id="shift"/>` in this example).
+> Note that a key may have both a `switch=` and a `to=` attribute, indicating that the key outputs prior to switching layers.
+
+_Attribute:_ `flicks="flicks-a"` (optional)
+
+> The `flicks` attribute indicates that this key makes use of a [`flicks`](#Element_flicks) set with the specified id.
 
 * * *
 
@@ -726,22 +706,25 @@ The `flicks` element is used to generate results from a "flick" of the finger on
 **Syntax**
 
 ```xml
-<flicks iso="{the iso position}">
+<key id="a" flicks="a-flicks" to="a" />
+<flicks id="a-flicks">
     {a set of flick elements}
 </flicks>
 ```
 
 > <small>
 >
-> Parents: [keyMap](#Element_keyMap)
-> Children: [flick](#Element_flicks)
+> Parents: [keys](#Element_keys)
+> Children: [flick](#Element_flick)
 > Occurence: optional, multiple
 >
 > </small>
 
-_Attribute:_ `iso` (required)
+_Attribute:_ `id` (required)
 
-> The `iso` attribute represents the ISO layout position of the key (see the definition at the beginning of the document for more information).
+> The `id` attribute identifies the flicks. It can be any NMTOKEN.
+> The `flicks` do not share a namespace with the `key`s, so it would also be allowed
+> to have `<key id="a" flicks="a"/><flicks id="a"/>`
 
 **Syntax**
 
@@ -769,7 +752,7 @@ _Attribute:_ `to` (required)
 where a flick to the Northeast then South produces two code points.
 
 ```xml
-<flicks iso="C01">
+<flicks id="a">
     <flick directions="ne s" to="\uABCD\uDCBA" />
 </flicks>
 ```
