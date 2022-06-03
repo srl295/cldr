@@ -260,13 +260,12 @@ public class ReportAPI {
             } else {
                 votersForNotAcceptable = 0;
             }
-            Map<ReportAcceptability, Long> rvc =
-                    res.getResolvedVoteCountsIncludingIntraOrgDisputes();
+            Map<ReportAcceptability, Long> rvc = res.getResolvedVoteCounts();
             acceptableScore = rvc.get(ReportAcceptability.acceptable);
             notAcceptableScore = rvc.get(ReportAcceptability.notAcceptable);
             // serialize the voteResolver
             transcript = res.getTranscript();
-            resolvedVoteCounts = res.getResolvedVoteCountsIncludingIntraOrgDisputes();
+            resolvedVoteCounts = res.getResolvedVoteCounts();
             votingResults = VoteAPIHelper.getVotingResults(res);
             this.votes = votes;
         }

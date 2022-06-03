@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2023 Unicode, Inc.
+<!-- Copyright © 1991-2022 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
 SPDX-License-Identifier: Unicode-DFS-2016
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
@@ -677,7 +677,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<script type="Cher">↑↑↑</script>
 			<script type="Cyrl">↑↑↑</script>
 			<script type="Deva">↑↑↑</script>
-			<script type="Dsrt">↑↑↑</script>
 			<script type="Ethi">↑↑↑</script>
 			<script type="Geor">↑↑↑</script>
 			<script type="Grek">↑↑↑</script>
@@ -710,7 +709,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<script type="Orya">↑↑↑</script>
 			<script type="Rohg">↑↑↑</script>
 			<script type="Rohg" alt="stand-alone">↑↑↑</script>
-			<script type="Shaw">↑↑↑</script>
 			<script type="Sinh">↑↑↑</script>
 			<script type="Sund">↑↑↑</script>
 			<script type="Syrc">↑↑↑</script>
@@ -1009,7 +1007,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<territory type="TM">Turkmenistan</territory>
 			<territory type="TN">Tunisia</territory>
 			<territory type="TO">Tonga</territory>
-			<territory type="TR">↑↑↑</territory>
+			<territory type="TR">Turkey</territory>
 			<territory type="TR" alt="variant">↑↑↑</territory>
 			<territory type="TT">↑↑↑</territory>
 			<territory type="TV">Tuvalu</territory>
@@ -1074,7 +1072,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<key type="lw">↑↑↑</key>
 			<key type="m0">↑↑↑</key>
 			<key type="ms">↑↑↑</key>
-			<key type="mu">↑↑↑</key>
 			<key type="numbers">↑↑↑</key>
 			<key type="rg">↑↑↑</key>
 			<key type="s0">↑↑↑</key>
@@ -4488,9 +4485,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<zone type="America/Hermosillo">
 				<exemplarCity>Hermosillo</exemplarCity>
 			</zone>
-			<zone type="America/Ciudad_Juarez">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
 			<zone type="America/Mazatlan">
 				<exemplarCity>Mazatlan</exemplarCity>
 			</zone>
@@ -6898,12 +6892,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<displayName count="other">St Helena pounds</displayName>
 				<symbol>↑↑↑</symbol>
 				<symbol alt="narrow">↑↑↑</symbol>
-			</currency>
-			<currency type="SLE">
-				<displayName>↑↑↑</displayName>
-				<displayName count="one">↑↑↑</displayName>
-				<displayName count="other">↑↑↑</displayName>
-				<symbol>↑↑↑</symbol>
 			</currency>
 			<currency type="SLL">
 				<displayName>↑↑↑</displayName>
@@ -10542,10 +10530,10 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 	</typographicNames>
 	<personNames>
 		<nameOrderLocales order="givenFirst">↑↑↑</nameOrderLocales>
-		<nameOrderLocales order="surnameFirst">↑↑↑</nameOrderLocales>
+		<nameOrderLocales order="surnameFirst">ja ko vi yue zh</nameOrderLocales>
 		<foreignSpaceReplacement xml:space="preserve">↑↑↑</foreignSpaceReplacement>
-		<initialPattern type="initial">{0}</initialPattern>
-		<initialPattern type="initialSequence">{0}{1}</initialPattern>
+		<initialPattern type="initial">↑↑↑</initialPattern>
+		<initialPattern type="initialSequence">↑↑↑</initialPattern>
 		<personName order="givenFirst" length="long" usage="referring" formality="formal">
 			<namePattern>↑↑↑</namePattern>
 		</personName>
@@ -10672,51 +10660,27 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<personName order="sorting" length="short" usage="referring" formality="informal">
 			<namePattern>↑↑↑</namePattern>
 		</personName>
-		<sampleName item="nativeG">
+		<sampleName item="givenOnly">
 			<nameField type="given">↑↑↑</nameField>
 		</sampleName>
-		<sampleName item="nativeGS">
+		<sampleName item="givenSurnameOnly">
 			<nameField type="given">↑↑↑</nameField>
 			<nameField type="surname">↑↑↑</nameField>
 		</sampleName>
-		<sampleName item="nativeGGS">
+		<sampleName item="given12Surname">
 			<nameField type="given">↑↑↑</nameField>
 			<nameField type="given2">↑↑↑</nameField>
 			<nameField type="surname">↑↑↑</nameField>
 		</sampleName>
-		<sampleName item="nativeFull">
-			<nameField type="title">↑↑↑</nameField>
+		<sampleName item="full">
+			<nameField type="prefix">Prof. Dr</nameField>
 			<nameField type="given">↑↑↑</nameField>
 			<nameField type="given-informal">↑↑↑</nameField>
 			<nameField type="given2">↑↑↑</nameField>
 			<nameField type="surname-prefix">↑↑↑</nameField>
 			<nameField type="surname-core">↑↑↑</nameField>
 			<nameField type="surname2">↑↑↑</nameField>
-			<nameField type="generation">↑↑↑</nameField>
-			<nameField type="credentials">↑↑↑</nameField>
-		</sampleName>
-		<sampleName item="foreignG">
-			<nameField type="given">↑↑↑</nameField>
-		</sampleName>
-		<sampleName item="foreignGS">
-			<nameField type="given">↑↑↑</nameField>
-			<nameField type="surname">↑↑↑</nameField>
-		</sampleName>
-		<sampleName item="foreignGGS">
-			<nameField type="given">↑↑↑</nameField>
-			<nameField type="given2">↑↑↑</nameField>
-			<nameField type="surname">↑↑↑</nameField>
-		</sampleName>
-		<sampleName item="foreignFull">
-			<nameField type="title">↑↑↑</nameField>
-			<nameField type="given">↑↑↑</nameField>
-			<nameField type="given-informal">↑↑↑</nameField>
-			<nameField type="given2">↑↑↑</nameField>
-			<nameField type="surname-prefix">↑↑↑</nameField>
-			<nameField type="surname-core">↑↑↑</nameField>
-			<nameField type="surname2">↑↑↑</nameField>
-			<nameField type="generation">↑↑↑</nameField>
-			<nameField type="credentials">↑↑↑</nameField>
+			<nameField type="suffix">↑↑↑</nameField>
 		</sampleName>
 	</personNames>
 </ldml>

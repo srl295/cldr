@@ -6,9 +6,7 @@ import { ref } from "vue";
 
 const refs = {
   currentLocale: ref(null),
-  surveyUser: ref(null),
   currentId: ref(null),
-  sessionId: ref(null),
 };
 
 /**
@@ -318,7 +316,6 @@ function getSessionId() {
 }
 
 function setSessionId(i) {
-  setRef("sessionId", i);
   if (i !== sessionId) {
     sessionId = i;
     dispatchEvent(new Event("sessionId"));
@@ -348,7 +345,6 @@ function getSurveyUser() {
 }
 
 function setSurveyUser(u) {
-  setRef("surveyUser", u);
   if (surveyUser !== u) {
     surveyUser = u;
     cldrGui.updateWithStatus();

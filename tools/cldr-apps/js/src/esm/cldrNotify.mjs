@@ -84,16 +84,10 @@ function errorWithCallback(message, description, callback) {
 /**
  * Display an error notification for an exception
  *
- * @param {Object|String} e the Error that was thrown and caught
+ * @param {Object} e the Error that was thrown and caught
  * @param {String} context a description of where it was caught
  */
 function exception(e, context) {
-  if (typeof e === "string") {
-    e = {
-      name: "",
-      message: e,
-    };
-  }
   notification.error({
     message: "Internal error: " + e.name + " " + context,
     description: e.message,

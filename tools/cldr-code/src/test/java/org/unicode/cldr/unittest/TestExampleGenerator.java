@@ -345,18 +345,6 @@ public class TestExampleGenerator extends TestFmwk {
 
     public void TestUnits() {
         ExampleGenerator exampleGenerator = getExampleGenerator("en");
-        String staticMeterExample =
-                "〖1 meter ≡ 1,000 millimeter〗〖1 meter ≈ 1.0936 yard (US/UK)〗〖1 meter ≡ 1 / 1,000 kilometer〗〖1 meter ≈ 621.4 × 10ˆ-6 mile (US/UK)〗";
-        String staticMeterExampleJp =
-                "〖1 meter ≡ 1,000 millimeter〗〖1 meter ≡ 3.025 jo-jp (JP)〗〖1 meter ≈ 1.0936 yard (US/UK)〗〖1 meter ≈ 0.0023341 ri-jp (JP)〗〖1 meter ≡ 1 / 1,000 kilometer〗〖1 meter ≈ 621.4 × 10ˆ-6 mile (US/UK)〗";
-        String staticMeterExampleRi =
-                "〖1 ri-jp (JP) ≡ 1,296 jo-jp (JP)〗〖1 ri-jp (JP) ≈ 468.54 yard (US/UK)〗〖1 ri-jp (JP) ≈ 428.43 meter〗〖1 ri-jp (JP) ≈ 0.42843 kilometer〗〖1 ri-jp (JP) ≈ 0.26621 mile (US/UK)〗";
-
-        checkValue(
-                "Length m",
-                staticMeterExample,
-                exampleGenerator,
-                "//ldml/units/unitLength[@type=\"long\"]/unit[@type=\"length-meter\"]/displayName");
         checkValue(
                 "Duration hm",
                 "〖5:37〗",
@@ -364,22 +352,22 @@ public class TestExampleGenerator extends TestFmwk {
                 "//ldml/units/durationUnit[@type=\"hm\"]/durationUnitPattern");
         checkValue(
                 "Length m",
-                "〖❬1❭ meter〗〖〗" + staticMeterExample,
+                "〖❬1❭ meter〗",
                 exampleGenerator,
                 "//ldml/units/unitLength[@type=\"long\"]/unit[@type=\"length-meter\"]/unitPattern[@count=\"one\"]");
         checkValue(
                 "Length m",
-                "〖❬1.5❭ meters〗〖〗" + staticMeterExample,
+                "〖❬1.5❭ meters〗",
                 exampleGenerator,
                 "//ldml/units/unitLength[@type=\"long\"]/unit[@type=\"length-meter\"]/unitPattern[@count=\"other\"]");
         checkValue(
                 "Length m",
-                "〖❬1.5❭ m〗〖〗" + staticMeterExample,
+                "〖❬1.5❭ m〗",
                 exampleGenerator,
                 "//ldml/units/unitLength[@type=\"short\"]/unit[@type=\"length-meter\"]/unitPattern[@count=\"other\"]");
         checkValue(
                 "Length m",
-                "〖❬1.5❭m〗〖〗" + staticMeterExample,
+                "〖❬1.5❭m〗",
                 exampleGenerator,
                 "//ldml/units/unitLength[@type=\"narrow\"]/unit[@type=\"length-meter\"]/unitPattern[@count=\"other\"]");
 
@@ -387,7 +375,7 @@ public class TestExampleGenerator extends TestFmwk {
         // non-winning value
         checkValue(
                 "Length m",
-                "〖❬1.5❭ badmeter〗〖〗" + staticMeterExample,
+                "〖❬1.5❭ badmeter〗",
                 exampleGenerator,
                 "//ldml/units/unitLength[@type=\"long\"]/unit[@type=\"length-meter\"]/unitPattern[@count=\"other\"]",
                 "{0} badmeter");
@@ -395,23 +383,10 @@ public class TestExampleGenerator extends TestFmwk {
         ExampleGenerator exampleGeneratorDe = getExampleGenerator("de");
         checkValue(
                 "Length m",
-                "〖❬1,5❭ badmeter〗〖❬Anstatt 1,5❭ badmeter❬ …❭〗〖❌  ❬… für 1,5❭ badmeter❬ …❭〗〖〗"
-                        + staticMeterExample,
+                "〖❬1,5❭ badmeter〗〖❬Anstatt 1,5❭ badmeter❬ …❭〗〖❌  ❬… für 1,5❭ badmeter❬ …❭〗",
                 exampleGeneratorDe,
                 "//ldml/units/unitLength[@type=\"long\"]/unit[@type=\"length-meter\"]/unitPattern[@count=\"other\"][@case=\"genitive\"]",
                 "{0} badmeter");
-
-        ExampleGenerator exampleGeneratorJa = getExampleGenerator("ja");
-        checkValue(
-                "Length m",
-                "〖❬1.5❭m〗〖〗" + staticMeterExampleJp,
-                exampleGeneratorJa,
-                "//ldml/units/unitLength[@type=\"narrow\"]/unit[@type=\"length-meter\"]/unitPattern[@count=\"other\"]");
-        checkValue(
-                "Length ri",
-                "〖❬1.5❭ 里〗〖〗" + staticMeterExampleRi,
-                exampleGeneratorJa,
-                "//ldml/units/unitLength[@type=\"long\"]/unit[@type=\"length-ri-jp\"]/unitPattern[@count=\"other\"]");
     }
 
     /**
@@ -1098,78 +1073,46 @@ public class TestExampleGenerator extends TestFmwk {
 
     public void TestInflectedUnitExamples() {
         String[][] deTests = {
-            {
-                "one",
-                "accusative",
-                "〖❬1❭ Tag〗〖❬… für 1❭ Tag❬ …❭〗〖❌  ❬Anstatt 1❭ Tag❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
-            {
-                "one",
-                "dative",
-                "〖❬1❭ Tag〗〖❬… mit 1❭ Tag❬ …❭〗〖❌  ❬Anstatt 1❭ Tag❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
-            {
-                "one",
-                "genitive",
-                "〖❬1❭ Tages〗〖❬Anstatt 1❭ Tages❬ …❭〗〖❌  ❬… für 1❭ Tages❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
+            {"one", "accusative", "〖❬1❭ Tag〗〖❬… für 1❭ Tag❬ …❭〗〖❌  ❬Anstatt 1❭ Tag❬ …❭〗"},
+            {"one", "dative", "〖❬1❭ Tag〗〖❬… mit 1❭ Tag❬ …❭〗〖❌  ❬Anstatt 1❭ Tag❬ …❭〗"},
+            {"one", "genitive", "〖❬1❭ Tages〗〖❬Anstatt 1❭ Tages❬ …❭〗〖❌  ❬… für 1❭ Tages❬ …❭〗"},
             {
                 "one",
                 "nominative",
-                "〖❬1❭ Tag〗〖❬1❭ Tag❬ kostet (kosten) € 3,50.❭〗〖❌  ❬Anstatt 1❭ Tag❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
+                "〖❬1❭ Tag〗〖❬1❭ Tag❬ kostet (kosten) € 3,50.❭〗〖❌  ❬Anstatt 1❭ Tag❬ …❭〗"
             },
-            {
-                "other",
-                "accusative",
-                "〖❬1,5❭ Tage〗〖❬… für 1,5❭ Tage❬ …❭〗〖❌  ❬… mit 1,5❭ Tage❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
-            {
-                "other",
-                "dative",
-                "〖❬1,5❭ Tagen〗〖❬… mit 1,5❭ Tagen❬ …❭〗〖❌  ❬… für 1,5❭ Tagen❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
-            {
-                "other",
-                "genitive",
-                "〖❬1,5❭ Tage〗〖❬Anstatt 1,5❭ Tage❬ …❭〗〖❌  ❬… mit 1,5❭ Tage❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
+            {"other", "accusative", "〖❬1,5❭ Tage〗〖❬… für 1,5❭ Tage❬ …❭〗〖❌  ❬… mit 1,5❭ Tage❬ …❭〗"},
+            {"other", "dative", "〖❬1,5❭ Tagen〗〖❬… mit 1,5❭ Tagen❬ …❭〗〖❌  ❬… für 1,5❭ Tagen❬ …❭〗"},
+            {"other", "genitive", "〖❬1,5❭ Tage〗〖❬Anstatt 1,5❭ Tage❬ …❭〗〖❌  ❬… mit 1,5❭ Tage❬ …❭〗"},
             {
                 "other",
                 "nominative",
-                "〖❬1,5❭ Tage〗〖❬1,5❭ Tage❬ kostet (kosten) € 3,50.❭〗〖❌  ❬… mit 1,5❭ Tage❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
+                "〖❬1,5❭ Tage〗〖❬1,5❭ Tage❬ kostet (kosten) € 3,50.❭〗〖❌  ❬… mit 1,5❭ Tage❬ …❭〗"
             },
         };
         checkInflectedUnitExamples("de", deTests);
         String[][] elTests = {
-            {
-                "one",
-                "accusative",
-                "〖❬1❭ ημέρα〗〖❬… ανά 1❭ ημέρα❬ …❭〗〖❌  ❬… αξίας 1❭ ημέρα❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
-            {
-                "one",
-                "genitive",
-                "〖❬1❭ ημέρας〗〖❬… αξίας 1❭ ημέρας❬ …❭〗〖❌  ❬… ανά 1❭ ημέρας❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
-            },
+            {"one", "accusative", "〖❬1❭ ημέρα〗〖❬… ανά 1❭ ημέρα❬ …❭〗〖❌  ❬… αξίας 1❭ ημέρα❬ …❭〗"},
+            {"one", "genitive", "〖❬1❭ ημέρας〗〖❬… αξίας 1❭ ημέρας❬ …❭〗〖❌  ❬… ανά 1❭ ημέρας❬ …❭〗"},
             {
                 "one",
                 "nominative",
-                "〖❬1❭ ημέρα〗〖❬Η απόσταση είναι 1❭ ημέρα❬ …❭〗〖❌  ❬… αξίας 1❭ ημέρα❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
+                "〖❬1❭ ημέρα〗〖❬Η απόσταση είναι 1❭ ημέρα❬ …❭〗〖❌  ❬… αξίας 1❭ ημέρα❬ …❭〗"
             },
             {
                 "other",
                 "accusative",
-                "〖❬0,9❭ ημέρες〗〖❬… ανά 0,9❭ ημέρες❬ …❭〗〖❌  ❬… αξίας 0,9❭ ημέρες❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
+                "〖❬0,9❭ ημέρες〗〖❬… ανά 0,9❭ ημέρες❬ …❭〗〖❌  ❬… αξίας 0,9❭ ημέρες❬ …❭〗"
             },
             {
                 "other",
                 "genitive",
-                "〖❬0,9❭ ημερών〗〖❬… αξίας 0,9❭ ημερών❬ …❭〗〖❌  ❬… ανά 0,9❭ ημερών❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
+                "〖❬0,9❭ ημερών〗〖❬… αξίας 0,9❭ ημερών❬ …❭〗〖❌  ❬… ανά 0,9❭ ημερών❬ …❭〗"
             },
             {
                 "other",
                 "nominative",
-                "〖❬0,9❭ ημέρες〗〖❬Η απόσταση είναι 0,9❭ ημέρες❬ …❭〗〖❌  ❬… αξίας 0,9❭ ημέρες❬ …❭〗〖〗〖1 day ≡ 24 hour〗〖1 day ≡ 1 / 7 week〗"
+                "〖❬0,9❭ ημέρες〗〖❬Η απόσταση είναι 0,9❭ ημέρες❬ …❭〗〖❌  ❬… αξίας 0,9❭ ημέρες❬ …❭〗"
             },
         };
         checkInflectedUnitExamples("el", elTests);

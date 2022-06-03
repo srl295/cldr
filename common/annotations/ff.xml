@@ -8,6 +8,11 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 <ldml>
 	<identity>
 		<version number="$Revision$"/>
+<<<<<<<< HEAD:common/annotations/ff.xml
 		<language type="ff"/>
+========
+		<language type="vec"/>
+		<territory type="IT"/>
+>>>>>>>> 3d90e0b9ef (CLDR-15034 kbd: merge maint-42 into keyboard-preview (#2402)):seed/main/vec_IT.xml
 	</identity>
 </ldml>

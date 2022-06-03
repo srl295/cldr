@@ -1,7 +1,10 @@
 package org.unicode.cldr.util;
 
 import com.google.common.collect.ImmutableList;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
+import org.unicode.cldr.tool.GenerateDtd;
 import org.unicode.cldr.tool.ToolConstants;
 
 /**
@@ -36,6 +39,15 @@ public class CLDRPaths {
     /** Maintained in GitHub, base directory for CLDR */
     public static final String BASE_DIRECTORY =
             CldrUtility.getPath(CldrUtility.getProperty(CldrUtility.DIR_KEY, null));
+    /**
+     * Get path to dtd2md dir
+     *
+     * @see GenerateDtd
+     * @return Path
+     */
+    public static final Path getDtd2Md() {
+        return new File(BASE_DIRECTORY).toPath().resolve("./docs/ldml/dtd2md");
+    }
 
     public static final String COMMON_DIRECTORY = CldrUtility.getPath(BASE_DIRECTORY, "common/");
     public static final String COLLATION_DIRECTORY =
@@ -180,16 +192,7 @@ public class CLDRPaths {
 
         common_supplemental(DtdType.supplementalData),
         common_transforms(DtdType.supplementalData),
-        common_validity(DtdType.supplementalData),
-
-        keyboards_android(DtdType.keyboard, DtdType.platform),
-        keyboards_chromeos(DtdType.keyboard, DtdType.platform),
-        keyboards_dtd(DtdType.keyboard, DtdType.platform),
-        keyboards_osx(DtdType.keyboard, DtdType.platform),
-        keyboards_und(DtdType.keyboard, DtdType.platform),
-        keyboards_windows(DtdType.keyboard, DtdType.platform),
-        ;
-
+        common_validity(DtdType.supplementalData);
         public final List<DtdType> dtdType;
 
         private DIRECTORIES(DtdType... dtdType) {

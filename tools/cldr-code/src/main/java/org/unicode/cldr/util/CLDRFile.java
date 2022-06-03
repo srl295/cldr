@@ -386,8 +386,7 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
                                 PathUtilities.getNormalizedPathString(f),
                                 localeName,
                                 fis,
-                                minimalDraftStatus,
-                                false);
+                                minimalDraftStatus);
                     }
                 }
                 return cldrFile;
@@ -439,40 +438,7 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
             DraftStatus minimalDraftStatus,
             XMLSource source) {
         CLDRFile cldrFile = new CLDRFile(source);
-        return cldrFile.loadFromInputStream(fileName, localeName, fis, minimalDraftStatus, false);
-    }
-
-    /**
-     * Load a CLDRFile from a file input stream.
-     *
-     * @param localeName
-     * @param fis
-     */
-    private static CLDRFile load(
-            String fileName,
-            String localeName,
-            InputStream fis,
-            DraftStatus minimalDraftStatus,
-            XMLSource source,
-            boolean leniency) {
-        CLDRFile cldrFile = new CLDRFile(source);
-        return cldrFile.loadFromInputStream(
-                fileName, localeName, fis, minimalDraftStatus, leniency);
-    }
-
-    static CLDRFile load(
-            String fileName,
-            String localeName,
-            InputStream fis,
-            DraftStatus minimalDraftStatus,
-            boolean leniency) {
-        return load(
-                fileName,
-                localeName,
-                fis,
-                minimalDraftStatus,
-                new SimpleXMLSource(localeName),
-                leniency);
+        return cldrFile.loadFromInputStream(fileName, localeName, fis, minimalDraftStatus);
     }
 
     /**
@@ -482,18 +448,13 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
      * @param localeName
      * @param fis
      * @param minimalDraftStatus
-     * @param leniency if true, skip dtd validation
      * @return
      */
     public CLDRFile loadFromInputStream(
-            String fileName,
-            String localeName,
-            InputStream fis,
-            DraftStatus minimalDraftStatus,
-            boolean leniency) {
+            String fileName, String localeName, InputStream fis, DraftStatus minimalDraftStatus) {
         CLDRFile cldrFile = this;
         MyDeclHandler DEFAULT_DECLHANDLER = new MyDeclHandler(cldrFile, minimalDraftStatus);
-        XMLFileReader.read(fileName, fis, -1, !leniency, DEFAULT_DECLHANDLER);
+        XMLFileReader.read(fileName, fis, -1, true, DEFAULT_DECLHANDLER);
         if (DEFAULT_DECLHANDLER.isSupplemental < 0) {
             throw new IllegalArgumentException(
                     "root of file must be either ldml or supplementalData");
@@ -1676,8 +1637,10 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
                     // <!ATTLIST version number CDATA #REQUIRED >
                     // <!ATTLIST version cldrVersion CDATA #FIXED "24" >
                     if (attribute.equals("cldrVersion") && (qName.equals("version"))) {
-                        ((SimpleXMLSource) target.dataSource)
-                                .setDtdVersionInfo(VersionInfo.getInstance(value));
+                        if (!value.equals("techpreview")) { // TODO: Keyboard techpreview
+                            ((SimpleXMLSource) target.dataSource)
+                                    .setDtdVersionInfo(VersionInfo.getInstance(value));
+                        }
                     } else {
                         putAndFixDeprecatedAttribute(qName, attribute, value);
                     }

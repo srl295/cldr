@@ -79,6 +79,9 @@ public abstract class MatchValue implements Predicate<String> {
                 case "regex":
                     result = RegexMatchValue.of(subargument);
                     break;
+                case "semver":
+                    result = SemverMatchValue.of(subargument);
+                    break;
                 case "metazone":
                     result = MetazoneMatchValue.of(subargument);
                     break;
@@ -105,6 +108,35 @@ public abstract class MatchValue implements Predicate<String> {
             return result;
         } catch (Exception e) {
             throw new IllegalArgumentException("Problem with: " + originalArg, e);
+        }
+    }
+
+    public static class BCP47LocaleMatchValue extends MatchValue {
+        static final UnicodeSet basechars = new UnicodeSet("[A-Za-z0-9_]");
+
+        public BCP47LocaleMatchValue() {}
+
+        @Override
+        public String getName() {
+            return "validity/bcp47";
+        }
+
+        @Override
+        public boolean is(String item) {
+            try {
+                ULocale l = ULocale.forLanguageTag(item);
+                if (l == null) {
+                    return false;
+                }
+            } catch (Throwable t) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String getSample() {
+            return "de-u-nu-ethi";
         }
     }
 
@@ -282,6 +314,9 @@ public abstract class MatchValue implements Predicate<String> {
         public static MatchValue of(String typeName) {
             if (typeName.equals("locale")) {
                 return new LocaleMatchValue();
+            }
+            if (typeName.equals("bcp47")) {
+                return new BCP47LocaleMatchValue();
             }
             int slashPos = typeName.indexOf('/');
             Set<Status> statuses = null;
@@ -557,7 +592,7 @@ public abstract class MatchValue implements Predicate<String> {
             return "regex/" + pattern;
         }
 
-        private RegexMatchValue(String key) {
+        protected RegexMatchValue(String key) {
             pattern = Pattern.compile(key);
         }
 
@@ -568,6 +603,35 @@ public abstract class MatchValue implements Predicate<String> {
         @Override
         public boolean is(String item) {
             return pattern.matcher(item).matches();
+        }
+    }
+
+    public static class SemverMatchValue extends RegexMatchValue {
+        /**
+         * Regex from: Semantic Versioning 2.0 originally by Tom Preston-Werner
+         * https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+         * Licensed under CC-BY-3.0
+         */
+        public static final String SEMVER_REGEX =
+                "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)"
+                        + "(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+                        + "(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
+                        + "(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$";
+
+        @Override
+        public String getName() {
+            return "semver";
+        }
+
+        protected SemverMatchValue(String key) {
+            super(SEMVER_REGEX); // initialize with a static regex
+        }
+
+        public static SemverMatchValue of(String key) {
+            if (key != null) {
+                throw new IllegalArgumentException("No parameter allowed");
+            }
+            return new SemverMatchValue(key);
         }
     }
 

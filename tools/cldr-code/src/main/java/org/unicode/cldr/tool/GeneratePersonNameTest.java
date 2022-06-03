@@ -39,7 +39,7 @@ public class GeneratePersonNameTest {
                 System.out.println("formatter; " + locale + "; NO SAMPLE NAMES" + "\n");
                 continue;
             }
-            SimpleNameObject sampleName1 = sampleNames.get(SampleType.nativeGGS);
+            SimpleNameObject sampleName1 = sampleNames.get(SampleType.given12Surname);
             if (sampleName1 == null) {
                 System.out.println("formatter; " + locale + "; NO SAMPLE NAMES" + "\n");
                 continue;
@@ -65,7 +65,7 @@ public class GeneratePersonNameTest {
             FallbackFormatter f = pnf.getFallbackInfo();
             String fsr = f.getForeignSpaceReplacement();
 
-            for (SampleType sampleType : Arrays.asList(SampleType.nativeGGS, SampleType.nativeGS)) {
+            for (SampleType sampleType : Arrays.asList(SampleType.given12Surname, SampleType.givenSurnameOnly)) {
                 SimpleNameObject sampleName = sampleNames.get(sampleType);
 
                 System.out.println(

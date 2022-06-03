@@ -2537,7 +2537,7 @@ public class SurveyAjax extends HttpServlet {
         out.write(
                 "<a href=\""
                         + contextPath
-                        + "v#upload\">Return to the SurveyTool <img src='STLogo.png' style='float: right;' />");
+                        + "/survey\">Return to the SurveyTool <img src='STLogo.png' style='float: right;' />");
         out.write("</a>\n");
         out.write("<hr />");
         out.write("<h3>\n");

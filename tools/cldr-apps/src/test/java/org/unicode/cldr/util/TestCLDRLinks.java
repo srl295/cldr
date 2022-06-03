@@ -85,7 +85,7 @@ public class TestCLDRLinks {
         final Map<String, String> urls = new TreeMap<String, String>();
 
         for (final String xpath : english.fullIterable()) {
-            final String description = pathDescriptionFactory.getRawDescription(xpath, null);
+            final String description = pathDescriptionFactory.getRawDescription(xpath, "VALUE", null);
             // System.out.println(description);
             for (final String url : urlsFromString(description)) {
                 urls.putIfAbsent(url, xpath);

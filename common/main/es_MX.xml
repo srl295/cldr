@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2023 Unicode, Inc.
+<!-- Copyright © 1991-2022 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
 SPDX-License-Identifier: Unicode-DFS-2016
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
@@ -315,7 +315,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<language type="li">↑↑↑</language>
 			<language type="lil">lillooet</language>
 			<language type="lkt">↑↑↑</language>
-			<language type="lmo" draft="contributed">↑↑↑</language>
 			<language type="ln">↑↑↑</language>
 			<language type="lo">lao</language>
 			<language type="lol">↑↑↑</language>
@@ -941,7 +940,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<territory type="TN">↑↑↑</territory>
 			<territory type="TO">↑↑↑</territory>
 			<territory type="TR">↑↑↑</territory>
-			<territory type="TR" alt="variant">↑↑↑</territory>
+			<territory type="TR" alt="variant" draft="contributed">↑↑↑</territory>
 			<territory type="TT">↑↑↑</territory>
 			<territory type="TV">↑↑↑</territory>
 			<territory type="TW">↑↑↑</territory>
@@ -3415,9 +3414,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="America/Hermosillo">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
-			<zone type="America/Ciudad_Juarez">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="America/Mazatlan">
@@ -8519,7 +8515,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="concentr-karat">
-				<displayName>kt</displayName>
+				<displayName>↑↑↑</displayName>
 				<unitPattern count="one">{0}kt</unitPattern>
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
@@ -8947,7 +8943,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="length-nautical-mile">
-				<displayName>M</displayName>
+				<displayName>↑↑↑</displayName>
 				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
@@ -9091,7 +9087,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="power-horsepower">
-				<displayName draft="contributed">CV</displayName>
+				<displayName draft="contributed">↑↑↑</displayName>
 				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
@@ -9191,7 +9187,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="torque-newton-meter">
-				<displayName>N⋅m</displayName>
+				<displayName>↑↑↑</displayName>
 				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
@@ -9306,7 +9302,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="volume-cup">
-				<displayName draft="contributed">tza.</displayName>
+				<displayName draft="contributed">↑↑↑</displayName>
 				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
@@ -9623,188 +9619,164 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<featureName type="zero">↑↑↑</featureName>
 	</typographicNames>
 	<personNames>
-		<nameOrderLocales order="givenFirst">↑↑↑</nameOrderLocales>
-		<nameOrderLocales order="surnameFirst">↑↑↑</nameOrderLocales>
-		<foreignSpaceReplacement xml:space="preserve">↑↑↑</foreignSpaceReplacement>
-		<initialPattern type="initial">↑↑↑</initialPattern>
-		<initialPattern type="initialSequence">↑↑↑</initialPattern>
+		<nameOrderLocales order="givenFirst" draft="contributed">↑↑↑</nameOrderLocales>
+		<nameOrderLocales order="surnameFirst" draft="contributed">ko vi yue zh</nameOrderLocales>
+		<foreignSpaceReplacement xml:space="preserve" draft="contributed"> </foreignSpaceReplacement>
+		<initialPattern type="initial" draft="contributed">↑↑↑</initialPattern>
+		<initialPattern type="initialSequence" draft="contributed">↑↑↑</initialPattern>
 		<personName order="givenFirst" length="long" usage="referring" formality="formal">
-			<namePattern>{title} {given} {given2} {surname} {surname2}</namePattern>
+			<namePattern draft="contributed">{prefix} {given} {given2} {surname} {surname2}</namePattern>
 		</personName>
 		<personName order="givenFirst" length="long" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="long" usage="addressing" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="long" usage="addressing" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="long" usage="monogram" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="long" usage="monogram" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="medium" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="medium" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="medium" usage="addressing" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="medium" usage="addressing" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="medium" usage="monogram" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="medium" usage="monogram" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="short" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="short" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="short" usage="addressing" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="short" usage="addressing" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="short" usage="monogram" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="givenFirst" length="short" usage="monogram" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="long" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="long" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="long" usage="addressing" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="long" usage="addressing" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="long" usage="monogram" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="long" usage="monogram" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="medium" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="medium" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="medium" usage="addressing" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="medium" usage="addressing" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="medium" usage="monogram" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="medium" usage="monogram" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="short" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="short" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="short" usage="addressing" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="short" usage="addressing" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="short" usage="monogram" formality="formal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="surnameFirst" length="short" usage="monogram" formality="informal">
-			<namePattern>↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="sorting" length="long" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
-			<namePattern alt="1">↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
+			<namePattern alt="1" draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="sorting" length="long" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
-			<namePattern alt="1">↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
+			<namePattern alt="1" draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="sorting" length="medium" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
-			<namePattern alt="1">↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
+			<namePattern alt="1" draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="sorting" length="medium" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
-			<namePattern alt="1">↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
+			<namePattern alt="1" draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="sorting" length="short" usage="referring" formality="formal">
-			<namePattern>↑↑↑</namePattern>
-			<namePattern alt="1">↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
+			<namePattern alt="1" draft="contributed">↑↑↑</namePattern>
 		</personName>
 		<personName order="sorting" length="short" usage="referring" formality="informal">
-			<namePattern>↑↑↑</namePattern>
-			<namePattern alt="1">↑↑↑</namePattern>
+			<namePattern draft="contributed">↑↑↑</namePattern>
+			<namePattern alt="1" draft="contributed">↑↑↑</namePattern>
 		</personName>
-		<sampleName item="nativeG">
+		<sampleName item="givenOnly">
 			<nameField type="given">↑↑↑</nameField>
 		</sampleName>
-		<sampleName item="nativeGS">
+		<sampleName item="givenSurnameOnly">
 			<nameField type="given">↑↑↑</nameField>
-			<nameField type="surname">↑↑↑</nameField>
+			<nameField type="surname" draft="contributed">↑↑↑</nameField>
 		</sampleName>
-		<sampleName item="nativeGGS">
-			<nameField type="given">↑↑↑</nameField>
-			<nameField type="given2">↑↑↑</nameField>
-			<nameField type="surname">↑↑↑</nameField>
+		<sampleName item="given12Surname">
+			<nameField type="given" draft="contributed">↑↑↑</nameField>
+			<nameField type="given2" draft="contributed">↑↑↑</nameField>
+			<nameField type="surname" draft="contributed">↑↑↑</nameField>
 		</sampleName>
-		<sampleName item="nativeFull">
-			<nameField type="title">↑↑↑</nameField>
-			<nameField type="given">Marcelo Miguel</nameField>
-			<nameField type="given-informal">Marce</nameField>
-			<nameField type="given2">Javier Ariel</nameField>
-			<nameField type="surname-prefix">↑↑↑</nameField>
-			<nameField type="surname-core">Romero</nameField>
-			<nameField type="surname2">↑↑↑</nameField>
-			<nameField type="generation">Júnior</nameField>
-			<nameField type="credentials">Miembro del Parlamento</nameField>
-		</sampleName>
-		<sampleName item="foreignG">
-			<nameField type="given">Mohammed</nameField>
-		</sampleName>
-		<sampleName item="foreignGS">
-			<nameField type="given">Zäzilia</nameField>
-			<nameField type="surname">Stöber</nameField>
-		</sampleName>
-		<sampleName item="foreignGGS">
-			<nameField type="given">Käthe</nameField>
-			<nameField type="given2">Kate</nameField>
-			<nameField type="surname">Müller</nameField>
-		</sampleName>
-		<sampleName item="foreignFull">
-			<nameField type="title">↑↑↑</nameField>
-			<nameField type="given">↑↑↑</nameField>
-			<nameField type="given-informal">↑↑↑</nameField>
-			<nameField type="given2">↑↑↑</nameField>
-			<nameField type="surname-prefix">↑↑↑</nameField>
-			<nameField type="surname-core">↑↑↑</nameField>
-			<nameField type="surname2">↑↑↑</nameField>
-			<nameField type="generation">↑↑↑</nameField>
-			<nameField type="credentials">↑↑↑</nameField>
+		<sampleName item="full">
+			<nameField type="prefix" draft="contributed">↑↑↑</nameField>
+			<nameField type="given" draft="contributed">↑↑↑</nameField>
+			<nameField type="given-informal" draft="contributed">↑↑↑</nameField>
+			<nameField type="given2" draft="contributed">↑↑↑</nameField>
+			<nameField type="surname-prefix" draft="contributed">↑↑↑</nameField>
+			<nameField type="surname-core" draft="contributed">↑↑↑</nameField>
+			<nameField type="surname2" draft="contributed">↑↑↑</nameField>
+			<nameField type="suffix" draft="contributed">↑↑↑</nameField>
 		</sampleName>
 	</personNames>
 </ldml>

@@ -1,7 +1,3 @@
-# read by CountryCodeConverter.java
-# supplies alternate full names for territories for some tooling
-# format:  Code; Ignored-Comment; Name
-
 AX; Aland Islands; Åland Islands
 
 BL; Saint Barthélemy; Saint Barthelemy
@@ -145,8 +141,6 @@ TL; East Timor; Timor-Leste
 TL; East Timor; East Timor
 
 TR; Turkey; Turkiye
-TR; ; Turkey
-
 
 TW; Taiwan; Province of China Taiwan
 TW; Taiwan; Taiwan, Province of China

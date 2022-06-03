@@ -603,8 +603,6 @@ public final class XPathParts extends XPathParser
         return toString(elements.size());
     }
 
-    // TODO combine and optimize these
-
     public String toString(int limit) {
         if (limit < 0) {
             limit += size();
@@ -627,11 +625,11 @@ public final class XPathParts extends XPathParser
         if (limit < 0) {
             limit += size();
         }
-        StringBuilder result = new StringBuilder();
+        String result = "";
         for (int i = start; i < limit; ++i) {
-            result.append(elements.get(i).toString(XPATH_STYLE));
+            result += elements.get(i).toString(XPATH_STYLE);
         }
-        return result.toString();
+        return result;
     }
 
     /** boilerplate */

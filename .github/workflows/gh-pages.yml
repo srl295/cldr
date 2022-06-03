@@ -5,14 +5,14 @@ on:
     branches:
       - main
       - "maint/maint-*"
+      - keyboard-preview
     tags:
       - "release-*"
     # Only run if docs change.
-    ## TODO CLDR-15464 reenable this!!
-    # paths:
-    #   - "tools/scripts/tr-archive/**"
-    #   - "docs/**"
-    #   - '.github/workflows/gh-pages.yml'
+    paths:
+      - "tools/scripts/tr-archive/**"
+      - "docs/**"
+      - '.github/workflows/gh-pages.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,6 +32,16 @@ jobs:
       - name: Run TR archiver
         # Note: will update ToC if out of date
         run: 'cd tools/scripts/tr-archive/ && npm ci && npm run build'
+      - name: Run Kbd Charts
+        run: 'cd docs/charts/keyboard && npm ci && npm run build'
+      - name: 'Run TR link extractor (experimental)'
+        # Note: see CLDR-16526 for making this an error
+        run: 'cd tools/scripts/tr-archive/ && npm run extract-link-targets || (echo Warning, please fix these ; true)'
+      - name: Upload tr35.zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: tr35-spec
+          path: tools/scripts/tr-archiver/tr35.zip
       - name: 'Run TR link extractor (experimental)'
         # Note: see CLDR-16526 for making this an error
         run: 'cd tools/scripts/tr-archive/ && npm run extract-link-targets || (echo Warning, please fix these ; true)'
