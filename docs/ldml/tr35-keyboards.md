@@ -3,6 +3,7 @@
 # Heads Up!
 
 This is a very early draft of the '3.0' spec. Please pardon our dust!
+
 # Unicode Locale Data Markup Language (LDML)<br/>Part 7: Keyboards
 
 <!-- HTML: no th -->
@@ -17,8 +18,11 @@ For the full header, summary, and status, see [Part 1: Core](tr35.md).
 
 > The CLDR [Keyboard Workgroup](https://cldr.unicode.org/index/keyboard-workgroup) is currently
 > developing major changes to the CLDR keyboard specification. These changes are targeted for
-> CLDR version 41. Please see [CLDR-15034](https://unicode-org.atlassian.net/browse/CLDR-15034) for
+> future CLDR versions. Please see [CLDR-15034](https://unicode-org.atlassian.net/browse/CLDR-15034) for
 > the latest information.
+>
+> There are breaking changes, see [Compatibility Notice](#Compatibility_Notice)
+
 ### _Summary_
 
 This document describes parts of an XML format (_vocabulary_) for the exchange of structured locale data. This format is used in the [Unicode Common Locale Data Repository](https://unicode.org/cldr/).
@@ -62,6 +66,7 @@ The LDML specification is divided into the following parts:
 * [Contents of Part 7, Keyboards](#Contents)
 * 1 [Keyboards](#Introduction)
 * 2 [Goals and Non-goals](#Goals_and_Nongoals)
+  * 2.1 [Compatibility Notice](#Compatibility_Notice)
 * 3 [Definitions](#Definitions)
   * 3.1 [Escaping](#Escaping)
 * 4 [File and Directory Structure](#File_and_Dir_Structure)
@@ -123,7 +128,6 @@ To illustrate this specification, here is an abridged layout representing the En
 
 -->
 
-
 * * *
 
 ## 2 <a name="Goals_and_Nongoals" href="#Goals_and_Nongoals">Goals and Non-goals</a>
@@ -149,7 +153,6 @@ Some non-goals (outside the scope of the format) currently are:
 3. Unify pre-existing platform layouts themselves (i.e. existing fr-azerty on platform a, b, c)
 4. Support for prior (pre 3.0) CLDR keyboard files
 
-
 <!-- 1. Display names or symbols for keycaps (eg, the German name for "Return"). If that were added to LDML, it would be in a different structure, outside the scope of this section.
 2. Advanced IME features, handwriting recognition, etc.
 3. Roundtrip mappings—the ability to recover precisely the same format as an original platform's representation. In particular, the internal structure may have no relation to the internal structure of external keyboard source data, the only goal is functional equivalence. -->
@@ -157,6 +160,12 @@ Some non-goals (outside the scope of the format) currently are:
 <!-- Note: During development of this section, it was considered whether the modifier RAlt (=AltGr) should be merged with Option. In the end, they were kept separate, but for comparison across platforms implementers may choose to unify them. -->
 
 Note that in parts of this document, the format `@x` is used to indicate the _attribute_ **x**.
+
+### 2.1 <a name="Compatibility_Notice" href="#Compatibility_Notice">Compatibility Notice</a>
+
+> :point_right: Note: CLDR-TC has agreed that the changes required were too extensive to maintain compatibility. For this reason, the DTD used here is _not_ compatible with DTDs from prior versions of CLDR such as v41 and prior.
+>
+> To process earlier XML files, use the prior DTD and specification found at  (LINK TO v41 DTD) / (LINK TO v41 SPEC) …
 
 * * *
 
@@ -166,15 +175,15 @@ Note that in parts of this document, the format `@x` is used to indicate the _at
 
 **Base character:** The character emitted by a particular key when no modifiers are active. In ISO terms, this is group 1, level 1.
 
-**Base map:** A mapping from the ISO positions to the base characters. There is only one base map per layout. The characters on this map can be output by not using any modifier keys.
+**Base map:** A mapping from the positions to the base characters. There is only one base map per layout. The characters on this map can be output by not using any modifier keys.
 
-**Core keyboard layout:** also known as “alpha” block. The primary set of key values on a keyboard that are used for typing the target language of the keyboard. For example, the three rows of letters on a standard US QWERTY keyboard (QWERTYUIOP, ASDFGHJKL, ZXCVBNM) together with the most significant punctuation keys. Usually this equates to the minimal keyset for a language as seen on mobile phone keyboards.
+**Core keys:** also known as “alpha” block. The primary set of key values on a keyboard that are used for typing the target language of the keyboard. For example, the three rows of letters on a standard US QWERTY keyboard (QWERTYUIOP, ASDFGHJKL, ZXCVBNM) together with the most significant punctuation keys. Usually this equates to the minimal keyset for a language as seen on mobile phone keyboards.
 
-**Hardware map:** A mapping between key codes and ISO layout positions.
+<!-- **Hardware map:** A mapping between  and layout positions. -->
 
 **Input Method Editor (IME):** a component or program that supports input of large character sets. Typically, IMEs employ contextual logic and candidate UI to identify the Unicode characters intended by the user.
 
-**ISO position:** The corresponding position of a key using the ISO layout convention where rows are identified by letters and columns are identified by numbers. For example, "D01" corresponds to the "Q" key on a US keyboard. For the purposes of this document, an ISO layout position is depicted by a one-letter row identifier followed by a two digit column number (like "B03", "E12" or "C00"). The following diagram depicts a typical US keyboard layout superimposed with the ISO layout indicators (it is important to note that the number of keys and their physical placement relative to each-other in this diagram is irrelevant, rather what is important is their logical placement using the ISO convention):
+<!-- **ISO position:** The corresponding position of a key using the ISO layout convention where rows are identified by letters and columns are identified by numbers. For example, "D01" corresponds to the "Q" key on a US keyboard. For the purposes of this document, an ISO layout position is depicted by a one-letter row identifier followed by a two digit column number (like "B03", "E12" or "C00"). The following diagram depicts a typical US keyboard layout superimposed with the ISO layout indicators (it is important to note that the number of keys and their physical placement relative to each-other in this diagram is irrelevant, rather what is important is their logical placement using the ISO convention):
 
 ![keyboard layout example showing ISO key numbering](images/keyPositions.png)
 
@@ -182,15 +191,15 @@ One may also extend the notion of the ISO layout to support keys that don't map 
 
 ![keyboard layout example showing extension of ISO key numbering](images/androidKeyboard.png)
 
-If it becomes necessary in the future, the format could extend the ISO layout to support keys that are located to the left of the "00" column by using negative column numbers "-01", "-02" and so on, or 100's complement "99", "98",...
+If it becomes necessary in the future, the format could extend the ISO layout to support keys that are located to the left of the "00" column by using negative column numbers "-01", "-02" and so on, or 100's complement "99", "98",... -->
 
-**Key:** A key on a physical keyboard.
+**Key:** A key on a physical keyboard, or a virtual key on an on-screen layout.
 
 **Key code:** The integer code sent to the application on pressing a key.
 
-**Key map:** The basic mapping between ISO positions and the output characters for each set of modifier combinations associated with a particular layout. There may be multiple key maps for each layout.
+**Key map:** The basic mapping between hardware or on-screen positions and the output characters for each set of modifier combinations associated with a particular layout. There may be multiple key maps for each layout.
 
-**Keyboard:** The physical keyboard.
+**Keyboard:** A particular arrangement of keys for the inputting of text, such as either a physical or virtual keyboard.
 
 **Keyboard layout:** A layout is the overall keyboard configuration for a particular locale. Within a keyboard layout, there is a single base map, one or more key maps and zero or more transforms.
 
@@ -200,7 +209,7 @@ If it becomes necessary in the future, the format could extend the ISO layout to
 
 **Modifier:** A key that is held to change the behavior of a keyboard. For example, the "Shift" key allows access to upper-case characters on a US keyboard. Other modifier keys include but is not limited to: Ctrl, Alt, Option, Command and Caps Lock.
 
-**Physical keyboard** is a keyboard that has individual keys that are pressed. Each key has a unique identifier and the arrangement doesn't change, even if the mapping of those keys does.
+**Physical keyboard** is an input device which has individual keys that are pressed. Each key has a unique identifier and the arrangement doesn't change, even if the mapping of those keys does.
 
 **Transform:** A transform is an element that specifies a set of conversions from sequences of code points into one (or more) other code points. For example, in most latin keyboards hitting the "^" dead-key followed by the "e" key produces "ê".
 
@@ -278,6 +287,7 @@ This mandatory attribute represents the locale of the keyboard using Unicode loc
   …
 </keyboard>
 ```
+
 ```xml
 <keyboard locale="fr-CH-t-k0-android">
   …
@@ -304,7 +314,7 @@ Element used to keep track of the source data version.
 **Syntax**
 
 ```xml
-<version platform=".." number="..">
+<version number="..">
 ```
 
 > <small>
@@ -315,9 +325,9 @@ Element used to keep track of the source data version.
 >
 > </small>
 
-_Attribute:_ `platform` (required)
+<!-- _Attribute:_ `platform` (required)
 
-> The platform source version. Specifies what version of the platform the data is from. For example, data from Mac OSX 10.4 would be specified as `platform="10.4"`. For platforms that have unstable version numbers which change frequently (like Linux), this field is set to an integer representing the iteration of the data starting with `"1"`. This number would only increase if there were any significant changes in the keyboard data.
+> The platform source version. Specifies what version of the platform the data is from. For example, data from Mac OSX 10.4 would be specified as `platform="10.4"`. For platforms that have unstable version numbers which change frequently (like Linux), this field is set to an integer representing the iteration of the data starting with `"1"`. This number would only increase if there were any significant changes in the keyboard data. -->
 
 _Attribute:_ `number` (required)
 
@@ -332,16 +342,10 @@ _Attribute:_ `cldrVersion` (fixed by DTD)
 ```xml
 <keyboard locale="..-osx">
     …
-    <version platform="10.4" number="1"/>
+    <version number="1"/>
     …
 </keyboard>
 ```
-
-* * *
-
-### 5.3 ~~<a name="Element_generation" href="#Element_generation">Element: generation</a>~~
-
-The `generation` element is now deprecated. It was used to keep track of the generation date of the data.
 
 * * *
 
@@ -379,10 +383,10 @@ _Attribute:_ `layout` (optional)
 
 > The `layout` attribtue describes the layout pattern, such as QWERTY, DVORAK, INSCRIPT, etc. typically used to distinguish various layouts for the same language.
 
-_Attribute:_ `indicator` (optional)
+<!-- _Attribute:_ `indicator` (optional)
 
 > The `indicator` attribute describes a short string to be used in currently selected layout indicator, such as US, SI9 etc.
-> Typically, this is shown on a UI element that allows switching keyboard layouts and/or input languages.
+> Typically, this is shown on a UI element that allows switching keyboard layouts and/or input languages. -->
 
 * * *
 
@@ -511,29 +515,28 @@ Indicates that:
 
 * * *
 
-### 5.8 <a name="Element_keyMap" href="#Element_keyMap">Element: keyMap</a>
+### 5.8 <a name="Element_keys" href="#Element_keys">Element: keys</a>
 
-This element defines the group of mappings for all the keys that use the same set of modifier keys. It contains one or more map elements.
+This element defines the properties of all of the keys [`<key>` elements](#Element_key) used in all layouts.
+It is a “bag of keys.”
 
 **Syntax**
 
-```xml
-<keyMap [modifiers="{Set of Modifier Combinations}"]>
+<!-- ```xml
+<mey [modifiers="{Set of Modifier Combinations}"]>
     {a set of map elements}
 </keyMap>
-```
+``` -->
 
 > <small>
 >
 > Parents: [keyboard](#Element_keyboard)
-> Children: [map](#Element_map), [flicks](#Element_flicks)
+> Children: [key](#Element_key), [flicks](#Element_flicks)
 > Occurence: required, multiple
 >
 > </small>
 
-_Attribute:_ `modifiers` (optional)
-
-> A set of modifier combinations that cause this key map to be "active". Each combination is separated by a space. The interpretation is that there is a match if any of the combinations match, that is, they are ORed. Therefore, the order of the combinations within this attribute does not matter.
+<!-- > A set of modifier combinations that cause this key map to be "active". Each combination is separated by a space. The interpretation is that there is a match if any of the combinations match, that is, they are ORed. Therefore, the order of the combinations within this attribute does not matter.
 
 > A combination is simply a concatenation of words to represent the simultaneous activation of one or more modifier keys. The order of the modifier keys within a combination does not matter, although don't care cases are generally added to the end of the string for readability (see next paragraph). For example: `"cmd+caps"` represents the Caps Lock and Command modifier key combination. Some keys have right or left variant keys, specified by a 'R' or 'L' suffix. For example: `"ctrlR+caps"` would represent the Right-Control and Caps Lock combination. For simplicity, the presence of a modifier without a 'R' or 'L' suffix means that either its left or right variants are valid. So `"ctrl+caps"` represents the same as `"ctrlL+ctrlR?+caps ctrlL?+ctrlR+caps"`.
 
@@ -586,7 +589,7 @@ Caps-Lock may be ON or OFF, Option must be ON, Shift must be ON and Command may 
 
 Caps-Lock must be ON OR Shift must be ON.
 
-If the `modifiers` attribute is not present on a `keyMap` then that particular key map is the base map.
+If the `modifiers` attribute is not present on a `keyMap` then that particular key map is the base map. -->
 
 * * *
 
@@ -1117,6 +1120,7 @@ _Attribute:_ `modifier`
 This example shows some of the mappings for a French keyboard layout:
 
  _shared/win-vkey.xml_
+
 ```xml
 <keyboard>
     <vkeys type="windows">
