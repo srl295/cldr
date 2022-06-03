@@ -21,37 +21,17 @@ import java.util.regex.Pattern;
 import org.unicode.cldr.tool.CLDRFileTransformer;
 import org.unicode.cldr.tool.CLDRFileTransformer.LocaleTransform;
 import org.unicode.cldr.tool.LikelySubtags;
-import org.unicode.cldr.util.CLDRConfig;
-import org.unicode.cldr.util.CLDRFile;
-import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.CLDRPaths;
-import org.unicode.cldr.util.CldrUtility;
-import org.unicode.cldr.util.DayPeriodInfo;
+import org.unicode.cldr.util.*;
 import org.unicode.cldr.util.DayPeriodInfo.DayPeriod;
-import org.unicode.cldr.util.EmojiConstants;
-import org.unicode.cldr.util.Factory;
-import org.unicode.cldr.util.GrammarInfo;
 import org.unicode.cldr.util.GrammarInfo.GrammaticalFeature;
 import org.unicode.cldr.util.GrammarInfo.GrammaticalScope;
 import org.unicode.cldr.util.GrammarInfo.GrammaticalTarget;
-import org.unicode.cldr.util.ICUServiceBuilder;
-import org.unicode.cldr.util.LanguageTagParser;
-import org.unicode.cldr.util.Level;
-import org.unicode.cldr.util.PathDescription;
-import org.unicode.cldr.util.PatternCache;
-import org.unicode.cldr.util.PluralSamples;
 import org.unicode.cldr.util.StandardCodes.LstrType;
-import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.util.SupplementalDataInfo.PluralInfo;
 import org.unicode.cldr.util.SupplementalDataInfo.PluralInfo.Count;
 import org.unicode.cldr.util.SupplementalDataInfo.PluralType;
-import org.unicode.cldr.util.TransliteratorUtilities;
-import org.unicode.cldr.util.UnitConverter;
-import org.unicode.cldr.util.Units;
-import org.unicode.cldr.util.Validity;
 import org.unicode.cldr.util.Validity.Status;
 import org.unicode.cldr.util.XListFormatter.ListTypeLength;
-import org.unicode.cldr.util.XPathParts;
 import org.unicode.cldr.util.personname.PersonNameFormatter;
 import org.unicode.cldr.util.personname.PersonNameFormatter.FallbackFormatter;
 import org.unicode.cldr.util.personname.PersonNameFormatter.FormatParameters;
@@ -59,6 +39,7 @@ import org.unicode.cldr.util.personname.PersonNameFormatter.NameObject;
 import org.unicode.cldr.util.personname.PersonNameFormatter.NamePattern;
 import org.unicode.cldr.util.personname.SimpleNameObject;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.ibm.icu.impl.Row.R3;
 import com.ibm.icu.impl.Utility;
@@ -362,7 +343,7 @@ public class ExampleGenerator {
         String result = null;
         try {
             if (CldrUtility.INHERITANCE_MARKER.equals(value)) {
-                value = cldrFile.getConstructedBaileyValue(xpath, null, null);
+                value = cldrFile.getBaileyValue(xpath, null, null);
                 if (value == null) {
                     /*
                      * This can happen for some paths, such as
@@ -501,6 +482,12 @@ public class ExampleGenerator {
                 return personNameFormatter;
             }
         }
+        @Override
+        public String toString() {
+            return "[" + (sampleNames == null ? "" : Joiner.on('\n').join(sampleNames.entrySet()))
+                + ", " + (personNameFormatter == null ? "" : personNameFormatter.toString())
+                + "]";
+        }
     }
 
     /**
@@ -511,7 +498,7 @@ public class ExampleGenerator {
         "//ldml/personNames/initialPattern[@type=\"*\"]");
 
     private String handlePersonName(XPathParts parts, String value) {
-        //ldml/personNames/personName[@length="long"][@usage="addressing"][@style="formal"][@order="givenFirst"]/namePattern => {prefix} {surname}
+        //ldml/personNames/personName[@order="givenFirst"][@length="long"][@usage="addressing"][@style="formal"]/namePattern => {prefix} {surname}
         String debugState = "start";
         try {
             FormatParameters formatParameters = FormatParameters.from(parts);
@@ -1731,8 +1718,8 @@ public class ExampleGenerator {
         String calendar = parts.findAttributeValue("calendar", "type");
 
         if (parts.contains("dateTimeFormat")) {
-            String dateFormatXPath = cldrFile.getWinningPath(xpath.replaceAll("dateTimeFormat", "dateFormat"));
-            String timeFormatXPath = cldrFile.getWinningPath(xpath.replaceAll("dateTimeFormat", "timeFormat"));
+            String dateFormatXPath = cldrFile.getWinningPath(xpath.replaceAll("dateTimeFormat", "dateFormat").replaceAll("atTime", "standard"));
+            String timeFormatXPath = cldrFile.getWinningPath(xpath.replaceAll("dateTimeFormat", "timeFormat").replaceAll("atTime", "standard"));
             String dateFormatValue = cldrFile.getWinningValue(dateFormatXPath);
             String timeFormatValue = cldrFile.getWinningValue(timeFormatXPath);
             parts = XPathParts.getFrozenInstance(cldrFile.getFullXPath(dateFormatXPath));
@@ -1785,8 +1772,12 @@ public class ExampleGenerator {
         String territory = getDefaultTerritory();
 
         String currency = supplementalDataInfo.getDefaultCurrency(territory);
-        String checkPath = "//ldml/numbers/currencies/currency[@type=\"" + currency + "\"]/symbol";
-        String currencySymbol = cldrFile.getWinningValue(checkPath);
+        String currencySymbol = currency; // default to this if alt=alphaNextToNumber
+        String altValue = parts.getAttributeValue(-1, "alt"); 
+        if (altValue == null ||!altValue.equals("alphaNextToNumber")) {
+            String checkPath = "//ldml/numbers/currencies/currency[@type=\"" + currency + "\"]/symbol";
+            currencySymbol = cldrFile.getWinningValue(checkPath);
+        }
         String numberSystem = parts.getAttributeValue(2, "numberSystem"); // null if not present
 
         DecimalFormat df = icuServiceBuilder.getCurrencyFormat(currency, currencySymbol, numberSystem);
@@ -1994,7 +1985,7 @@ public class ExampleGenerator {
                 if (value != null && !value.equals(type)) {
                     result = value;
                 } else {
-                    result = cldrFile.getConstructedBaileyValue(xpath, null, null);
+                    result = cldrFile.getBaileyValue(xpath, null, null);
                 }
             } else {
                 value = setBackground(value);
@@ -2348,7 +2339,7 @@ public class ExampleGenerator {
         if (listPlaceholders) {
             buffer.append(pathDescription.getPlaceholderDescription(xpath));
         }
-        if (xpath.startsWith("//ldml/annotations/annotation")) {
+        if (AnnotationUtil.pathIsAnnotation(xpath)) {
             XPathParts emoji = XPathParts.getFrozenInstance(xpath);
             String cp = emoji.getAttributeValue(-1, "cp");
             String minimal = Utility.hex(cp.replace("", "")).replace(',', '_').toLowerCase(Locale.ROOT);

@@ -23,15 +23,18 @@
               <a class="aboutValue" v-bind:href="v">{{ v }}</a>
             </span>
             <span v-else-if="valueIsHash(v, k)">
-              <!-- Looks like a Git hash, 6…40 hex chars.
-                   We need to check that CLDR_COMMIT_BASE is set, because that’s the
-                   base URL for the linkification -->
-              <a
-                class="aboutValue"
-                v-bind:href="aboutData.CLDR_COMMIT_BASE + v"
-              >
+              <!-- Looks like a Git hash, 6…40 hex chars. -->
+              <a class="aboutValue" v-bind:href="makeCommitUrl(v)">
                 <i class="glyphicon glyphicon-cog" />{{ v }}
               </a>
+              |
+              <a class="aboutValue" v-bind:href="makeCompareReleaseUrl(v)"
+                >compare to release</a
+              >
+              |
+              <a class="aboutValue" v-bind:href="makeCompareMainUrl(v)"
+                >compare to main</a
+              >
             </span>
             <span v-else class="aboutValue">
               <!-- some other type -->
@@ -45,26 +48,51 @@
 </template>
 
 <script>
+import * as cldrText from "../esm/cldrText.js";
+
 export default {
   data() {
     return {
       aboutData: null,
+      commitPrefix: null,
+      comparePrefix: null,
+      compareMain: null,
+      compareRelease: null,
     };
   },
 
   created() {
     fetch("api/about")
       .then((r) => r.json())
-      .then((data) => (this.aboutData = data));
+      .then(this.setData);
   },
 
   methods: {
+    setData(data) {
+      this.aboutData = data;
+      const oldVersion = data.OLD_VERSION || "0";
+      this.commitPrefix = cldrText.get("git_commit_url_prefix");
+      this.comparePrefix = cldrText.get("git_compare_url_prefix");
+      this.compareMain = cldrText.get("git_compare_url_main");
+      this.compareRelease = cldrText.sub("git_compare_url_release", [
+        oldVersion,
+      ]);
+    },
+
+    makeCommitUrl(value) {
+      return this.commitPrefix + value;
+    },
+
+    makeCompareMainUrl(value) {
+      return this.comparePrefix + value + "..." + this.compareMain;
+    },
+
+    makeCompareReleaseUrl(value) {
+      return this.comparePrefix + this.compareRelease + "..." + value;
+    },
+
     valueIsHash(value, key) {
-      if (
-        this.aboutData.CLDR_COMMIT_BASE &&
-        key.includes("HASH") &&
-        /^[a-fA-F0-9]{6,40}$/.test(value)
-      ) {
+      if (key.includes("HASH") && /^[a-fA-F0-9]{6,40}$/.test(value)) {
         return true;
       }
       return false;

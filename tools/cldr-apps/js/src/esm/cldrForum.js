@@ -15,7 +15,18 @@ import * as cldrStatus from "./cldrStatus.js";
 import * as cldrSurvey from "./cldrSurvey.js";
 import * as cldrText from "./cldrText.js";
 
+const SUMMARY_CLASS = "getForumSummary";
+
 const FORUM_DEBUG = false;
+
+/**
+ * If false, hide (effectively disable) Agree and Decline buttons, pending
+ * (1) better ways to clarify to vetters what the Agree button actually does and doesn't
+ * accomplish, and possibly
+ * (2) automatic vote submission when a user clicks Agree
+ * Reference: https://unicode-org.atlassian.net/browse/CLDR-14922
+ */
+const SHOW_AGREE_AND_DECLINE = false;
 
 function forumDebug(s) {
   if (FORUM_DEBUG) {
@@ -263,6 +274,7 @@ function makePostHtml(
   let html = "";
 
   html += '<div id="postSubject" class="topicSubject">' + subject + "</div>\n";
+  html += "<div>" + cldrText.get("forum_remember_vote") + "</div>\n";
   html += '<div class="postTypeLabel">' + typeLabel + "</div>\n";
   html += '<form role="form" id="post-form">\n';
   html += '<div class="form-group">\n';
@@ -282,7 +294,6 @@ function makePostHtml(
 
   html += '<div class="post"></div>\n';
   html += '<div class="forumDiv"></div>\n';
-
   return html;
 }
 
@@ -373,66 +384,71 @@ function submitPost(event) {
  */
 function reallySubmitPost(text) {
   $("#post-form button").fadeOut();
+  const form = getFormValues(text);
+  sendPostRequest(form);
+}
 
-  const xpath = $("#post-form input[name=xpath]").val();
-  const locale = $("#post-form input[name=_]").val();
-  const replyTo = $("#post-form input[name=replyTo]").val();
-  const root = $("#post-form input[name=root]").val();
-  const open = $("#post-form input[name=open]").val();
-  const value = $("#post-form input[name=value]").val();
-  const postType = $("#post-form input[name=postType]").val();
-
-  const subj = document.getElementById("postSubject").innerHTML;
-
-  const url = cldrStatus.getContextPath() + "/SurveyAjax";
-
-  const errorHandler = function (err) {
-    const post = $(".post").first();
-    post.before("<p class='warn'>error! " + err + "</p>");
-  };
-  const loadHandler = function (data) {
-    if (data.err) {
-      const post = $(".post").first();
-      post.before("<p class='warn'>error: " + data.err + "</p>");
-    } else if (data.ret && data.ret.length > 0) {
-      const postModal = $("#post-modal");
-      postModal.modal("hide");
-      const curSpecial = cldrStatus.getCurrentSpecial();
-      if (curSpecial && curSpecial === "forum") {
-        cldrLoad.reloadV();
-      } else {
-        cldrForumPanel.updatePosts(null);
-      }
-    } else {
-      const post = $(".post").first();
-      post.before(
-        "<i>Your post was added, #" +
-          data.postId +
-          " but could not be shown.</i>"
-      );
-    }
-  };
-  const postData = {
-    s: cldrStatus.getSessionId(),
-    _: locale,
-    replyTo: replyTo,
-    xpath: xpath,
+function getFormValues(text) {
+  return {
     text: text,
-    subj: subj,
-    postType: postType,
-    value: value,
-    open: open,
-    root: root,
+    locale: $("#post-form input[name=_]").val(),
+    open: $("#post-form input[name=open]").val(),
+    postType: $("#post-form input[name=postType]").val(),
+    replyTo: $("#post-form input[name=replyTo]").val(),
+    root: $("#post-form input[name=root]").val(),
+    value: $("#post-form input[name=value]").val(),
+    xpath: $("#post-form input[name=xpath]").val(),
+  };
+}
+
+function sendPostRequest(form) {
+  const url = cldrStatus.getContextPath() + "/SurveyAjax";
+  const postData = {
     what: "forum_post",
+    s: cldrStatus.getSessionId(),
+    subj: document.getElementById("postSubject").innerHTML,
+    _: form.locale,
+    open: form.open,
+    postType: form.postType,
+    replyTo: form.replyTo,
+    root: form.root,
+    text: form.text,
+    value: form.value,
+    xpath: form.xpath,
   };
   const xhrArgs = {
     url: url,
     handleAs: "json",
-    load: loadHandler,
-    error: errorHandler,
+    load: loadHandlerForSubmit,
+    error: errorHandlerForSubmit,
     postData: postData,
   };
   cldrAjax.sendXhr(xhrArgs);
+}
+
+function loadHandlerForSubmit(data) {
+  if (data.err) {
+    const post = $(".post").first();
+    post.before("<p class='warn'>error: " + data.err + "</p>");
+  } else if (data.ret && data.ret.length > 0) {
+    const postModal = $("#post-modal");
+    postModal.modal("hide");
+    if (cldrStatus.getCurrentSpecial() === "forum") {
+      cldrLoad.reloadV();
+    } else {
+      cldrForumPanel.updatePosts(null);
+    }
+  } else {
+    const post = $(".post").first();
+    post.before(
+      "<i>Your post was added, #" + data.postId + " but could not be shown.</i>"
+    );
+  }
+}
+
+function errorHandlerForSubmit(err) {
+  const post = $(".post").first();
+  post.before("<p class='warn'>error! " + err + "</p>");
 }
 
 /**
@@ -914,6 +930,7 @@ function makeOneNewPostButton(
     : "addPostButton forumNewButton btn btn-default btn-sm";
 
   const newButton = forumCreateChunk(label, "button", buttonClass);
+  // a "new post" button has type "Request" or "Discuss"
   if (postType === "Request" && value === null) {
     newButton.disabled = true;
   } else {
@@ -990,13 +1007,7 @@ function getPostTypeOptions(isReply, rootPost, value) {
        */
       options["Request"] = "Request";
     }
-    if (
-      value &&
-      isReply &&
-      rootPost &&
-      !userIsPoster(rootPost) &&
-      rootPost.postType === "Request"
-    ) {
+    if (canAgreeOrDecline(value, isReply, rootPost)) {
       options["Agree"] = "Agree";
       options["Decline"] = "Decline";
     }
@@ -1009,6 +1020,21 @@ function getPostTypeOptions(isReply, rootPost, value) {
     }
   }
   return options;
+}
+
+function canAgreeOrDecline(value, isReply, rootPost) {
+  if (
+    SHOW_AGREE_AND_DECLINE &&
+    value &&
+    isReply &&
+    rootPost &&
+    rootPost.postType === "Request" &&
+    !userIsPoster(rootPost)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -1289,6 +1315,17 @@ function fmtDateTime(x) {
   );
 }
 
+function refreshSummary() {
+  const locale = cldrStatus.getCurrentLocale();
+  if (locale) {
+    const surveyUser = cldrStatus.getSurveyUser();
+    if (surveyUser?.id && getSummaryClassElements().length) {
+      const html = getForumSummaryHtml(locale, surveyUser.id, false);
+      setAllForumSummaryElements(html);
+    }
+  }
+}
+
 /**
  * Get a piece of html text summarizing the current Forum statistics
  *
@@ -1313,15 +1350,14 @@ function getForumSummaryHtml(locale, userId, getTable) {
  * @return the html
  */
 function reallyGetForumSummaryHtml(canDoAjax, getTable) {
-  const id = "forumSummary";
   const tag = getTable ? "div" : "span";
-  let html = "<" + tag + " id='" + id + "'>\n";
+  let html = "<" + tag + ">\n";
   if (!forumUpdateTime) {
     if (canDoAjax) {
       if (getTable) {
         html += "<p>Loading Forum Summary...</p>\n";
       }
-      loadForumForSummaryOnly(forumLocale, id, getTable);
+      loadForumForSummaryOnly(forumLocale, getTable);
     } else if (getTable) {
       html += "<p>Load failed</p>n";
     }
@@ -1355,36 +1391,32 @@ function reallyGetForumSummaryHtml(canDoAjax, getTable) {
  * Fetch the Forum data from the server, and show a summary
  *
  * @param locale the locale
- * @param id the id of the element to display the summary
  * @param getTable true to get a table, false to get a one-liner
  */
-function loadForumForSummaryOnly(locale, id, getTable) {
+function loadForumForSummaryOnly(locale, getTable) {
   if (typeof cldrAjax === "undefined") {
     return;
   }
   setLocale(locale);
   const url = getLoadForumUrl();
   const errorHandler = function (err) {
-    const el = document.getElementById(id);
-    if (el) {
-      el.innerHTML = err;
-    }
+    setAllForumSummaryElements(err);
   };
   const loadHandler = function (json) {
-    const el = document.getElementById(id);
-    if (!el) {
+    if (!getSummaryClassElements().length) {
       return;
     }
     if (json.err) {
-      el.innerHTML = "Error";
+      setAllForumSummaryElements("Error");
       return;
     }
     const posts = json.ret;
     parseContent(posts, "summary");
-    el.innerHTML = reallyGetForumSummaryHtml(
+    const html = reallyGetForumSummaryHtml(
       false /* do not reload recursively */,
       getTable
     ); // after parseContent
+    setAllForumSummaryElements(html);
   };
   const xhrArgs = {
     url: url,
@@ -1393,6 +1425,17 @@ function loadForumForSummaryOnly(locale, id, getTable) {
     error: errorHandler,
   };
   cldrAjax.sendXhr(xhrArgs);
+}
+
+function setAllForumSummaryElements(html) {
+  const els = getSummaryClassElements();
+  for (const el of Array.from(els)) {
+    el.innerHTML = html;
+  }
+}
+
+function getSummaryClassElements() {
+  return document.getElementsByClassName(SUMMARY_CLASS);
 }
 
 /**
@@ -1469,12 +1512,13 @@ function parseHash(pieces) {
 }
 
 export {
+  SUMMARY_CLASS,
   addNewPostButtons,
-  getForumSummaryHtml,
   handleIdChanged,
   load,
   parseContent,
   parseHash,
+  refreshSummary,
   reload,
   setUserCanPost,
   /*

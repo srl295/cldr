@@ -61,12 +61,12 @@ jobs:
         run: >
           zip tools/cldr-apps/target/cldr-apps.zip  -d  wlp/usr/servers/cldr/apps/expanded/\*
       - name: Upload cldr-apps.zip
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: cldr-apps-server
           path: tools/cldr-apps/target/cldr-apps.zip
       - name: Upload cldr-code.jar
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: cldr-code
           path: tools/cldr-code/target/cldr-code.jar
@@ -109,7 +109,7 @@ jobs:
         with:
           java-version: 11
       - name: Download cldr-code.jar
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: cldr-code
           path: tools/cldr-code/target/
@@ -124,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download cldr-apps.zip
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: cldr-apps-server
     - name: Deploy to cldr-smoke

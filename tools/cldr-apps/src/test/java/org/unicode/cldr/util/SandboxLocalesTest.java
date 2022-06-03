@@ -14,6 +14,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.unicode.cldr.test.CheckCLDR;
+import org.unicode.cldr.util.CLDRFile.DraftStatus;
 
 class SandboxLocalesTest {
 
@@ -45,7 +46,9 @@ class SandboxLocalesTest {
         // our factory includes common/main, so limit here.
         for(final CLDRLocale l : SpecialLocales.getByType(SpecialLocales.Type.scratch)) {
             System.out.println("Testing " + l);
-            CLDRFile f = factory.make(l.getBaseName(), true, null);
+            // A noted in CLDR-14336, factory.make needs at least DraftStatus.unconfirmed. That is the default
+            // for the 2-argument form without an explicit minimalDraftStatus param.
+            CLDRFile f = factory.make(l.getBaseName(), true);
             List<CheckCLDR.CheckStatus> errs = new LinkedList<>();
             check.setCldrFileToCheck(f, options, errs);
             for(final CheckCLDR.CheckStatus err : errs) {

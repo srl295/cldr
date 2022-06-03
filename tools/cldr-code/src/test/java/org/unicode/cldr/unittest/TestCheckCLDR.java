@@ -38,7 +38,6 @@ import org.unicode.cldr.util.CLDRInfo.CandidateInfo;
 import org.unicode.cldr.util.CLDRInfo.PathValueInfo;
 import org.unicode.cldr.util.CLDRInfo.UserInfo;
 import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.CldrUtility;
 import org.unicode.cldr.util.Counter;
 import org.unicode.cldr.util.DayPeriodInfo;
 import org.unicode.cldr.util.DayPeriodInfo.DayPeriod;
@@ -276,7 +275,11 @@ public class TestCheckCLDR extends TestFmwk {
         // given "?"
         // and that every non-pattern doesn't have an error in CheckCLDR for
         // patterns when given "?"
-        Matcher messagePlaceholder = PatternCache.get("\\{\\d+\\}").matcher("");
+        //
+        // For the following: traditional placeholders just have {0}, {1}, {2}, ...
+        // But personName namePattern placeHolders start with [a-z], then continue with [0-9a-zA-Z-]+
+        // They need to be distinguished from non-placeholder patterns using {} in UnicodeSets
+        Matcher messagePlaceholder = CheckForExemplars.PLACEHOLDER.matcher("");
         PatternPlaceholders patternPlaceholders = PatternPlaceholders
             .getInstance();
 
@@ -297,6 +300,11 @@ public class TestCheckCLDR extends TestFmwk {
 
         for (PathHeader pathHeader : sorted) {
             String path = pathHeader.getOriginalPath();
+            if (path.contains("/exemplarCharacters") || path.contains("/parseLenients")) {
+                // skip some paths with UnicodeSets that may include {} constructs
+                // that should not be interpreted as placeholders
+                continue;
+            }
             String value = cldrFileToTest.getStringValue(path);
             if (value == null) {
                 continue;
@@ -324,7 +332,7 @@ public class TestCheckCLDR extends TestFmwk {
                 } while (messagePlaceholder.find());
 
                 if (!found.equals(placeholderInfo.keySet())) {
-                    if (placeholderStatus != PlaceholderStatus.LOCALE_DEPENDENT) {
+                    if (placeholderStatus != PlaceholderStatus.LOCALE_DEPENDENT && placeholderStatus != PlaceholderStatus.OPTIONAL) {
                         errln(cldrFileToTest.getLocaleID() + " Value (" + value + ") has different placeholders than placeholder info «" + placeholderInfo.keySet() + "»\t" + path);
                     }
                 } else {
@@ -501,8 +509,8 @@ public class TestCheckCLDR extends TestFmwk {
         // Outdated
         checkCheckNew("de", "//ldml/localeDisplayNames/territories/territory[@type=\"001\"]",
             "In CLDR 39.0 the English value for this field changed from “World” to “world”, but the corresponding value for your locale didn't change.");
-        checkCheckNew("fr", "//ldml/units/unitLength[@type=\"narrow\"]/unit[@type=\"digital-gigabit\"]/displayName",
-            "In CLDR 38.0 the English value for this field changed from “Gbit” to “Gb”, but the corresponding value for your locale didn't change.");
+        checkCheckNew("el", "//ldml/units/unitLength[@type=\"long\"]/unit[@type=\"mass-grain\"]/displayName",
+            "In CLDR 40.0 the English value for this field changed from “grain” to “grains”, but the corresponding value for your locale didn't change.");
     }
 
     public void checkCheckNew(String locale, String path, String expectedMessage) {

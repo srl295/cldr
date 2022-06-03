@@ -446,9 +446,29 @@ public class VettingViewer<T> {
             this.specificSinglePath = xpath;
         }
 
-        public void setUserAndOrganization(int id, Organization usersOrg) {
+        public void setUserAndOrganization(int userId, Organization organization) {
             this.userId = userId;
             this.organization = organization;
+        }
+
+        public CLDRFile getBaselineFile() {
+            return baselineFile;
+        }
+
+        public CLDRFile getSourceFile() {
+            return sourceFile;
+        }
+
+        public int getUserId() {
+            return userId;
+        }
+
+        public CLDRLocale getLocale() {
+            return locale;
+        }
+
+        public boolean isOnlyForSinglePath() {
+            return specificSinglePath != null;
         }
     }
 
@@ -479,6 +499,28 @@ public class VettingViewer<T> {
         fileInfo.getFileInfo();
 
         return dd;
+    }
+
+    public LocaleCompletionData generateLocaleCompletion(DashboardArgs args) {
+        LocaleCompletionData lcd = new LocaleCompletionData();
+
+        FileInfo fileInfo = new FileInfo(args.locale.getBaseName(), args.coverageLevel, args.choices, (T) args.organization);
+        fileInfo.setFiles(args.sourceFile, args.baselineFile);
+        fileInfo.setLocaleProgress(lcd.localeProgress);
+        fileInfo.getFileInfo();
+
+        lcd.errorDebug = (int) fileInfo.vc.problemCounter.get(Choice.error);
+        lcd.missingDebug = (int) fileInfo.vc.problemCounter.get(Choice.missingCoverage);
+        lcd.provisionalDebug = (int) fileInfo.vc.problemCounter.get(Choice.notApproved);
+
+        return lcd;
+    }
+
+    public class LocaleCompletionData {
+        public VoterProgress localeProgress = new VoterProgress();
+        public int errorDebug = 0;
+        public int missingDebug = 0;
+        public int provisionalDebug = 0;
     }
 
     private class VettingCounters {
@@ -548,6 +590,12 @@ public class VettingViewer<T> {
             this.voterId = userId;
         }
 
+        private VoterProgress localeProgress = null;
+
+        private void setLocaleProgress(VoterProgress localeProgress) {
+            this.localeProgress = localeProgress;
+        }
+
         private final VettingCounters vc = new VettingCounters();
         private final EnumSet<Choice> problems = EnumSet.noneOf(Choice.class);
         private final StringBuilder htmlMessage = new StringBuilder();
@@ -594,7 +642,7 @@ public class VettingViewer<T> {
             if (ph == null || ph.shouldHide()) {
                 return;
             }
-            String value = sourceFile.getWinningValueForVettingViewer(path);
+            String value = sourceFile.getWinningValue(path);
             statusMessage.setLength(0);
             subtypes.clear();
             ErrorChecker.Status errorStatus = errorChecker.getErrorStatus(path, value, statusMessage, subtypes);
@@ -626,7 +674,12 @@ public class VettingViewer<T> {
             if (!onlyRecordErrors) {
                 recordLosingDisputedEtc(path, voteStatus, missingStatus);
             }
+            if (pathLevelIsTooHigh && problems.isEmpty()) {
+                return;
+            }
             updateVotedOrAbstained(path, pathLevelIsTooHigh);
+            updateLocaleProgress();
+
             if (!problems.isEmpty() && sorted != null) {
                 reasonsToPaths.clear();
                 R2<SectionId, PageId> group = Row.of(ph.getSectionId(), ph.getPageId());
@@ -647,15 +700,21 @@ public class VettingViewer<T> {
             if (voterProgress == null || voterId == 0) {
                 return;
             }
-            if (pathLevelIsTooHigh && problems.isEmpty()) {
-                return;
-            }
             voterProgress.incrementVotablePathCount();
             if (userVoteStatus.userDidVote(voterId, cldrLocale, path)) {
                 voterProgress.incrementVotedPathCount();
             } else if (choices.contains(Choice.abstained)) {
                 problems.add(Choice.abstained);
                 vc.problemCounter.increment(Choice.abstained);
+            }
+        }
+
+        private void updateLocaleProgress() {
+            if (localeProgress != null) {
+                localeProgress.incrementVotablePathCount();
+                if (problems.isEmpty()) { // "no problems" means ok, a.k.a. "voted"
+                    localeProgress.incrementVotedPathCount();
+                }
             }
         }
 
@@ -682,10 +741,6 @@ public class VettingViewer<T> {
             if (choices.contains(Choice.missingCoverage) && missingStatus == MissingStatus.ABSENT) {
                 problems.add(Choice.missingCoverage);
                 vc.problemCounter.increment(Choice.missingCoverage);
-            }
-            if (SubmissionLocales.pathAllowedInLimitedSubmission(path)) {
-                problems.add(Choice.englishChanged);
-                vc.problemCounter.increment(Choice.englishChanged);
             }
             if (!CheckCLDR.LIMITED_SUBMISSION
                 && !itemsOkIfVoted && outdatedPaths.isOutdated(localeId, path)) {
@@ -1013,7 +1068,12 @@ public class VettingViewer<T> {
             }
             Level level = Level.MODERN;
             if (context.organization != null) {
-                level = StandardCodes.make().getLocaleCoverageLevel(context.organization.toString(), localeID);
+                StandardCodes sc = StandardCodes.make();
+                if (orgIsNeutralForSummary((Organization) context.organization)) {
+                    level = sc.getTargetCoverageLevel(localeID);
+                } else {
+                    level = sc.getLocaleCoverageLevel(context.organization.toString(), localeID);
+                }
             }
             FileInfo fileInfo = new FileInfo(localeID, level, choices, context.organization);
             fileInfo.setFiles(sourceFile, baselineFile);
@@ -1566,8 +1626,10 @@ public class VettingViewer<T> {
                 VettingViewer.Choice.error,
                 VettingViewer.Choice.warning,
                 VettingViewer.Choice.hasDispute,
-                VettingViewer.Choice.notApproved);
-                // skip missingCoverage, weLost, englishChanged, changedOldValue, abstained
+                VettingViewer.Choice.notApproved,
+                VettingViewer.Choice.missingCoverage
+            );
+            // skip weLost, englishChanged, changedOldValue, abstained
         }
         return choiceSet;
     }

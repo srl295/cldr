@@ -42,25 +42,13 @@ import org.unicode.cldr.test.DisplayAndInputProcessor;
 import org.unicode.cldr.test.ExampleGenerator;
 import org.unicode.cldr.test.TestCache;
 import org.unicode.cldr.test.TestCache.TestResultBundle;
-import org.unicode.cldr.util.CLDRConfig;
-import org.unicode.cldr.util.CLDRFile;
+import org.unicode.cldr.util.*;
 import org.unicode.cldr.util.CLDRInfo.CandidateInfo;
 import org.unicode.cldr.util.CLDRInfo.PathValueInfo;
 import org.unicode.cldr.util.CLDRInfo.UserInfo;
-import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.CldrUtility;
-import org.unicode.cldr.util.CoverageInfo;
-import org.unicode.cldr.util.LDMLUtilities;
-import org.unicode.cldr.util.Level;
-import org.unicode.cldr.util.PathHeader;
 import org.unicode.cldr.util.PathHeader.PageId;
 import org.unicode.cldr.util.PathHeader.SurveyToolStatus;
-import org.unicode.cldr.util.PatternCache;
-import org.unicode.cldr.util.StandardCodes;
-import org.unicode.cldr.util.VoteResolver;
 import org.unicode.cldr.util.VoteResolver.Status;
-import org.unicode.cldr.util.XMLSource;
-import org.unicode.cldr.util.XPathParts;
 import org.unicode.cldr.web.DataSection.DataRow.CandidateItem;
 import org.unicode.cldr.web.UserRegistry.User;
 import org.unicode.cldr.web.api.VoteAPIHelper;
@@ -440,7 +428,7 @@ public class DataSection implements JSONString {
                         }
                         uu.put("overridedVotes", voteCount);
                         if (voteCount == null) {
-                            voteCount = u.getLevel().getVotes();
+                            voteCount = u.getLevel().getVotes(u.getOrganization());
                         }
                         uu.put("votes", voteCount);
                         if (userForVotelist != null) {
@@ -690,7 +678,7 @@ public class DataSection implements JSONString {
          *
          * Sequential order in which addItem may be called (as of 2019-04-19) for a given DataRow:
          *
-         * (1) For INHERITANCE_MARKER (if inheritedValue = ourSrc.getConstructedBaileyValue not null):
+         * (1) For INHERITANCE_MARKER (if inheritedValue = ourSrc.getBaileyValue not null):
          *     in updateInheritedValue (called by populateFromThisXpath):
          *         inheritedItem = addItem(CldrUtility.INHERITANCE_MARKER, "inherited");
          *
@@ -903,7 +891,7 @@ public class DataSection implements JSONString {
              */
             Output<String> inheritancePathWhereFound = new Output<>(); // may become pathWhereFound
             Output<String> localeWhereFound = new Output<>(); // may be used to construct inheritedLocale
-            inheritedValue = ourSrc.getConstructedBaileyValue(xpath, inheritancePathWhereFound, localeWhereFound);
+            inheritedValue = ourSrc.getBaileyValue(xpath, inheritancePathWhereFound, localeWhereFound);
 
             if (TRACE_TIME) {
                 System.err.println("@@1:" + (System.currentTimeMillis() - lastTime));
@@ -920,7 +908,7 @@ public class DataSection implements JSONString {
                  * xpath = //ldml/dates/calendars/calendar[@type="gregorian"]/dateTimeFormats/availableFormats/dateFormatItem[@id="yMMMEEEEd"]
                  * ourValueIsInherited = false; ourValue = "EEEE, d/MM/y"; isExtraPath = false
                  *
-                 * TODO: what are the implications when ourSrc.getConstructedBaileyValue has returned null?
+                 * TODO: what are the implications when ourSrc.getBaileyValue has returned null?
                  * Unless we're at root, shouldn't there always be a non-null inheritedValue here?
                  * See https://unicode.org/cldr/trac/ticket/11299
                  */
@@ -1052,6 +1040,19 @@ public class DataSection implements JSONString {
                 jo.put("helpHtml", getHelpHTML());
                 jo.put("rdf", getRDFURI());
 
+                final PatternPlaceholders placeholders = PatternPlaceholders.getInstance();
+                jo.put("placeholderStatus", placeholders.getStatus(xpath).name());
+                Map<String, PatternPlaceholders.PlaceholderInfo> placeholderInfoMap = placeholders.get(xpath);
+                if (placeholderInfoMap != null && !placeholderInfoMap.isEmpty()) {
+                    JSONObject placeholderInfo = new JSONObject();
+                    for (final Map.Entry<String, PatternPlaceholders.PlaceholderInfo> e : placeholderInfoMap.entrySet()) {
+                        JSONObject subInfo = new JSONObject();
+                        subInfo.put("name", e.getValue().name);
+                        subInfo.put("example", e.getValue().example);
+                        placeholderInfo.put(e.getKey(), subInfo);
+                    }
+                    jo.put("placeholderInfo", placeholderInfo);
+                }
                 return jo.toString();
             } catch (Throwable t) {
                 SurveyLog.logException(t, "Exception in DataRow.toJSONString of " + this);
@@ -1060,7 +1061,10 @@ public class DataSection implements JSONString {
         }
 
         public String getInheritedXPath() {
-            return (pathWhereFound != null) ? XPathTable.getStringIDString(pathWhereFound) : null;
+            if (pathWhereFound != null && !pathWhereFound.equals(GlossonymConstructor.PSEUDO_PATH)) {
+                return XPathTable.getStringIDString(pathWhereFound);
+            }
+            return null;
         }
 
         private String getWinningVHash() {
@@ -1289,7 +1293,7 @@ public class DataSection implements JSONString {
          * This is so that people can search for, e.g., "E12" to find rows for emoji that are new.
          */
         private void addAnnotationRootValue() {
-            if (xpath.startsWith("//ldml/annotations/annotation")) {
+            if (AnnotationUtil.pathIsAnnotation(xpath)) {
                 String rootValue = getRootFile().getStringValue(xpath);
                 if (rootValue != null && !rootValue.equals(inheritedValue)) {
                     /*

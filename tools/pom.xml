@@ -22,8 +22,8 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<!-- Note: see https://github.com/unicode-org/icu/packages/411079/versions
 			for the icu4j.version tag to use -->
-		<icu4j.version>72.0.1-SNAPSHOT-cldr-2022-04-11</icu4j.version>
-		<junit.jupiter.version>5.5.1</junit.jupiter.version>
+		<icu4j.version>72.0.1-SNAPSHOT-cldr-2022-05-28</icu4j.version>
+		<junit.jupiter.version>5.8.2</junit.jupiter.version>
 		<maven-surefire-plugin-version>2.22.2</maven-surefire-plugin-version>
 		<assertj-version>3.11.1</assertj-version>
 		<httpcomponents-version>5.0.3</httpcomponents-version>
@@ -97,7 +97,7 @@
 			<dependency>
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
-				<version>1.3.3</version>
+				<version>1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
@@ -185,7 +185,7 @@
 				<!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.2.0</version>
 				</plugin>
 				<!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
 				<plugin>
@@ -236,7 +236,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.2.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>

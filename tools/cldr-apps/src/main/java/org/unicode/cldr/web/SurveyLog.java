@@ -10,6 +10,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.unicode.cldr.util.CLDRConfig;
+import org.unicode.cldr.util.CldrUtility;
 
 /**
  * @author srl
@@ -74,6 +75,16 @@ public class SurveyLog {
 
     public static void logException(Logger logger, final Throwable exception, String what, WebContext ctx) {
         logger.log(Level.SEVERE, what, exception);
+        countException(exception);
+    }
+
+    /**
+     * Count an exception in the SurveyMetrics
+     */
+    public static void countException(final Throwable exception) {
+        if (CookieSession.sm != null && CookieSession.sm.surveyMetrics != null) {
+            CookieSession.sm.surveyMetrics.countException(exception);
+        }
     }
 
     /**
@@ -90,7 +101,7 @@ public class SurveyLog {
 
     public static synchronized ChunkyReader getChunkyReader() {
         if (cr == null) {
-            cr = new ChunkyReader(new File(CLDRConfig.getInstance().getProperty("CLDRHOME"), "exception.log"), RECORD_SEP
+            cr = new ChunkyReader(new File(CLDRConfig.getInstance().getProperty(CldrUtility.HOME_KEY), "exception.log"), RECORD_SEP
                 + LogField.SURVEY_EXCEPTION.name(), FIELD_SEP, LogField.DATE.name());
         }
         return cr;
@@ -104,6 +115,7 @@ public class SurveyLog {
 
     public static void logException(Logger logger, Throwable t, String string) {
         logger.log(Level.SEVERE, string, t);
+        countException(t);
     }
 
     public static void logException(Logger logger, Throwable t, WebContext ctx) {

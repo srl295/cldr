@@ -471,8 +471,8 @@ public class TestDtdData extends TestFmwk {
                 || (elementName.equals("caseMinimalPairs") && attribute.equals("case"))
                 || (elementName.equals("nameOrderLocales") && attribute.equals("order"))
                 || (elementName.equals("initialPattern") && attribute.equals("type"))
-                || (elementName.equals("personName") && (attribute.equals("length") || attribute.equals("usage") ||
-                                                         attribute.equals("style") || attribute.equals("order")))
+                || (elementName.equals("personName") && (attribute.equals("order") || attribute.equals("length") ||
+                                                         attribute.equals("usage") || attribute.equals("formality")))
                 || (elementName.equals("sampleName") && attribute.equals("item"))
                 || (elementName.equals("nameField") && attribute.equals("type"))
                 ;
@@ -582,6 +582,8 @@ public class TestDtdData extends TestFmwk {
                 && (attribute.equals("inLanguage") || attribute.equals("inScript") || attribute.equals("inTerritory") || attribute.equals("match"))
                 || elementName.equals("languageMatch")
                 && (attribute.equals("desired") || attribute.equals("supported"))
+                || elementName.equals("pathMatch")
+                && (attribute.equals("id"))
                 || (elementName.equals("transform") && (attribute.equals("source") || attribute.equals("target") || attribute.equals("direction") || attribute
                     .equals("variant")))
                 || (elementName.equals("grammaticalFeatures") && (attribute.equals("locales") || attribute.equals("targets")))
@@ -596,6 +598,7 @@ public class TestDtdData extends TestFmwk {
                 || elementName.equals("deriveComponent") && (attribute.equals("feature") || attribute.equals("structure"))
                 || elementName.equals("grammaticalDerivations") && attribute.equals("locales")
                 || elementName.equals("deriveCompound") && (attribute.equals("feature")|| attribute.equals("structure"))
+                || (elementName.equals("nameOrderLocalesDefault") && attribute.equals("order"))
                 ;
 
         case keyboard3:

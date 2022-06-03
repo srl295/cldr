@@ -76,7 +76,11 @@
                 <span class="dashEntry">
                   <a
                     v-bind:href="
-                      '#/' + [locale, group.page, entry.xpstrid].join('/')
+                      getLink(
+                        [locale, group.page, entry.xpstrid],
+                        catData.category,
+                        entry.code
+                      )
                     "
                     @click="
                       () =>
@@ -92,33 +96,45 @@
                       humanize(group.section + "—" + group.page)
                     }}</span>
                     |
-                    <span class="entry-header" title="entry header">{{
-                      group.header
-                    }}</span>
+                    <span
+                      v-if="group.header"
+                      class="entry-header"
+                      title="entry header"
+                      >{{ group.header }}</span
+                    >
                     |
                     <span class="code" title="code">{{ entry.code }}</span>
                     |
-                    <span
+                    <cldr-value
                       class="previous-english"
                       title="previous English"
+                      lang="en"
+                      dir="ltr"
                       v-if="entry.previousEnglish"
+                      >{{ entry.previousEnglish }} →</cldr-value
                     >
-                      {{ entry.previousEnglish }} →
-                    </span>
-                    <span class="english" title="English">{{
-                      entry.english
-                    }}</span>
+                    <cldr-value
+                      class="english"
+                      lang="en"
+                      dir="ltr"
+                      title="English"
+                      v-if="entry.english"
+                      >{{ entry.english }}</cldr-value
+                    >
                     |
-                    <span
+                    <cldr-value
+                      v-if="entry.winning"
                       class="winning"
                       title="Winning"
-                      v-bind:dir="$cldrOpts.localeDir"
-                      >{{ entry.winning }}</span
+                      >{{ entry.winning }}</cldr-value
                     >
                     <template v-if="entry.comment">
                       |
                       <span v-html="entry.comment" title="comment"></span>
                     </template>
+                    <span v-if="catData.category === 'Reports'"
+                      >{{ humanizeReport(entry.code) }} Report</span
+                    >
                   </a>
                 </span>
                 <input
@@ -149,6 +165,7 @@ import * as cldrCoverage from "../esm/cldrCoverage.js";
 import * as cldrDash from "../esm/cldrDash.js";
 import * as cldrGui from "../esm/cldrGui.js";
 import * as cldrLoad from "../esm/cldrLoad.js";
+import * as cldrReport from "../esm/cldrReport.js";
 import * as cldrStatus from "../esm/cldrStatus.js";
 import * as cldrText from "../esm/cldrText.js";
 
@@ -172,6 +189,14 @@ export default {
   },
 
   methods: {
+    getLink(array, category, code) {
+      const [locale, page, xpstrid] = array;
+      if (category === "Reports") {
+        return `#r_${code}/${locale}`;
+      } else {
+        return "#/" + array.join("/");
+      }
+    },
     scrollToCategory(event) {
       const whence = event.target.getAttribute("category");
       if (this.data && this.data.notifications) {
@@ -299,6 +324,10 @@ export default {
       // For categories like "English_Changed", page names like "Languages_K_N",
       // and section names like "Locale_Display_Names"
       return str.replaceAll("_", " ");
+    },
+
+    humanizeReport(report) {
+      return cldrReport.reportName(report);
     },
 
     entryCheckmarkChanged(event, entry) {

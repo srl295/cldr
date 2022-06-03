@@ -100,7 +100,6 @@ import com.ibm.icu.util.VersionInfo;
 
 public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleStringProvider {
 
-    private static final boolean SEED_ONLY = true;
     private static final ImmutableSet<String> casesNominativeOnly = ImmutableSet.of(GrammaticalFeature.grammaticalCase.getDefault(null));
     /**
      * Variable to control whether File reads are buffered; this will about halve the time spent in
@@ -224,8 +223,8 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
     /**
      * get Unresolved CLDRFile
      * @param localeId
-     * @param file
-     * @param minimumDraftStatus
+     * @param dirs
+     * @param minimalDraftStatus
      */
     public CLDRFile(String localeId, List<File> dirs, DraftStatus minimalDraftStatus) {
         // order matters
@@ -313,9 +312,9 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
     /**
      * Produce a CLDRFile from a localeName, given a directory. (Normally a Factory is used to create CLDRFiles.)
      *
+     * @param f
      * @param localeName
-     * @param dir
-     *            directory
+     * @param minimalDraftStatus
      */
     public static CLDRFile loadFromFile(File f, String localeName, DraftStatus minimalDraftStatus) {
         return loadFromFile(f, localeName, minimalDraftStatus, new SimpleXMLSource(localeName));
@@ -373,7 +372,7 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
     /**
      * Clone the object. Produces unlocked version
      *
-     * @see com.ibm.icu.dev.test.util.Freezeble
+     * @see com.ibm.icu.util.Freezable
      */
     @Override
     public CLDRFile cloneAsThawed() {
@@ -613,8 +612,15 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
             String result = dataSource.getValueAtPath(xpath);
             if (result == null && dataSource.isResolving()) {
                 final String fallbackPath = getFallbackPath(xpath, false, true);
+                // often fallbackPath equals xpath -- in such cases, isn't it a waste of time to call getValueAtPath again?
                 if (fallbackPath != null) {
                     result = dataSource.getValueAtPath(fallbackPath);
+                }
+            }
+            if (isResolved() && GlossonymConstructor.valueIsBogus(result) && GlossonymConstructor.pathIsEligible(xpath)) {
+                final String constructedValue = new GlossonymConstructor(this).getValue(xpath);
+                if (constructedValue != null) {
+                    result = constructedValue;
                 }
             }
             return result;
@@ -649,6 +655,13 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
                 }
             }
         }
+        if (isResolved() && GlossonymConstructor.valueIsBogus(result) && GlossonymConstructor.pathIsEligible(xpath)) {
+            final GlossonymConstructor gc = new GlossonymConstructor(this);
+            final String constructedValue = gc.getValueAndTrack(xpath, pathWhereFound, localeWhereFound);
+            if (constructedValue != null) {
+                result = constructedValue;
+            }
+        }
         return result;
     }
 
@@ -663,25 +676,6 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
         public String transform(@SuppressWarnings("unused") String source) {
             return alt;
         }
-    }
-
-    /**
-     * Get the constructed GeorgeBailey value: that is, if the item would otherwise be constructed (such as "Chinese (Simplified)") use that.
-     * Otherwise return BaileyValue.
-     * @parameter pathWhereFound null if constructed.
-     */
-    public String getConstructedBaileyValue(String xpath, Output<String> pathWhereFound, Output<String> localeWhereFound) {
-        String constructedValue = getConstructedValue(xpath);
-        if (constructedValue != null) {
-            if (localeWhereFound != null) {
-                localeWhereFound.value = getLocaleID();
-            }
-            if (pathWhereFound != null) {
-                pathWhereFound.value = null; // TODO make more useful
-            }
-            return constructedValue;
-        }
-        return getBaileyValue(xpath, pathWhereFound, localeWhereFound);
     }
 
     /**
@@ -775,6 +769,12 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
             if (fallbackPath != null && !fallbackPath.equals(distinguishedXPath)) {
                 result = dataSource.getSourceLocaleIdExtended(fallbackPath, status, skipInheritanceMarker);
             }
+            if (result == XMLSource.CODE_FALLBACK_ID && getConstructedValue(distinguishedXPath) != null) {
+                if (status != null) {
+                    status.pathWhereFound = GlossonymConstructor.PSEUDO_PATH;
+                }
+                return getLocaleID();
+            }
         }
         return result;
     }
@@ -811,9 +811,6 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
 
     /**
      * Note where this element was parsed.
-     * @param system system name, such as a filename
-     * @param line line number
-     * @param column column number
      */
     public CLDRFile addSourceLocation(String currentFullXPath, XMLSource.SourceLocation location) {
         dataSource.addSourceLocation(currentFullXPath, location);
@@ -856,8 +853,7 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
      * or the other files values are kept.
      *
      * @param other
-     * @param keepMine
-     *            if true, keep my values in case of conflict; otherwise keep the other's values.
+     * @param conflict_resolution
      */
     public CLDRFile putAll(CLDRFile other, int conflict_resolution) {
 
@@ -1044,13 +1040,6 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
 
     /**
      * Removes all items with same value
-     *
-     * @param keepIfMatches
-     *            TODO
-     * @param removedItems
-     *            TODO
-     * @param keepList
-     *            TODO
      */
     public CLDRFile removeDuplicates(CLDRFile other, boolean butComment, RetentionTest keepIfMatches,
         Collection<String> removedItems) {
@@ -2262,88 +2251,9 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
         return path.substring(start, end);
     }
 
-    public String getName(int type, String code) {
-        return getName(type, code, null);
-    }
-
     /**
-     * Utility for getting the name, given a code.
-     *
-     * @param type
-     * @param code
-     * @param codeToAlt - if not null, is called on the code. If the result is not null, then that is used for an alt value.
-     * If the alt path has a value it is used, otherwise the normal one is used. For example, the transform could return "short" for
-     * PS or HK or MO, but not US or GB.
-     * @return
-     */
-    public String getName(int type, String code, Transform<String, String> codeToAlt) {
-        String path = getKey(type, code);
-        String result = null;
-        if (codeToAlt != null) {
-            String alt = codeToAlt.transform(code);
-            if (alt != null) {
-                result = getStringValueWithBailey(path + "[@alt=\"" + alt + "\"]");
-            }
-        }
-        if (result == null) {
-            result = getStringValueWithBailey(path);
-        }
-        if (getLocaleID().equals("en")) {
-            Status status = new Status();
-            String sourceLocale = getSourceLocaleID(path, status);
-            if (result == null || !sourceLocale.equals("en")) {
-                if (type == LANGUAGE_NAME) {
-                    Set<String> set = Iso639Data.getNames(code);
-                    if (set != null) {
-                        return set.iterator().next();
-                    }
-                    Map<String, Map<String, String>> map = StandardCodes.getLStreg().get("language");
-                    Map<String, String> info = map.get(code);
-                    if (info != null) {
-                        result = info.get("Description");
-                    }
-                } else if (type == TERRITORY_NAME) {
-                    result = getLstrFallback("region", code);
-                } else if (type == SCRIPT_NAME) {
-                    result = getLstrFallback("script", code);
-                }
-            }
-        }
-        return result;
-    }
-
-    static final Pattern CLEAN_DESCRIPTION = Pattern.compile("([^\\(\\[]*)[\\(\\[].*");
-    static final Splitter DESCRIPTION_SEP = Splitter.on('▪');
-
-    private String getLstrFallback(String codeType, String code) {
-        Map<String, String> info = StandardCodes.getLStreg()
-            .get(codeType)
-            .get(code);
-        if (info != null) {
-            String temp = info.get("Description");
-            if (!temp.equalsIgnoreCase("Private use")) {
-                List<String> temp2 = DESCRIPTION_SEP.splitToList(temp);
-                temp = temp2.get(0);
-                final Matcher matcher = CLEAN_DESCRIPTION.matcher(temp);
-                if (matcher.lookingAt()) {
-                    return matcher.group(1).trim();
-                }
-                return temp;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Utility for getting a name, given a type and code.
-     */
-    public String getName(String type, String code) {
-        return getName(typeNameToCode(type), code);
-    }
-
-    /**
-     * @param type
-     * @return
+     * @param type a string such as "language", "script", "territory", "region", ...
+     * @return the corresponding integer
      */
     public static int typeNameToCode(String type) {
         if (type.equalsIgnoreCase("region")) {
@@ -2358,272 +2268,6 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
     }
 
     /**
-     * Returns the name of the given bcp47 identifier. Note that extensions must
-     * be specified using the old "\@key=type" syntax.
-     *
-     * @param localeOrTZID
-     * @return
-     */
-    public synchronized String getName(String localeOrTZID) {
-        return getName(localeOrTZID, false);
-    }
-
-    public synchronized String getName(String localeOrTZID, boolean onlyConstructCompound,
-        String localeKeyTypePattern, String localePattern, String localeSeparator) {
-        return getName(localeOrTZID, onlyConstructCompound,
-            localeKeyTypePattern, localePattern, localeSeparator, null);
-    }
-
-    /**
-     * Returns the name of the given bcp47 identifier. Note that extensions must
-     * be specified using the old "\@key=type" syntax.
-     * Only used by ExampleGenerator.
-     * @param localeOrTZID the locale or timezone ID
-     * @param onlyConstructCompound
-     * @param localeKeyTypePattern the pattern used to format key-type pairs
-     * @param localePattern the pattern used to format primary/secondary subtags
-     * @param localeSeparator the list separator for secondary subtags
-     * @return
-     */
-    public synchronized String getName(String localeOrTZID, boolean onlyConstructCompound,
-        String localeKeyTypePattern, String localePattern, String localeSeparator,
-        Transform<String, String> altPicker) {
-
-        // Hack for seed
-        if (localePattern == null) {
-            localePattern = "{0} ({1})";
-        }
-
-//        // Hack - support BCP47 ids
-//        if (localeOrTZID.contains("-") && !localeOrTZID.contains("@") && !localeOrTZID.contains("_")) {
-//            localeOrTZID = ULocale.forLanguageTag(localeOrTZID).toString().replace("__", "_");
-//        }
-
-        boolean isCompound = localeOrTZID.contains("_");
-        String name = isCompound && onlyConstructCompound ? null : getName(LANGUAGE_NAME, localeOrTZID, altPicker);
-        // TODO - handle arbitrary combinations
-        if (name != null && !name.contains("_") && !name.contains("-")) {
-            name = name.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
-            return name;
-        }
-        LanguageTagParser lparser = new LanguageTagParser().set(localeOrTZID);
-        return getName(
-            lparser,
-            onlyConstructCompound,
-            altPicker,
-            localeKeyTypePattern,
-            localePattern,
-            localeSeparator);
-    }
-
-    public String getName(
-        LanguageTagParser lparser,
-        boolean onlyConstructCompound,
-        Transform<String, String> altPicker,
-        String localeKeyTypePattern,
-        String localePattern,
-        String localeSeparator) {
-
-        String name;
-        String original;
-
-        // we need to check for prefixes, for lang+script or lang+country
-        boolean haveScript = false;
-        boolean haveRegion = false;
-        // try lang+script
-        if (onlyConstructCompound) {
-            name = getName(LANGUAGE_NAME, original = lparser.getLanguage(), altPicker);
-            if (name == null) name = original;
-        } else {
-            name = getName(LANGUAGE_NAME, lparser.toString(LanguageTagParser.LANGUAGE_SCRIPT_REGION), altPicker);
-            if (name != null) {
-                haveScript = haveRegion = true;
-            } else {
-                name = getName(LANGUAGE_NAME, lparser.toString(LanguageTagParser.LANGUAGE_SCRIPT), altPicker);
-                if (name != null) {
-                    haveScript = true;
-                } else {
-                    name = getName(LANGUAGE_NAME, lparser.toString(LanguageTagParser.LANGUAGE_REGION), altPicker);
-                    if (name != null) {
-                        haveRegion = true;
-                    } else {
-                        name = getName(LANGUAGE_NAME, original = lparser.getLanguage(), altPicker);
-                        if (name == null) name = original;
-                    }
-                }
-            }
-        }
-        name = name.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
-
-        String extras = "";
-        if (!haveScript) {
-            extras = addDisplayName(lparser.getScript(), SCRIPT_NAME, localeSeparator, extras, altPicker);
-        }
-        if (!haveRegion) {
-            extras = addDisplayName(lparser.getRegion(), TERRITORY_NAME, localeSeparator, extras, altPicker);
-        }
-        List<String> variants = lparser.getVariants();
-        for (String orig : variants) {
-            extras = addDisplayName(orig, VARIANT_NAME, localeSeparator, extras, altPicker);
-        }
-
-        // Look for key-type pairs.
-        main: for (Entry<String, List<String>> extension : lparser.getLocaleExtensionsDetailed().entrySet()) {
-            String key = extension.getKey();
-            if (key.equals("h0")) {
-                continue;
-            }
-            List<String> keyValue = extension.getValue();
-            String oldFormatType = (key.equals("ca") ? JOIN_HYPHEN : JOIN_UNDERBAR).join(keyValue); // default value
-            // Check if key/type pairs exist in the CLDRFile first.
-            String value = getKeyValueName(key, oldFormatType);
-            if (value != null) {
-                value = value.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
-            } else {
-                // if we fail, then we construct from the key name and the value
-                String kname = getKeyName(key);
-                if (kname == null) {
-                    kname = key; // should not happen, but just in case
-                }
-                switch (key) {
-                case "t":
-                    List<String> hybrid = lparser.getLocaleExtensionsDetailed().get("h0");
-                    if (hybrid != null) {
-                        kname = getKeyValueName("h0", JOIN_UNDERBAR.join(hybrid));
-                    }
-                    oldFormatType = getName(oldFormatType);
-                    break;
-                case "h0":
-                    continue main;
-                case "cu":
-                    oldFormatType = getName(CURRENCY_SYMBOL, oldFormatType.toUpperCase(Locale.ROOT));
-                    break;
-                case "tz":
-                    oldFormatType = getTZName(oldFormatType, "VVVV");
-                    break;
-                case "kr":
-                    oldFormatType = getReorderName(localeSeparator, keyValue);
-                    break;
-                case "rg":
-                case "sd":
-                    oldFormatType = getName(SUBDIVISION_NAME, oldFormatType);
-                    break;
-                default:
-                    oldFormatType = JOIN_HYPHEN.join(keyValue);
-                }
-                value = MessageFormat.format(localeKeyTypePattern, new Object[] { kname, oldFormatType });
-                value = value.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
-            }
-            extras = extras.isEmpty() ? value : MessageFormat.format(localeSeparator, new Object[] { extras, value });
-        }
-        // now handle stray extensions
-        for (Entry<String, List<String>> extension : lparser.getExtensionsDetailed().entrySet()) {
-            String value = MessageFormat.format(localeKeyTypePattern, new Object[] { extension.getKey(), JOIN_HYPHEN.join(extension.getValue()) });
-            extras = extras.isEmpty() ? value : MessageFormat.format(localeSeparator, new Object[] { extras, value });
-        }
-        // fix this -- shouldn't be hardcoded!
-        if (extras.length() == 0) {
-            return name;
-        }
-        return MessageFormat.format(localePattern, new Object[] { name, extras });
-    }
-
-    /**
-     * Gets timezone name. Not optimized.
-     * @param tzcode
-     * @return
-     */
-    private String getTZName(String tzcode, String format) {
-        String longid = getLongTzid(tzcode);
-        if (tzcode.length() == 4 && !tzcode.equals("gaza")) {
-            return longid;
-        }
-        TimezoneFormatter tzf = new TimezoneFormatter(this);
-        return tzf.getFormattedZone(longid, format, 0);
-    }
-
-    private String getReorderName(String localeSeparator, List<String> keyValues) {
-        String result = null;
-        for (String value : keyValues) {
-            String name = getName(SCRIPT_NAME, Character.toUpperCase(value.charAt(0)) + value.substring(1));
-            if (name == null) {
-                name = getKeyValueName("kr", value);
-                if (name == null) {
-                    name = value;
-                }
-            }
-            result = result == null ? name : MessageFormat.format(localeSeparator, new Object[] { result, name });
-        }
-        return result;
-    }
-
-    static final Joiner JOIN_HYPHEN = Joiner.on('-');
-    static final Joiner JOIN_UNDERBAR = Joiner.on('_');
-
-    public String getName(LanguageTagParser lparser,
-        boolean onlyConstructCompound,
-        Transform<String, String> altPicker) {
-        return getName(lparser, onlyConstructCompound, altPicker,
-            getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeKeyTypePattern"),
-            getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localePattern"),
-            getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeSeparator"));
-    }
-
-    public String getKeyName(String key) {
-        String result = getStringValue("//ldml/localeDisplayNames/keys/key[@type=\"" + key + "\"]");
-        if (result == null) {
-            Relation<R2<String, String>, String> toAliases = SupplementalDataInfo.getInstance().getBcp47Aliases();
-            Set<String> aliases = toAliases.get(Row.of(key, ""));
-            if (aliases != null) {
-                for (String alias : aliases) {
-                    result = getStringValue("//ldml/localeDisplayNames/keys/key[@type=\"" + alias + "\"]");
-                    if (result != null) {
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    public String getKeyValueName(String key, String value) {
-        String result = getStringValue("//ldml/localeDisplayNames/types/type[@key=\"" + key + "\"][@type=\"" + value + "\"]");
-        if (result == null) {
-            Relation<R2<String, String>, String> toAliases = SupplementalDataInfo.getInstance().getBcp47Aliases();
-            Set<String> keyAliases = toAliases.get(Row.of(key, ""));
-            Set<String> valueAliases = toAliases.get(Row.of(key, value));
-            if (keyAliases != null || valueAliases != null) {
-                if (keyAliases == null) {
-                    keyAliases = Collections.singleton(key);
-                }
-                if (valueAliases == null) {
-                    valueAliases = Collections.singleton(value);
-                }
-                for (String keyAlias : keyAliases) {
-                    for (String valueAlias : valueAliases) {
-                        result = getStringValue("//ldml/localeDisplayNames/types/type[@key=\"" + keyAlias + "\"][@type=\"" + valueAlias + "\"]");
-                        if (result != null) {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns the name of the given bcp47 identifier. Note that extensions must
-     * be specified using the old "\@key=type" syntax.
-     * @param localeOrTZID the locale or timezone ID
-     * @param onlyConstructCompound
-     * @return
-     */
-    public synchronized String getName(String localeOrTZID, boolean onlyConstructCompound) {
-        return getName(localeOrTZID, onlyConstructCompound, null);
-    }
-
-    /**
      * For use in getting short names.
      */
     public static final Transform<String, String> SHORT_ALTS = new Transform<String, String>() {
@@ -2632,53 +2276,6 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
             return "short";
         }
     };
-
-    /**
-     * Returns the name of the given bcp47 identifier. Note that extensions must
-     * be specified using the old "\@key=type" syntax.
-     * @param localeOrTZID the locale or timezone ID
-     * @param onlyConstructCompound if true, returns "English (United Kingdom)" instead of "British English"
-     * @param altPicker Used to select particular alts. For example, SHORT_ALTS can be used to get "English (U.K.)"
-     * instead of "English (United Kingdom)"
-     * @return
-     */
-    public synchronized String getName(String localeOrTZID,
-        boolean onlyConstructCompound,
-        Transform<String, String> altPicker) {
-        return getName(localeOrTZID,
-            onlyConstructCompound,
-            getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeKeyTypePattern"),
-            getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localePattern"),
-            getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeSeparator"),
-            altPicker);
-    }
-
-    /**
-     * Adds the display name for a subtag to a string.
-     * @param subtag the subtag
-     * @param type the type of the subtag
-     * @param separatorPattern the pattern to be used for separating display
-     *      names in the resultant string
-     * @param extras the string to be added to
-     * @return the modified display name string
-     */
-    private String addDisplayName(String subtag, int type, String separatorPattern, String extras,
-        Transform<String, String> altPicker) {
-        if (subtag.length() == 0) return extras;
-
-        String sname = getName(type, subtag, altPicker);
-        if (sname == null) {
-            sname = subtag;
-        }
-        sname = sname.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
-
-        if (extras.length() == 0) {
-            extras += sname;
-        } else {
-            extras = MessageFormat.format(separatorPattern, new Object[] { extras, sname });
-        }
-        return extras;
-    }
 
     /**
      * Returns the name of a type.
@@ -3165,18 +2762,10 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
      *
      * @param path
      * @return the winning value
-     *
-     * TODO: check whether this is called only when appropriate, see https://unicode.org/cldr/trac/ticket/11299
-     * Compare getStringValueWithBailey which is identical except getStringValue versus getWinningValue.
      */
     public String getWinningValueWithBailey(String path) {
-        String winningValue = getWinningValue(path);
-        if (CldrUtility.INHERITANCE_MARKER.equals(winningValue)) {
-            Output<String> localeWhereFound = new Output<>();
-            Output<String> pathWhereFound = new Output<>();
-            winningValue = getBaileyValue(path, pathWhereFound, localeWhereFound);
-        }
-        return winningValue;
+        final String winningPath = getWinningPath(path);
+        return winningPath == null ? null : getStringValueWithBailey(winningPath);
     }
 
     /**
@@ -3186,18 +2775,9 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
      *
      * @param path
      * @return the string value
-     *
-     * TODO: check whether this is called only when appropriate, see https://unicode.org/cldr/trac/ticket/11299
-     * Compare getWinningValueWithBailey wich is identical except getWinningValue versus getStringValue.
      */
     public String getStringValueWithBailey(String path) {
-        String value = getStringValue(path);
-        if (CldrUtility.INHERITANCE_MARKER.equals(value)) {
-            Output<String> localeWhereFound = new Output<>();
-            Output<String> pathWhereFound = new Output<>();
-            value = getBaileyValue(path, pathWhereFound, localeWhereFound);
-        }
-        return value;
+        return getStringValueWithBailey(path, null, null);
     }
 
     /**
@@ -3205,21 +2785,24 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
      * If the string value is an INHERITANCE_MARKER (used in survey
      * tool), then the Bailey value is returned.
      *
-     * @param path
+     * @param path the given xpath
+     * @param pathWhereFound if not null, to be filled in with the path where the value is actually found
+     * @param localeWhereFound if not null, to be filled in with the locale where the value is actually found
      * @return the string value
-     *
-     * TODO: check whether this is called only when appropriate, see https://unicode.org/cldr/trac/ticket/11299
-     * Compare getWinningValueWithBailey wich is identical except getWinningValue versus getStringValue.
      */
     public String getStringValueWithBailey(String path, Output<String> pathWhereFound, Output<String> localeWhereFound) {
         String value = getStringValue(path);
         if (CldrUtility.INHERITANCE_MARKER.equals(value)) {
             value = getBaileyValue(path, pathWhereFound, localeWhereFound);
-        } else {
-            Status status = new Status();
-            String localeWhereFound2 = getSourceLocaleID(path, status);
-            if (localeWhereFound != null) localeWhereFound.value = localeWhereFound2;
-            if (pathWhereFound != null) pathWhereFound.value = status.pathWhereFound;
+        } else if (localeWhereFound != null || pathWhereFound != null) {
+            final Status status = new Status();
+            final String localeWhereFound2 = getSourceLocaleID(path, status);
+            if (localeWhereFound != null) {
+                localeWhereFound.value = localeWhereFound2;
+            }
+            if (pathWhereFound != null) {
+                pathWhereFound.value = status.pathWhereFound;
+            }
         }
         return value;
     }
@@ -3253,10 +2836,6 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
     /**
      * Return the distinguished paths that match the pathPrefix and pathMatcher
      * The pathMatcher can be null (equals .*).
-     *
-     * @param valueToMatch
-     * @param pathPrefix
-     * @return
      */
     public Set<String> getPaths(String pathPrefix, Matcher pathMatcher, Set<String> result) {
         if (result == null) {
@@ -3612,8 +3191,8 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
                 try {
                     int item = Integer.parseInt(actualCount);
                     String locale = getLocaleID();
-                    // TODO get data from SupplementalDataInfo...
-                    PluralRules rules = PluralRules.forLocale(new ULocale(locale));
+                    SupplementalDataInfo sdi = CLDRConfig.getInstance().getSupplementalDataInfo();
+                    PluralRules rules = sdi.getPluralRules(new ULocale(locale), PluralRules.PluralType.CARDINAL);
                     String keyword = rules.select(item);
                     Count itemCount = Count.valueOf(keyword);
                     result = getCountPathWithFallback2(parts, xpath, itemCount, winning);
@@ -3798,75 +3377,13 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
      * Get a constructed value for the given path, if it is a path for which values can be constructed
      *
      * @param xpath the given path, such as //ldml/localeDisplayNames/languages/language[@type="zh_Hans"]
-     * @return the constructed value, or null if this path doesn't have constructed values
+     * @return the constructed value, or null if this path doesn't have a constructed value
      */
     public String getConstructedValue(String xpath) {
-        if (xpath.startsWith("//ldml/localeDisplayNames/languages/language[@type=\"") && xpath.contains("_")) {
-            XPathParts parts = XPathParts.getFrozenInstance(xpath);
-            String type = parts.getAttributeValue(-1, "type");
-            if (type.contains("_")) {
-                String alt = parts.getAttributeValue(-1, "alt");
-                if (alt == null) {
-                    return getName(type, true);
-                } else {
-                    return getName(type, true, new SimpleAltPicker(alt));
-                }
-            }
+        if (isResolved() && GlossonymConstructor.pathIsEligible(xpath)) {
+            return new GlossonymConstructor(this).getValue(xpath);
         }
         return null;
-    }
-
-    /**
-     * Get the string value for the winning path
-     *
-     * Do so taking constructed values into account.
-     *
-     * Currently this is only intended for use by VettingViewer.FileInfo.getFileInfo,
-     * to fix an urgent Dashboard bug. In the long run maybe it should replace
-     * getWinningValue, or the two methods should be merged somehow.
-     *
-     * Reference:
-     *  CLDR-13457 Dashboard does not show all Error/Missing/New… values
-     *
-     * @param path
-     * @return the winning value
-     */
-    public String getWinningValueForVettingViewer(String path) {
-        final String winningPath = getWinningPath(path);
-        return winningPath == null ? null : getStringValueForVettingViewer(winningPath);
-    }
-
-    /**
-     * Get a string value from an xpath.
-     *
-     * Do so taking constructed values into account.
-     *
-     * Currently called only by getWinningValueForVettingViewer
-     *
-     * References:
-     *  CLDR-13263 Merge getConstructedBaileyValue and getBaileyValue
-     *  CLDR-13457 Dashboard does not show all Error/Missing/New… values
-     */
-    private String getStringValueForVettingViewer(String xpath) {
-        try {
-            String constructedValue = getConstructedValue(xpath);
-            if (constructedValue != null) {
-                String value = getStringValueUnresolved(xpath);
-                if (value == null || CldrUtility.INHERITANCE_MARKER.equals(value)) {
-                    return constructedValue;
-                }
-            }
-            String result = dataSource.getValueAtPath(xpath);
-            if (result == null && dataSource.isResolving()) {
-                final String fallbackPath = getFallbackPath(xpath, false, true);
-                if (fallbackPath != null) {
-                    result = dataSource.getValueAtPath(fallbackPath);
-                }
-            }
-            return result;
-        } catch (Exception e) {
-            throw new UncheckedExecutionException("Bad path: " + xpath, e);
-        }
     }
 
     /**
@@ -3918,5 +3435,446 @@ public class CLDRFile implements Freezable<CLDRFile>, Iterable<String>, LocaleSt
             }
             return CLDRFile.this.getSourceLocaleID(xpath, status);
         }
+    }
+
+    public String getKeyName(String key) {
+        String result = getStringValue("//ldml/localeDisplayNames/keys/key[@type=\"" + key + "\"]");
+        if (result == null) {
+            Relation<R2<String, String>, String> toAliases = SupplementalDataInfo.getInstance().getBcp47Aliases();
+            Set<String> aliases = toAliases.get(Row.of(key, ""));
+            if (aliases != null) {
+                for (String alias : aliases) {
+                    result = getStringValue("//ldml/localeDisplayNames/keys/key[@type=\"" + alias + "\"]");
+                    if (result != null) {
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public String getKeyValueName(String key, String value) {
+        String result = getStringValue("//ldml/localeDisplayNames/types/type[@key=\"" + key + "\"][@type=\"" + value + "\"]");
+        if (result == null) {
+            Relation<R2<String, String>, String> toAliases = SupplementalDataInfo.getInstance().getBcp47Aliases();
+            Set<String> keyAliases = toAliases.get(Row.of(key, ""));
+            Set<String> valueAliases = toAliases.get(Row.of(key, value));
+            if (keyAliases != null || valueAliases != null) {
+                if (keyAliases == null) {
+                    keyAliases = Collections.singleton(key);
+                }
+                if (valueAliases == null) {
+                    valueAliases = Collections.singleton(value);
+                }
+                for (String keyAlias : keyAliases) {
+                    for (String valueAlias : valueAliases) {
+                        result = getStringValue("//ldml/localeDisplayNames/types/type[@key=\"" + keyAlias + "\"][@type=\"" + valueAlias + "\"]");
+                        if (result != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /*
+     *******************************************************************************************
+     * TODO: move the code below here -- that is, the many (currently ten as of 2022-06-01)
+     * versions of getName and their subroutines and data -- to a new class in a separate file,
+     * and enable tracking similar to existing "pathWhereFound/localeWhereFound" but more general.
+     *
+     * Reference: https://unicode-org.atlassian.net/browse/CLDR-13263
+     *******************************************************************************************
+     */
+
+    static final Joiner JOIN_HYPHEN = Joiner.on('-');
+    static final Joiner JOIN_UNDERBAR = Joiner.on('_');
+
+    /**
+     * Utility for getting a name, given a type and code.
+     */
+    public String getName(String type, String code) {
+        return getName(typeNameToCode(type), code);
+    }
+
+    public String getName(int type, String code) {
+        return getName(type, code, null);
+    }
+
+    /**
+     * Returns the name of the given bcp47 identifier. Note that extensions must
+     * be specified using the old "\@key=type" syntax.
+     *
+     * @param localeOrTZID
+     * @return
+     */
+    public synchronized String getName(String localeOrTZID) {
+        return getName(localeOrTZID, false);
+    }
+
+    public String getName(
+            LanguageTagParser lparser,
+            boolean onlyConstructCompound,
+            Transform<String, String> altPicker
+    ) {
+        return getName(
+                lparser,
+                onlyConstructCompound,
+                altPicker,
+                getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeKeyTypePattern"),
+                getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localePattern"),
+                getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeSeparator")
+        );
+    }
+
+    public synchronized String getName(
+            String localeOrTZID,
+            boolean onlyConstructCompound,
+            String localeKeyTypePattern,
+            String localePattern,
+            String localeSeparator
+    ) {
+        return getName(localeOrTZID, onlyConstructCompound, localeKeyTypePattern, localePattern, localeSeparator, null);
+    }
+
+    /**
+     * Returns the name of the given bcp47 identifier. Note that extensions must
+     * be specified using the old "\@key=type" syntax.
+     * @param localeOrTZID the locale or timezone ID
+     * @param onlyConstructCompound
+     * @return
+     */
+    public synchronized String getName(String localeOrTZID, boolean onlyConstructCompound) {
+        return getName(localeOrTZID, onlyConstructCompound, null);
+    }
+
+    /**
+     * Returns the name of the given bcp47 identifier. Note that extensions must
+     * be specified using the old "\@key=type" syntax.
+     * @param localeOrTZID the locale or timezone ID
+     * @param onlyConstructCompound if true, returns "English (United Kingdom)" instead of "British English"
+     * @param altPicker Used to select particular alts. For example, SHORT_ALTS can be used to get "English (U.K.)"
+     * instead of "English (United Kingdom)"
+     * @return
+     */
+    public synchronized String getName(
+            String localeOrTZID,
+            boolean onlyConstructCompound,
+            Transform<String, String> altPicker
+    ) {
+        return getName(
+                localeOrTZID,
+                onlyConstructCompound,
+                getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeKeyTypePattern"),
+                getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localePattern"),
+                getWinningValueWithBailey("//ldml/localeDisplayNames/localeDisplayPattern/localeSeparator"),
+                altPicker
+        );
+    }
+
+    /**
+     * Returns the name of the given bcp47 identifier. Note that extensions must
+     * be specified using the old "\@key=type" syntax.
+     * Only used by ExampleGenerator.
+     * @param localeOrTZID the locale or timezone ID
+     * @param onlyConstructCompound
+     * @param localeKeyTypePattern the pattern used to format key-type pairs
+     * @param localePattern the pattern used to format primary/secondary subtags
+     * @param localeSeparator the list separator for secondary subtags
+     * @return
+     */
+    public synchronized String getName(
+            String localeOrTZID,
+            boolean onlyConstructCompound,
+            String localeKeyTypePattern,
+            String localePattern,
+            String localeSeparator,
+            Transform<String, String> altPicker
+    ) {
+        // Hack for seed
+        if (localePattern == null) {
+            localePattern = "{0} ({1})";
+        }
+        boolean isCompound = localeOrTZID.contains("_");
+        String name = isCompound && onlyConstructCompound ? null : getName(LANGUAGE_NAME, localeOrTZID, altPicker);
+
+        // TODO - handle arbitrary combinations
+        if (name != null && !name.contains("_") && !name.contains("-")) {
+            name = name.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
+            return name;
+        }
+        LanguageTagParser lparser = new LanguageTagParser().set(localeOrTZID);
+        return getName(lparser, onlyConstructCompound, altPicker, localeKeyTypePattern, localePattern, localeSeparator);
+    }
+
+    public String getName(
+            LanguageTagParser lparser,
+            boolean onlyConstructCompound,
+            Transform<String, String> altPicker,
+            String localeKeyTypePattern,
+            String localePattern,
+            String localeSeparator
+    ) {
+        String name;
+        String original = null;
+
+        // we need to check for prefixes, for lang+script or lang+country
+        boolean haveScript = false;
+        boolean haveRegion = false;
+        // try lang+script
+        if (onlyConstructCompound) {
+            name = getName(LANGUAGE_NAME, original = lparser.getLanguage(), altPicker);
+            if (name == null) name = original;
+        } else {
+            String x = lparser.toString(LanguageTagParser.LANGUAGE_SCRIPT_REGION);
+            name = getName(LANGUAGE_NAME, x, altPicker);
+            if (name != null) {
+                haveScript = haveRegion = true;
+            } else {
+                name = getName(LANGUAGE_NAME, lparser.toString(LanguageTagParser.LANGUAGE_SCRIPT), altPicker);
+                if (name != null) {
+                    haveScript = true;
+                } else {
+                    name = getName(LANGUAGE_NAME, lparser.toString(LanguageTagParser.LANGUAGE_REGION), altPicker);
+                    if (name != null) {
+                        haveRegion = true;
+                    } else {
+                        name = getName(LANGUAGE_NAME, original = lparser.getLanguage(), altPicker);
+                        if (name == null) {
+                            name = original;
+                        }
+                    }
+                }
+            }
+        }
+        name = name.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
+        String extras = "";
+        if (!haveScript) {
+            extras = addDisplayName(lparser.getScript(), SCRIPT_NAME, localeSeparator, extras, altPicker);
+        }
+        if (!haveRegion) {
+            extras = addDisplayName(lparser.getRegion(), TERRITORY_NAME, localeSeparator, extras, altPicker);
+        }
+        List<String> variants = lparser.getVariants();
+        for (String orig : variants) {
+            extras = addDisplayName(orig, VARIANT_NAME, localeSeparator, extras, altPicker);
+        }
+
+        // Look for key-type pairs.
+        main:for (Map.Entry<String, List<String>> extension : lparser.getLocaleExtensionsDetailed().entrySet()) {
+            String key = extension.getKey();
+            if (key.equals("h0")) {
+                continue;
+            }
+            List<String> keyValue = extension.getValue();
+            String oldFormatType = (key.equals("ca") ? JOIN_HYPHEN : JOIN_UNDERBAR).join(keyValue); // default value
+            // Check if key/type pairs exist in the CLDRFile first.
+            String value = getKeyValueName(key, oldFormatType);
+            if (value != null) {
+                value = value.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
+            } else {
+                // if we fail, then we construct from the key name and the value
+                String kname = getKeyName(key);
+                if (kname == null) {
+                    kname = key; // should not happen, but just in case
+                }
+                switch (key) {
+                    case "t":
+                        List<String> hybrid = lparser.getLocaleExtensionsDetailed().get("h0");
+                        if (hybrid != null) {
+                            kname = getKeyValueName("h0", JOIN_UNDERBAR.join(hybrid));
+                        }
+                        oldFormatType = getName(oldFormatType);
+                        break;
+                    case "h0":
+                        continue main;
+                    case "cu":
+                        oldFormatType = getName(CURRENCY_SYMBOL, oldFormatType.toUpperCase(Locale.ROOT));
+                        break;
+                    case "tz":
+                        oldFormatType = getTZName(oldFormatType, "VVVV");
+                        break;
+                    case "kr":
+                        oldFormatType = getReorderName(localeSeparator, keyValue);
+                        break;
+                    case "rg":
+                    case "sd":
+                        oldFormatType = getName(SUBDIVISION_NAME, oldFormatType);
+                        break;
+                    default:
+                        oldFormatType = JOIN_HYPHEN.join(keyValue);
+                }
+                value = MessageFormat.format(localeKeyTypePattern, new Object[] { kname, oldFormatType });
+                value = value.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
+            }
+            extras = extras.isEmpty() ? value : MessageFormat.format(localeSeparator, new Object[] { extras, value });
+        }
+        // now handle stray extensions
+        for (Map.Entry<String, List<String>> extension : lparser.getExtensionsDetailed().entrySet()) {
+            String value = MessageFormat.format(
+                    localeKeyTypePattern,
+                    new Object[] { extension.getKey(), JOIN_HYPHEN.join(extension.getValue()) }
+            );
+            extras = extras.isEmpty() ? value : MessageFormat.format(localeSeparator, new Object[] { extras, value });
+        }
+        // fix this -- shouldn't be hardcoded!
+        if (extras.length() == 0) {
+            return name;
+        }
+        return MessageFormat.format(localePattern, new Object[] { name, extras });
+    }
+
+    /**
+     * Utility for getting the name, given a code.
+     *
+     * @param type
+     * @param code
+     * @param codeToAlt - if not null, is called on the code. If the result is not null, then that is used for an alt value.
+     * If the alt path has a value it is used, otherwise the normal one is used. For example, the transform could return "short" for
+     * PS or HK or MO, but not US or GB.
+     * @return
+     */
+    public String getName(int type, String code, Transform<String, String> codeToAlt) {
+        String path = getKey(type, code);
+        String result = null;
+        if (codeToAlt != null) {
+            String alt = codeToAlt.transform(code);
+            if (alt != null) {
+                String altPath = path + "[@alt=\"" + alt + "\"]";
+                result = getStringValueWithBaileyNotConstructed(altPath);
+            }
+        }
+        if (result == null) {
+            result = getStringValueWithBaileyNotConstructed(path);
+        }
+        if (getLocaleID().equals("en")) {
+            CLDRFile.Status status = new CLDRFile.Status();
+            String sourceLocale = getSourceLocaleID(path, status);
+            if (result == null || !sourceLocale.equals("en")) {
+                if (type == LANGUAGE_NAME) {
+                    Set<String> set = Iso639Data.getNames(code);
+                    if (set != null) {
+                        return set.iterator().next();
+                    }
+                    Map<String, Map<String, String>> map = StandardCodes.getLStreg().get("language");
+                    Map<String, String> info = map.get(code);
+                    if (info != null) {
+                        result = info.get("Description");
+                    }
+                } else if (type == TERRITORY_NAME) {
+                    result = getLstrFallback("region", code);
+                } else if (type == SCRIPT_NAME) {
+                    result = getLstrFallback("script", code);
+                }
+            }
+        }
+        return result;
+    }
+
+    static final Pattern CLEAN_DESCRIPTION = Pattern.compile("([^\\(\\[]*)[\\(\\[].*");
+    static final Splitter DESCRIPTION_SEP = Splitter.on('▪');
+
+    private String getLstrFallback(String codeType, String code) {
+        Map<String, String> info = StandardCodes.getLStreg().get(codeType).get(code);
+        if (info != null) {
+            String temp = info.get("Description");
+            if (!temp.equalsIgnoreCase("Private use")) {
+                List<String> temp2 = DESCRIPTION_SEP.splitToList(temp);
+                temp = temp2.get(0);
+                final Matcher matcher = CLEAN_DESCRIPTION.matcher(temp);
+                if (matcher.lookingAt()) {
+                    return matcher.group(1).trim();
+                }
+                return temp;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets timezone name. Not optimized.
+     * @param tzcode
+     * @return
+     */
+    private String getTZName(String tzcode, String format) {
+        String longid = getLongTzid(tzcode);
+        if (tzcode.length() == 4 && !tzcode.equals("gaza")) {
+            return longid;
+        }
+        TimezoneFormatter tzf = new TimezoneFormatter(this);
+        return tzf.getFormattedZone(longid, format, 0);
+    }
+
+    private String getReorderName(String localeSeparator, List<String> keyValues) {
+        String result = null;
+        for (String value : keyValues) {
+            String name = getName(SCRIPT_NAME, Character.toUpperCase(value.charAt(0)) + value.substring(1));
+            if (name == null) {
+                name = getKeyValueName("kr", value);
+                if (name == null) {
+                    name = value;
+                }
+            }
+            result = result == null ? name : MessageFormat.format(localeSeparator, new Object[] { result, name });
+        }
+        return result;
+    }
+
+    /**
+     * Adds the display name for a subtag to a string.
+     * @param subtag the subtag
+     * @param type the type of the subtag
+     * @param separatorPattern the pattern to be used for separating display
+     *      names in the resultant string
+     * @param extras the string to be added to
+     * @return the modified display name string
+     */
+    private String addDisplayName(
+            String subtag,
+            int type,
+            String separatorPattern,
+            String extras,
+            Transform<String, String> altPicker
+    ) {
+        if (subtag.length() == 0) {
+            return extras;
+        }
+        String sname = getName(type, subtag, altPicker);
+        if (sname == null) {
+            sname = subtag;
+        }
+        sname = sname.replace('(', '[').replace(')', ']').replace('（', '［').replace('）', '］');
+
+        if (extras.length() == 0) {
+            extras += sname;
+        } else {
+            extras = MessageFormat.format(separatorPattern, new Object[] { extras, sname });
+        }
+        return extras;
+    }
+
+    /**
+     * Like getStringValueWithBailey, but reject constructed values, to prevent
+     * circularity problems with getName
+     *
+     * Since GlossonymConstructor uses getName to CREATE constructed values, circularity
+     * problems would occur if getName in turn used GlossonymConstructor to get constructed
+     * Bailey values. Note that getStringValueWithBailey only returns a constructed value if
+     * the value would otherwise be "bogus", and getName has no use for bogus values, so there
+     * is no harm in returning null rather than code-fallback or other bogus values.
+     *
+     * @param path the given xpath
+     * @return the string value, or null
+     */
+    private String getStringValueWithBaileyNotConstructed(String path) {
+        Output<String> pathWhereFound = new Output<>();
+        final String value = getStringValueWithBailey(path, pathWhereFound, null);
+        if (value == null || GlossonymConstructor.PSEUDO_PATH.equals(pathWhereFound.toString())) {
+            return null;
+        }
+        return value;
     }
 }

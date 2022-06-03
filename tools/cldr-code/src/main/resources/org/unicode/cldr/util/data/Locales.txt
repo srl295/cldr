@@ -1,7 +1,46 @@
+# Locales.txt
+#
+# This file controls the coverage used by different organizations for their respective
+# locales, and also controls which locales an organization is allowed to contribute to.
+#
+# The homepage for this file is:
+#   https://cldr.unicode.org/index/survey-tool/coverage
+#
+# Format:
+#
+# Each line is either a comment or of this form:
+#
+#  <organization> ; <@-commands> <language_code> ; <coverage_level> ; <language name - optional>
+#
+# For example,
+#
+#  Oracle	;	ar	;	modern ; Arabic
+#  iaap ; @weight=4 @pathMatch=annotations,characterLabel * ; moderate ; All annotations
+#
+# Fields:
+# <organization>: this is the organization as defined by org.unicode.cldr.util.Organization
+#
+# <@-commands> may be used prior to the language code, as in this example:
+# @weight=4 indicates that the voting weight is restricted to a vote of 4.
+#  (See <https://cldr.unicode.org/index/process#h.mz5r3eqr6cxn> for details)
+# @pathMatch=annotations,characterLabel restricts the voting so that it
+# must match one or the other of the named pathMatches elements. All other
+# paths will show as readonly to these users.
+#
+# <language_code>: the code for each locale.
+# Note, do not list default content locales.  List 'fr', but not 'fr_FR'.
+# Instead of a language code, * can be used if 'all others' is meant.
+#
+# <coverage_level>: the level which will be presented to users for this
+# locale, see <https://cldr.unicode.org/index/cldr-spec/coverage-levels>
+#
+# <language name - optional>
+# This is an optional comment which can be used to give the name of the locale,
+# or any other organization-specific information such as tiers (T0, T1, …)
+
 
 # http://java.sun.com/j2se/1.5.0/docs/guide/intl/locale.doc.html
 # http://developers.sun.com/techtopics/global/index.html
-
 Oracle	;	ar	;	modern
 # The following were added in response to this org's vetter assignment.
 Oracle	;	ja	;	modern
@@ -101,6 +140,8 @@ Google	;	az	;	modern	;	T3.1	Azerbaijani
 Google	;	be	;	modern	;	T5	Belarusian
 #Google	;	bem	;	basic	;	Bemba
 Google	;	bg	;	modern	;	T2	Bulgarian
+Google	;	bgc	;	basic	;	Haryanvi
+Google	;	bho	;	basic	;	Bhojpuri
 Google	;	bn	;	modern	;	T3	Bengali
 Google  ; br  ; moderate ;
 Google  ; brx ; basic ; Bodo
@@ -143,8 +184,7 @@ Google	;	gl	;	modern	;	T5	Galician
 # Google	; gn ; basic ; Guarani (Bengali script)
 Google	;	gsw	;	basic	;	Swiss German
 Google	;	gu	;	modern	;	T4	Gujarati
-#Google	;	ha	;	basic	;	Hausa
-Google	;	ha	;	moderate	;	Hausa
+Google	;	ha	;	modern	;	Hausa
 Google	;	he	;	modern	;	T2	Hebrew
 Google	;	hi	;	modern	;	T2	Hindi
 Google	;	hr	;	modern	;	T2	Croatian
@@ -153,8 +193,7 @@ Google	;	hu	;	modern	;	T2	Hungarian
 Google	;	hy	;	modern	;	T3.1	Armenian
 Google ; ia ; moderate ;
 Google	;	id	;	modern	;	T2	Indonesian
-#Google	;	ig	;	basic	;	Igbo
-Google	;	ig	;	moderate	;	Igbo
+Google	;	ig	;	modern	;	Igbo
 Google	;	is	;	modern	;	T3	Icelandic
 Google	;	it	;	modern	;	T1	Italian
 Google	;	ja	;	modern	;	T1	Japanese
@@ -192,23 +231,24 @@ Google	;	mt	;	basic	;	Maltese
 Google	;	my	;	modern	;	T3.1	Burmese (Myanmar)
 Google	;	ne	;	modern	;	T3.1	Nepali
 Google	;	nl	;	modern	;	T1	Dutch
-Google    ; nn ; Moderate ; Nynorsk
+Google	; nn	; Modern ; Nynorsk
 Google	;	no	;	modern	;	T2	Norwegian (Bokmål)
-Google ; nqo ; moderate ;
+#Google ; nqo ; moderate ;
 #Google	;	nso	;	basic	;	NorthernSotho
 #Google    ; nv ; basic ; Navajo
 #Google	;	ny	;	basic	;	Nyanja
 #Google	;	nyn	;	basic	;	Nyankole
-Google ; oc ; moderate ;
+#Google ; oc ; moderate ;
 #Google	;	om	;	basic	;	Oromo
 Google	;	or	;	modern	;	T5	Odia
 Google	;	pa	;	modern	;	T4.1	Punjabi
-Google	;	pcm	;	basic	;	pcm
+Google	;	pcm	;	modern	;	Nigerian Pidgin
 Google	;	pl	;	modern	;	T1	Polish
 Google	;	ps	;	modern	;	T5	Pashto
 Google	;	pt	;	modern	;	T1	Brazilian Portuguese
 Google	;	pt_PT	;	modern	;	T2	European Portuguese
 #Google	;	qu	;	basic	;	Quechua
+Google	;	raj	;	basic	;	Rajasthani
 #Google	;	rm	;	basic	;	Romansh
 #Google	;	rn	;	basic	;	Rundi
 Google	;	ro	;	modern	;	T2	Romanian
@@ -248,9 +288,8 @@ Google	;	uz	;	modern		;	T4.1	Uzbek	(Latin)
 #Google	;	ve	;	basic	;	Venda
 Google	;	vi	;	modern	;	T2	Vietnamese
 #Google	;	wo	;	basic	;	Wolof
-#Google	;	xh	;	basic	;	Xhosa
-#Google	;	yo	;	basic	;	Yoruba
-Google	;	yo	;	moderate	;	Yoruba
+Google	;	xh	;	moderate	;	Xhosa
+Google	;	yo	;	modern	;	Yoruba
 Google	;	yue	;	modern	;	T5	Cantonese
 Google	;	zh	;	modern	;	T1	Simplified Chinese
 Google	;	zh_Hant	;	modern	;	T1	Traditional Chinese
@@ -258,19 +297,20 @@ Google	;	zu	;	modern	;	T5	Zulu
 Google ; * ; moderate ; All Others, provisionally
 
 
-Apple ; aa ; moderate ;
+Apple ; aa ; moderate
 Apple	;	ar	;	modern
 Apple	;	as	;	basic
 Apple	;	az	;	basic
 Apple	;	be	;	basic
 Apple	;	bg	;	modern
 Apple	;	bn	;	modern
-Apple ; bo ; moderate ;
+Apple ; bo ; moderate
 Apple	;	bs	;	basic
 Apple	;	ca	;	modern
-Apple ; cad ; moderate ;
-Apple ; ceb ; moderate ;
+Apple ; cad ; moderate
+Apple ; ceb ; moderate
 Apple	;	cs	;	modern
+Apple	;	cv	;	basic
 Apple	;	cy	;	basic
 Apple	;	da	;	modern
 Apple	;	de	;	modern
@@ -282,7 +322,7 @@ Apple	;	es	;	modern
 Apple	;	es_419	;	modern
 Apple	;	es_MX	;	modern
 Apple	;	et	;	modern
-Apple ; eu ; moderate ;
+Apple ; eu ; moderate
 Apple	;	fa	;	modern
 Apple	;	fi	;	modern
 Apple	;	fil	;	modern
@@ -300,18 +340,19 @@ Apple	;	ii	;	basic
 Apple	;	is	;	modern
 Apple	;	it	;	modern
 Apple	;	ja	;	modern
-Apple ; ka ; moderate ;
-Apple	;	kk	;	basic
-Apple ; kl ; moderate ;
+Apple ; ka ; moderate
+Apple	;	kk	;	modern
+Apple ; kl ; moderate
 Apple	;	km	;	basic
 Apple	;	kn	;	modern
 Apple	;	ko	;	modern
-Apple ; kok ; moderate ;
-Apple ; ky ; moderate ;
+Apple ; kok ; moderate
+Apple ; ky ; moderate
 Apple	;	lo	;	basic
-Apple ; lb ; moderate ;
+Apple ; lb ; moderate
 Apple	;	lt	;	modern
 Apple	;	lv	;	modern
+Apple	;	mi	;	modern
 Apple	;	mk	;	modern
 Apple	;	ml	;	modern
 Apple	;	mn	;	basic
@@ -327,7 +368,7 @@ Apple	;	pa	;	modern
 Apple	;	pl	;	modern
 Apple	;	pt	;	modern
 Apple	;	pt_PT	;	modern
-Apple ; pcm ; moderate ;
+Apple ; pcm ; moderate
 Apple	;	ro	;	modern
 Apple	;	ru	;	modern
 Apple	;	sk	;	modern
@@ -336,22 +377,22 @@ Apple	;	sq	;	basic
 Apple	;	sr	;	modern
 Apple	;	sr_Latn	;	modern
 Apple	;	sv	;	modern
-Apple ; sw ; moderate ;
-#Apple ; syr ; moderate ;
+Apple ; sw ; moderate
+#Apple ; syr ; moderate
 Apple	;	ta	;	modern
 Apple	;	te	;	modern
-Apple ; tg ; moderate ;
+Apple ; tg ; moderate
 Apple	;	th	;	modern
 Apple	;	to	;	modern
 Apple	;	tr	;	modern
-Apple ; tt ; moderate ;
+Apple ; tt ; moderate
 Apple	;	ug	;	basic
 Apple	;	uk	;	modern
 Apple	;	ur	;	modern
-Apple ; uz ; moderate ;
+Apple ; uz ; moderate
 Apple	;	vi	;	modern
 Apple	;	yi	;	basic
-Apple ; yue ; moderate ;
+Apple ; yue ; moderate
 Apple	;	zh	;	modern
 Apple	;	zh_Hant	;	modern
 Apple	;	zh_Hant_HK	;	modern
@@ -527,9 +568,11 @@ Cldr	;	ar_DZ	;	modern	; TR Arabic (Algeria)
 #Cldr	other (from Apple)
 #Cldr    ;   fo  ;   modern
 #Cldr    ;   to  ;   moderate	# maybe different level from Apple's
+Cldr  ; cv  ; basic
 Cldr	;	en_AU	;	modern
 Cldr	;	es_MX	;	modern
 Cldr	;	fr_CA	;	modern
+Cldr  ; mi  ; modern
 Cldr	;	zh_Hant_HK	;	modern
 
 #Cldr	other (from Google)
@@ -540,13 +583,15 @@ Cldr	;	or	;	modern	;	Odia
 Cldr	;	ps	;	modern	;	Pashto
 Cldr	;	sd	;	modern	;	Sindhi
 Cldr	;	tk	;	modern	;	Turkmen
+Cldr	; xh	;	moderate	;	Xhosa
+Cldr	;	hi_Latn	; modern	;	hi_Latn
 
 Cldr	;	jv	;	modern	;	Javanese
 Cldr	;   so  ;   modern	;   Somali
 
-Cldr	;	ha	;	moderate	;	Hausa
-Cldr	;	ig	;	moderate	;	Igbo
-Cldr	;	yo	;	moderate	;	Yoruba
+Cldr	;	ha	;	modern	;	Hausa
+Cldr	;	ig	;	modern	;	Igbo
+Cldr	;	yo	;	modern	;	Yoruba
 Cldr	;	ceb	;	moderate	;	Cebuano
 
 Cldr	; mai ; basic ; Maithili (Devanagari script)
@@ -558,12 +603,32 @@ Cldr	; su ; basic ; Sundanese (script TBD)
 Cldr  ; ks_Deva ; basic ; Kashmiri (Devanagari)
 Cldr	; sd_Deva ; basic ; Sindhi (Devanagari script)
 # Cldr	; cad ; basic ; Caddo
-Cldr	; pcm ; basic ; Nigerian Pidgin
+Cldr	; pcm ; modern ; Nigerian Pidgin
+
+Cldr	;	bgc	;	basic	;	Haryanvi
+Cldr	;	bho	;	basic	;	Bhojpuri
+Cldr	;	raj	;	basic	;	Rajasthani
 
 Cldr    ; nn ; modern ; Nynorsk
 Cldr    ; sa ; basic ; Sanskrit
 Cldr    ; doi ; basic ; Dogri
 #Cldr    ; nv ; basic ; Navajo
+
+#Cldr other (high coverage locales)
+Cldr  ; hsb ; modern ; Upper Sorbian
+Cldr  ; dsb ; modern  ; Lower Sorbian
+Cldr  ; gd  ; modern  ; Scottish Gaelic
+Cldr  ; chr ; modern  ; Cherokee
+Cldr  ; yue_Hans  ; modern  ; Cantonese (Simplified)
+
+Cldr  ; fo  ; moderate  ; Faroese
+Cldr  ; qu  ; moderate  ; Quechua
+Cldr  ; br  ; moderate  ; Breton
+Cldr  ; sc  ; moderate  ; Sardinian
+Cldr  ; kgp ; moderate  ; Kaingang
+Cldr  ; yrl ; moderate  ; Nheetgatu
+Cldr  ; ast ; moderate  ; Asturian
+Cldr  ; ff_Adlm ; moderate ; Fulah (Adlam)
 
 Bangor_Univ ;   cy   ;    modern  ; Welsh
 
@@ -865,40 +930,46 @@ nyiakeng_puachue_hmong ; hnj      ; modern ; Green Hmong (hnj_Hmnp) - default co
 #The following is not in CLDR (yet)
 #nyiakeng_puachue_hmong ; mww_Hmnp ; modern ; White Hmong (mww_Hmnp)
 
-Facebook	;	ar	;	modern
-Facebook ; az ; moderate ;
-Facebook ; cy ; moderate ;
-Facebook	;	da	;	modern
-Facebook ; de ; moderate ;
-Facebook ; en_GB ; moderate ;
-Facebook	;	es	;	modern
-Facebook	;	es_419	;	modern
-Facebook ; fa ; moderate ;
-Facebook ; fr ; moderate ;
-Facebook	;	gn	;	modern
-Facebook ; hi ; moderate ;
-Facebook	;	hr	;	modern
-Facebook	;	hu	;	modern
-Facebook	;	it	;	modern
-Facebook ; kl ; moderate ;
-Facebook ; ps ; moderate ;
-Facebook	;	pt_PT	;	modern
-Facebook ; pt ; modern ;
-Facebook ; ru ; moderate ;
-Facebook ; sc ; moderate ;
-Facebook ; sd ; moderate ;
-Facebook ; sk ; moderate ;
-Facebook ; sr ; moderate ;
-Facebook ; szl ; moderate ;
-Facebook ; tg ; moderate ;
-Facebook ; tr ; moderate ;
-Facebook ; vi ; moderate ;
+Meta	;	ar	;	modern
+Meta ; az ; moderate ;
+Meta  ; bn  ; modern
+Meta ; cy ; moderate ;
+Meta	;	da	;	modern
+Meta ; de ; moderate ;
+Meta ; en_GB ; moderate ;
+Meta	;	es	;	modern
+Meta	;	es_419	;	modern
+Meta ; fa ; moderate ;
+Meta ; fr ; moderate ;
+Meta	;	gn	;	modern
+Meta  ; gu  ; modern
+Meta ; hi ; moderate ;
+Meta	;	hr	;	modern
+Meta	;	hu	;	modern
+Meta ; id ; moderate ;
+Meta	;	it	;	modern
+Meta ; kl ; moderate ;
+Meta  ; kn  ; modern
+Meta  ; mr  ; modern
+Meta ; ps ; moderate ;
+Meta	;	pt_PT	;	modern
+Meta ; pt ; modern ;
+Meta ; ru ; moderate ;
+Meta ; sc ; moderate ;
+Meta ; sd ; moderate ;
+Meta ; sk ; moderate ;
+Meta ; sr ; moderate ;
+Meta ; szl ; moderate ;
+Meta  ; ta  ; modern  ;
+Meta ; tg ; moderate ;
+Meta ; tr ; moderate ;
+Meta  ; ur  ; modern ;
+Meta ; vi ; moderate ;
 # The following were added in response to this org's vetter assignment.
-Facebook ; id ; moderate ;
-Facebook ; ja ; moderate ;
-Facebook ; ko ; moderate ;
-Facebook ; my ; moderate ;
-Facebook ; th ; moderate ;
+Meta ; ja ; moderate ;
+Meta ; ko ; moderate ;
+Meta ; my ; moderate ;
+Meta ; th ; moderate ;
 
 Mozilla	;	mul	;	modern
 # ^no votes in 30…40 for this org
@@ -908,6 +979,8 @@ Rodakych ; pcm ; modern ; Nigerian Pidgin
 rohingyazuban	;	rhg	;	modern
 
 Sardware	;	sc	;	modern
+
+venetian ; vec ; modern
 
 wikimedia ; af ; moderate ;
 wikimedia ; ast ; moderate ;
@@ -972,3 +1045,6 @@ wod_nko ; bm_Nkoo ; modern ; Bambara (N’ko)
 
 yahoo ; mul ; modern ;
 # ^no votes in 30…40 for this org
+
+#Example of using weight and pathMatch:
+#iaap ; @weight=4 @pathMatch=annotations1,anotations2,characterLabel1,characterLabel2 * ; moderate ;

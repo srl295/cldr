@@ -33,23 +33,11 @@ import org.unicode.cldr.icu.LDMLConstants;
 import org.unicode.cldr.test.CheckCLDR;
 import org.unicode.cldr.test.TestCache;
 import org.unicode.cldr.test.TestCache.TestResultBundle;
-import org.unicode.cldr.util.CLDRConfig;
+import org.unicode.cldr.util.*;
 import org.unicode.cldr.util.CLDRConfig.Environment;
-import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRFile.DraftStatus;
-import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.Emoji;
-import org.unicode.cldr.util.Factory;
-import org.unicode.cldr.util.LDMLUtilities;
-import org.unicode.cldr.util.Pair;
-import org.unicode.cldr.util.PathHeader;
-import org.unicode.cldr.util.SimpleXMLSource;
-import org.unicode.cldr.util.VoteResolver;
 import org.unicode.cldr.util.VoteResolver.Level;
 import org.unicode.cldr.util.VoteResolver.Status;
-import org.unicode.cldr.util.XMLFileReader;
-import org.unicode.cldr.util.XMLSource;
-import org.unicode.cldr.util.XPathParts;
 import org.unicode.cldr.util.XPathParts.Comments;
 import org.unicode.cldr.web.CLDRProgressIndicator.CLDRProgressTask;
 import org.unicode.cldr.web.SurveyException.ErrorCode;
@@ -918,7 +906,7 @@ public class STFactory extends Factory implements BallotBoxFactory<UserRegistry.
              * Note: this does not affect the occurrences of "new VoteResolver" in ConsoleCheckCLDR.java or TestUtilities.java;
              * if those tests ever involve annotation keywords, they could call setUsingKeywordAnnotationVoting as needed.
              */
-            r.setUsingKeywordAnnotationVoting(path.startsWith("//ldml/annotations/annotation") && !path.contains(Emoji.TYPE_TTS));
+            r.setUsingKeywordAnnotationVoting(AnnotationUtil.pathIsAnnotation(path) && !path.contains(Emoji.TYPE_TTS));
 
             final ValueChecker vc = ERRORS_ALLOWED_IN_VETTING ? null : new ValueChecker(path);
 
@@ -934,7 +922,7 @@ public class STFactory extends Factory implements BallotBoxFactory<UserRegistry.
             }
 
             CLDRFile cf = make(locale, true);
-            r.setBaileyValue(cf.getConstructedBaileyValue(path, null, null));
+            r.setBaileyValue(cf.getBaileyValue(path, null, null));
 
             // add each vote
             if (perXPathData != null && !perXPathData.isEmpty()) {
@@ -1126,9 +1114,9 @@ public class STFactory extends Factory implements BallotBoxFactory<UserRegistry.
                 voteIsAutoImported = true;
             } else if (withVote != null) {
                 Level level = user.getLevel();
-                if (withVote == level.getVotes()) {
+                if (withVote == level.getVotes(user.getOrganization())) {
                     withVote = null; // not an override
-                } else if (!level.canVoteWithCount(withVote)) {
+                } else if (!level.canVoteWithCount(user.getOrganization(), withVote)) {
                     throw new VoteNotAcceptedException(ErrorCode.E_NO_PERMISSION, "User " + user + " cannot vote at " + withVote + " level ");
                 } else if (withVote == VoteResolver.Level.PERMANENT_VOTES) {
                     if (sm.fora.postCountFor(locale, xpathId) < 1) {

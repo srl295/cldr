@@ -818,7 +818,16 @@ function getPageUrl(curLocale, curPage, curId) {
 function loadAllRowsFromJson(json, theDiv) {
   isLoading = false;
   cldrSurvey.showLoader(cldrText.get("loading2"));
-  if (!verifyJson(json, "section")) {
+  if (!json) {
+    // Failed to load
+    cldrSurvey.hideLoader();
+    cldrStatus.setCurrentSection("");
+    cldrInfo.showMessage("Could not load SurveyTool.");
+    flipper.flipTo(
+      pages.other,
+      cldrDom.createChunk("SurveyTool could not load", "i", "loadingMsg")
+    );
+  } else if (!verifyJson(json, "section")) {
     return;
   } else if (json.section.nocontent) {
     cldrStatus.setCurrentSection("");
@@ -905,17 +914,12 @@ function myLoad(url, message, handler, postData, headers) {
   console.log("MyLoad: " + url + " for " + message);
   const errorHandler = function (err) {
     console.log("Error: " + err);
-    cldrRetry.handleDisconnect(
-      "Could not fetch " +
-        message +
-        " - error " +
-        err +
-        "\n url: " +
-        url +
-        "\n",
-      null,
-      "disconnect"
-    );
+    notification.error({
+      message: `Could not fetch ${message}`,
+      description: `Error: ${err.toString()}`,
+      duration: 8,
+    });
+    handler(null);
   };
   const loadHandler = function (json) {
     console.log(
@@ -995,6 +999,23 @@ function appendLocaleLink(subLocDiv, subLoc, subInfo, fullTitle) {
 
 function getTheLocaleMap() {
   return locmap;
+}
+
+/**
+ * Get the direction of a locale, if available
+ * @param {String} locale
+ * @returns null or 'ltr' or 'rtl'
+ */
+function getLocaleDir(locale) {
+  const locmap = getTheLocaleMap();
+  let localeDir = null;
+  if (locale) {
+    const localeInfo = locmap.getLocaleInfo(locale);
+    if (localeInfo) {
+      localeDir = localeInfo.dir;
+    }
+  }
+  return localeDir;
 }
 
 function setTheLocaleMap(lm) {
@@ -1113,6 +1134,7 @@ export {
   flipToGenericNoLocale,
   flipToOtherDiv,
   getHash,
+  getLocaleDir,
   getLocaleName,
   getTheLocaleMap,
   handleCoverageChanged,

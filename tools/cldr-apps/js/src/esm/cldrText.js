@@ -4,6 +4,11 @@
 const CLDR_TEXT_DEBUG = false;
 
 const strings = {
+  git_commit_url_prefix: "https://github.com/unicode-org/cldr/commit/",
+  git_compare_url_prefix: "https://github.com/unicode-org/cldr/compare/",
+  git_compare_url_main: "main",
+  git_compare_url_release: "release-${0}",
+
   loading: "loading",
   loading2: "loading.",
   loading3: "loading..",
@@ -330,12 +335,14 @@ const strings = {
   forum_msg: "Showing posts for ${forum} and all sublocales.",
   forumGuidance:
     "This is the Forum page. This page will not reload when new posts come in, but you can use your browser's Refresh button to load new posts.",
+  forum_remember_vote:
+    "⚠️ Please remember to vote – submitting a forum post does NOT cause any actual vote to be made.",
 
   generic_nolocale: "No locale chosen.",
   defaultContent_msg:
-    "This locale, ${name} is the <i><a target='CLDR-ST-DOCS' href='http://cldr.unicode.org/translation/default-content'>default content locale</a></i> for <b><a class='notselected' href='#/${dcParent}'>${dcParentName}</a></b>, and thus editing or viewing is disabled.",
+    "This locale, ${name} is the <i><a target='CLDR-ST-DOCS' href='https://cldr.unicode.org/translation/translation-guide-general/default-content'>default content locale</a></i> for <b><a class='notselected' href='#/${dcParent}'>${dcParentName}</a></b>, and thus editing or viewing is disabled.",
   defaultContentChild_msg:
-    "This locale, ${name}, supplies the <i><a target='CLDR-ST-DOCS' href='http://cldr.unicode.org/translation/default-content'>default content</a></i> for <b><a class='notselected' href='#/${dcChild}'>${dcChildName}</a></b>. Please make sure that all the changes that you make here are appropriate for <b>${dcChildName}</b>. If there are multiple acceptable choices, please try to pick the one that would work for the most other sublocales.",
+    "This locale, ${name}, supplies the <i><a target='CLDR-ST-DOCS' href='https://cldr.unicode.org/translation/translation-guide-general/default-content'>default content</a></i> for <b><a class='notselected' href='#/${dcChild}'>${dcChildName}</a></b>. Please make sure that all the changes that you make here are appropriate for <b>${dcChildName}</b>. If there are multiple acceptable choices, please try to pick the one that would work for the most other sublocales.",
   defaultContent_brief_msg:
     "${name} is a default content locale and may not be edited",
   defaultContent_header_msg: "= ${dcChild}",
@@ -455,6 +462,7 @@ const strings = {
   special_mail: "Notifications (SMOKETEST ONLY)",
   special_menu: "☰",
   special_oldvotes: "Import Old Votes",
+  // The special_r_* are the names of reports, used by ReportResponse.vue and others
   special_r_compact: "Numbers",
   special_r_datetime: "Datetime",
   special_r_zones: "Zones",
@@ -508,6 +516,7 @@ const strings = {
     "There are not enough votes for this item to be approved (and used).",
   notification_category_warning:
     "The Survey Tool detected a warning about the winning value.",
+  notification_category_reports: "A Report has not been completed.",
 
   progress_page: "Your voting in this page",
   progress_voter: "Your voting in this locale",
@@ -522,6 +531,10 @@ const strings = {
     "The coverage level for each locale is organization-neutral.",
   summary_access_denied:
     "To see the summary, you must be logged in as a manager, TC, or admin.",
+
+  // LocaleNormalizer.LocaleRejection
+  locale_rejection_unknown: "Unknown or not in CLDR",
+  locale_rejection_outside_org_coverage: "Outside of org’s coverage",
 };
 
 /**

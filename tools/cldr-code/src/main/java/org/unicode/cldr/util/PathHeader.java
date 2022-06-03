@@ -1351,10 +1351,13 @@ public class PathHeader implements Comparable<PathHeader> {
             });
             functionMap.put("categoryFromKey", new Transform<String, String>() {
                 Map<String, String> fixNames = Builder.with(new HashMap<String, String>())
+                    .put("cf", "Currency Format")
+                    .put("em", "Emoji Presentation")
+                    .put("fw", "First Day of Week")
                     .put("lb", "Line Break")
                     .put("hc", "Hour Cycle")
                     .put("ms", "Measurement System")
-                    .put("cf", "Currency Format")
+                    .put("ss", "Sentence Break Suppressions")
                     .freeze();
 
                 @Override
@@ -1855,15 +1858,19 @@ public class PathHeader implements Comparable<PathHeader> {
             functionMap.put("personNameSection", new Transform<String, String>() {
                 @Override
                 public String transform(String source) {
-                    // value for personName length and sampleName item in desired sort order
-                    final List<String> lengthValues = Arrays.asList("long", "medium", "short", "monogram", "monogramNarrow");
-                    final List<String> itemValues = Arrays.asList("givenSurname", "given2Surname", "givenSurname2", "informal", "full", "multiword", "mononym");
+                    // sampleName item values in desired sort order
+                    final List<String> itemValues = Arrays.asList("givenOnly", "givenSurnameOnly", "given12Surname", "full");
+                    // personName attribute values: each group in desired
+                    // sort order, but groups from least important to most
+                    final List<String> pnAttrValues = Arrays.asList(
+                        "long", "medium", "short", // length values
+                        "givenFirst", "surnameFirst", "sorting"); // order values
 
                     if (source.equals("NameOrder")) {
                         order = 0;
                         return "NameOrder for Locales";
                     }
-                    if (source.equals("InitialPatterns")) {
+                    if (source.equals("AuxiliaryItems")) {
                         order = 10;
                         return source;
                     }
@@ -1873,11 +1880,17 @@ public class PathHeader implements Comparable<PathHeader> {
                         order = 20 + itemValues.indexOf(itemValue);
                         return "SampleName Fields for Item: " + itemValue;
                     }
-                    String lengthPrefix = "PersonName:";
-                    if (source.startsWith(lengthPrefix)) {
-                        String lengthValue = source.substring(lengthPrefix.length());
-                        order = 30 + lengthValues.indexOf(lengthValue);
-                        return "PersonName Patterns for Length: " + lengthValue;
+                    String pnPrefix = "PersonName:";
+                    if (source.startsWith(pnPrefix)) {
+                        String attrValues = source.substring(pnPrefix.length());
+                        List<String> parts = HYPHEN_SPLITTER.splitToList(attrValues);
+                        order = 30;
+                        for (String part: parts) {
+                         if (pnAttrValues.contains(part)) {
+                                order += (1 << pnAttrValues.indexOf(part));
+                            }
+                        }
+                        return "PersonName Patterns for Order-Length: " + attrValues;
                     }
                     order = 40;
                     return source;
@@ -1887,19 +1900,18 @@ public class PathHeader implements Comparable<PathHeader> {
             functionMap.put("personNameOrder", new Transform<String, String>() {
                 @Override
                 public String transform(String source) {
-                    // The various personName attribute values: each group in desired
+                    // personName attribute values: each group in desired
                     // sort order, but groups from least important to most
-                    final List<String> allValues = Arrays.asList(
-                        "sorting", "givenFirst", "surnameFirst", //order values
-                        "formal", "informal", // style values
-                        "addressing", "referring"); // usage values
-                        // length values already handled in &personNameSection
+                    final List<String> attrValues = Arrays.asList(
+                        "formal", "informal", //formality values
+                        "referring", "addressing", "monogram"); // usage values
+                        // order & length values handled in &personNameSection
 
                     List<String> parts = HYPHEN_SPLITTER.splitToList(source);
                     order = 0;
                     for (String part: parts) {
-                        if (allValues.contains(part)) {
-                            order += (1 << allValues.indexOf(part));
+                        if (attrValues.contains(part)) {
+                            order += (1 << attrValues.indexOf(part));
                         } // anything else like alt="variant" is at order 0
                     }
                     return source;
@@ -1911,15 +1923,15 @@ public class PathHeader implements Comparable<PathHeader> {
                 public String transform(String source) {
                     // The various nameField attribute values: each group in desired
                     // sort order, but groups from least important to most
-                    final List<String> allValues = Arrays.asList(
-                        "informal", // modifiers for nameField type
+                    final List<String> attrValues = Arrays.asList(
+                        "informal", "prefix", "core", // modifiers for nameField type
                         "prefix", "given", "given2", "surname", "surname2", "suffix"); // values for nameField type
 
                     List<String> parts = HYPHEN_SPLITTER.splitToList(source);
                     order = 0;
                     for (String part: parts) {
-                        if (allValues.contains(part)) {
-                            order += (1 << allValues.indexOf(part));
+                        if (attrValues.contains(part)) {
+                            order += (1 << attrValues.indexOf(part));
                         } // anything else like alt="variant" is at order 0
                     }
                     return source;

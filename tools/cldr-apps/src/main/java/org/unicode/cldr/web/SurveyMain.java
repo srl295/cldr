@@ -11,7 +11,6 @@ import java.io.Externalizable;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.PrintStream;
@@ -40,11 +39,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -105,10 +103,15 @@ import com.ibm.icu.util.ULocale;
  * The main servlet class of Survey Tool
  */
 public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Externalizable {
+    /**
+     * This needs a global place to access for non-jaxrs callers
+     */
+    @Inject
+    public SurveyMetrics surveyMetrics;
+
     private static final String CLDR_OLDVERSION = "CLDR_OLDVERSION";
     private static final String CLDR_NEWVERSION = "CLDR_NEWVERSION";
     private static final String CLDR_LASTVOTEVERSION = "CLDR_LASTVOTEVERSION";
-    public static final String CLDR_DIR = "CLDR_DIR"; // accessed by cldr-setup.jsp
 
     private static final String NEWVERSION_EPOCH = "1970-01-01 00:00:00";
 
@@ -127,7 +130,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
     private static UnicodeSet supportedNameSet = new UnicodeSet("[a-zA-Z]").freeze();
     static final int TWELVE_WEEKS = 3600 * 24 * 7 * 12;
 
-    public static final String DEFAULT_CONTENT_LINK = "<i><a target='CLDR-ST-DOCS' href='http://cldr.unicode.org/translation/default-content'>default content locale</a></i>";
+    public static final String DEFAULT_CONTENT_LINK = "<i><a target='CLDR-ST-DOCS' href='https://cldr.unicode.org/translation/translation-guide-general/default-content'>default content locale</a></i>";
 
     private static final long serialVersionUID = -3587451989643792204L;
 
@@ -393,7 +396,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
      * Did SurveyMain try to startup? Need to call GET /cldr-apps/survey for this to happen
      * if GET has not been called, then we don't have a SurveyMain instance yet and getInstance() will fail.
      * @see {@link #ensureStartup(HttpServletRequest, HttpServletResponse)}
-     * @see {@link #getInstance(HttpServletRequest)n
+     * @see {@link #getInstance(HttpServletRequest)
      * @return
      */
     public static boolean triedToStartUp() {
@@ -428,19 +431,6 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
 
     private void verifyConfigSanity() {
         CLDRConfig cconfig = CLDRConfigImpl.getInstance();
-        try(InputStream is = config.getServletContext().getResourceAsStream(JarFile.MANIFEST_NAME)) {
-            Manifest mf = new Manifest(is);
-            String s = mf.getMainAttributes().getValue("CLDR-Apps"+"-Git-Commit");
-            if (s != null && !s.isEmpty()) {
-                SurveyMain.CLDR_SURVEYTOOL_HASH  = s;
-                ((CLDRConfigImpl)cconfig).setCldrAppsHash(s);
-                logger.info("Updated CLDR_APPS_HASH to " + s);
-            } else {
-                logger.warning("CLDR_APPS_HASH = unknown (no value in manifest)");
-            }
-        } catch(Throwable t) {
-            logger.log(java.util.logging.Level.WARNING, "CLDR_APPS_HASH = unknown", t);
-        }
         isConfigSetup = true; // we have a CLDRConfig - so config is setup.
         stopIfMaintenance();
         cconfig.getSupplementalDataInfo(); // will fail if CLDR_DIR is broken.
@@ -966,7 +956,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
             cldrHome = tmpHome.getAbsolutePath();
             System.out.println("NOTE:  not inside of web process, using temporary CLDRHOME " + cldrHome);
         } else {
-            cldrHome = survprops.getProperty("CLDRHOME");
+            cldrHome = survprops.getProperty(CldrUtility.HOME_KEY);
         }
         if (cldrHome == null)
             throw new NullPointerException("CLDRHOME==null");
@@ -1431,21 +1421,6 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         return output.toString();
     }
 
-
-    /**
-     * Get the git hash for cldr-apps, statically.
-     * Use this to avoid dependency on a loaded CLDRConfig.
-     * @return
-     * @deprecated use getCurrevJSON
-     */
-    @Deprecated
-    public static String getCurrevCldrApps() {
-        if (CLDR_SURVEYTOOL_HASH == null) {
-            CLDR_SURVEYTOOL_HASH = CLDRConfigImpl.getGitHashForSlug("CLDR_APPS_HASH");
-        }
-        return CLDR_SURVEYTOOL_HASH;
-    }
-
     /**
      * Get the current source revision, as a JSON object
      * This will either be a single string '(unknown)' or '1234568'
@@ -1456,10 +1431,11 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
     public static JSONObject getCurrevJSON() {
         final CLDRConfigImpl instance = CLDRConfigImpl.getInstance();
         JSONObject jo = new JSONObject();
-        for(final String p : CLDRConfigImpl.ALL_GIT_HASHES) {
+        for (final String p : CLDRConfigImpl.ALL_GIT_HASHES) {
             try {
                 jo.put(p, instance.getProperty(p, CLDRURLS.UNKNOWN_REVISION));
             } catch (JSONException e) {
+                logger.warning("getCurrevJSON for " + p + " threw exception " + e);
             }
         }
         return jo;
@@ -2238,11 +2214,11 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
             final File list[] = getFileBases();
             CLDRConfig config = CLDRConfig.getInstance();
             // may fail at server startup time- should do this through setup mode
-            ensureOrCheckout(null, "CLDR_DIR", config.getCldrBaseDirectory(), CLDRURLS.CLDR_REPO_ROOT);
+            ensureOrCheckout(null, CldrUtility.DIR_KEY, config.getCldrBaseDirectory(), CLDRURLS.CLDR_REPO_ROOT);
             // verify readable
             File root = new File(config.getCldrBaseDirectory(), "common/main");
             if (!root.isDirectory()) {
-                throw new InternalError("Not a dir:  " + root.getAbsolutePath() + " - check the value of " + "CLDR_DIR"
+                throw new InternalError("Not a dir:  " + root.getAbsolutePath() + " - check the value of " + CldrUtility.DIR_KEY
                     + " in cldr.properties.");
             }
 
@@ -2470,11 +2446,10 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
 
     /**
      * Return the UserLocaleStuff for the current context. Any user of this
-     * should be within session sync (ctx.session) and must be balanced with
+     * should be within session sync and must be balanced with
      * calls to close();
      *
-     * @param ctx
-     * @param user
+     * @param session
      * @param locale
      * @see UserLocaleStuff#close()
      * @see WebContext#getUserFile()
@@ -2712,7 +2687,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
 
     /**
      * Main setup flag. Should use startupFuture, but it is called by many JSPs.
-     * @deprecated see {@link #startupFuture}
+     * @deprecated
      */
     @Deprecated
     public static boolean isSetup = false;
@@ -2746,9 +2721,9 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
 
             isConfigSetup = true;
 
-            cldrHome = survprops.getProperty("CLDRHOME");
+            cldrHome = survprops.getProperty(CldrUtility.HOME_KEY);
 
-            logger.info("CLDRHOME=" + cldrHome + ", maint mode=" + isMaintenance());
+            logger.info(CldrUtility.HOME_KEY + "=" + cldrHome + ", maint mode=" + isMaintenance());
 
             stopIfMaintenance();
 
@@ -2775,7 +2750,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
                 }
                 currentPhase = newPhase;
             }
-            logger.info("Phase: " + phase() + ", cPhase: " + phase().getCPhase() + ", " + getCurrevCldrApps());
+            logger.info("Phase: " + phase() + ", cPhase: " + phase().getCPhase());
             progress.update("Setup props..");
             newVersion = survprops.getProperty(CLDR_NEWVERSION, CLDR_NEWVERSION);
             oldVersion = survprops.getProperty(CLDR_OLDVERSION, CLDR_OLDVERSION);
@@ -3115,7 +3090,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         ElapsedTimer destroyTimer = new ElapsedTimer("SurveyTool destroy()");
         CLDRProgressTask progress = openProgress("shutting down");
         try {
-            logger.warning("SurveyTool shutting down.. r" + getCurrevCldrApps());
+            logger.warning("SurveyTool shutting down...");
             progress.update("shutting down mail... " + destroyTimer);
             MailSender.shutdown();
             progress.update("shutting down summary snapshots... " + destroyTimer);
@@ -3166,7 +3141,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
 
     /**
      * Only to be used by getInFiles.
-     * @param base
+     * @param baseDir
      * @return
      */
     private static File[] getInFiles(File baseDir) {
@@ -3344,7 +3319,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         if (t != null) {
             SurveyLog.logException(logger, t, what /* , ignore stack - fetched from exception */);
         }
-        logger.warning("SurveyTool " + SurveyMain.getCurrevCldrApps() + " busted: " + what + " ( after " + pages + "html+" + xpages
+        logger.warning("SurveyTool " + SurveyMain.getCurrev(false) + " busted: " + what + " ( after " + pages + "html+" + xpages
             + "xml pages served,  "
             + getGuestsAndUsers() + ")");
         System.err.println("Busted at stack: \n" + StackTracker.currentStack());

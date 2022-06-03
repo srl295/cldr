@@ -7,10 +7,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.unicode.cldr.test.CheckCLDR.CheckStatus.Subtype;
+import org.unicode.cldr.util.LocaleIDParser;
 import org.unicode.cldr.util.MatchValue.LocaleMatchValue;
 import org.unicode.cldr.util.Pair;
 import org.unicode.cldr.util.PatternCache;
@@ -28,6 +30,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+import com.ibm.icu.util.Output;
 
 public class CheckPlaceHolders extends CheckCLDR {
 
@@ -43,6 +47,9 @@ public class CheckPlaceHolders extends CheckCLDR {
         Validity.Status.special,
         Validity.Status.unknown)
         );
+    private static final ImmutableSet<Modifier> SINGLE_CORE = ImmutableSet.of(Modifier.core);
+    private static final ImmutableSet<Modifier> SINGLE_PREFIX = ImmutableSet.of(Modifier.prefix);
+    private static final ImmutableSet<Modifier> CORE_AND_PREFIX = ImmutableSet.of(Modifier.prefix, Modifier.core);
 
     @Override
     public CheckCLDR handleCheck(String path, String fullPath, String value, Options options,
@@ -63,38 +70,74 @@ public class CheckPlaceHolders extends CheckCLDR {
 
             case "nameOrderLocales":
                 //ldml/personNames/nameOrderLocales[@order="givenFirst"]
-                Set<String> orderErrors = null;
-                for (String item : SPLIT_SPACE.split(value)) {
-                    boolean mv = LOCALE_MATCH_VALUE.is(item);
-                    if (!mv) {
-                        if (orderErrors == null) {
-                            orderErrors = new LinkedHashSet<>();
-                        }
-                        orderErrors.add(item);
-                    }
-                }
+                Set<String> items = new TreeSet<>();
+                Set<String> orderErrors = checkForErrorsAndGetLocales(value, items);
                 if (orderErrors != null) {
                     result.add(new CheckStatus().setCause(this)
                         .setMainType(CheckStatus.errorType)
-                        .setSubtype(Subtype.invalidPlaceHolder)
+                        .setSubtype(Subtype.invalidLocale)
                         .setMessage("Invalid locales: \"" + JOIN_SPACE.join(orderErrors) + "\""));
+                }
+                // Check to see that user's language and und are explicitly mentioned.
+                // but only if the value is not inherited.
+                String unresolvedValue = getCldrFileToCheck().getUnresolved().getStringValue(path);
+                if (unresolvedValue != null) {
+                    // And the other value is not inherited.
+                    String otherPath = path.contains("givenFirst")
+                        ? path.replace("givenFirst", "surnameFirst")
+                            : path.replace("surnameFirst", "givenFirst");
+                    String otherValue = getCldrFileToCheck().getStringValue(otherPath);
+                    if (otherValue != null) {
+                        String myLanguage = getCldrFileToCheck().getLocaleID();
+                        if (!myLanguage.equals("root")) { // skip root
+
+                            myLanguage = new LocaleIDParser().set(myLanguage).getLanguage();
+                            checkForErrorsAndGetLocales(otherValue, items); // adds locales from other path
+                            if (!items.contains(myLanguage)) {
+                                result.add(new CheckStatus().setCause(this)
+                                    .setMainType(CheckStatus.errorType)
+                                    .setSubtype(Subtype.missingLanguage)
+                                    .setMessage("Your locale code (" + myLanguage
+                                        + ") must be explicitly listed in one of the nameOrderLocales:"
+                                        + " either in givenFirst or in surnameFirst."));
+                            }
+                            if (!items.contains("und")) {
+                                result.add(new CheckStatus().setCause(this)
+                                    .setMainType(CheckStatus.errorType)
+                                    .setSubtype(Subtype.missingLanguage)
+                                    .setMessage("The special code ‘und’ must be explicitly listed in one of the nameOrderLocales: either givenFirst or surnameFirst."));
+                            }
+                        }
+                    }
                 }
                 return this;
 
             case "sampleName":
                 //ldml/personNames/sampleName[@item="informal"]/nameField[@type="surname"]
+
+                // check basic consistency of modifier set
+                ModifiedField fieldType = ModifiedField.from(parts.getAttributeValue(-1, "type"));
+                Field field = fieldType.getField();
+                Set<Modifier> modifiers = fieldType.getModifiers();
+                Output<String> errorMessage = new Output<>();
+                Modifier.getCleanSet(modifiers, errorMessage);
+                if (errorMessage.value != null) {
+                    result.add(new CheckStatus().setCause(this)
+                        .setMainType(CheckStatus.warningType)
+                        .setSubtype(Subtype.invalidPlaceHolder)
+                        .setMessage(errorMessage.value));
+                    return this;
+                }
+
                 if (value.equals("∅∅∅")) {
                     // check for required values
-
-                    ModifiedField fieldType = ModifiedField.from(parts.getAttributeValue(-1, "type"));
-                    Field field = fieldType.getField();
 
                     switch(field) {
                     case given:
                         // we must have a given
                         if (fieldType.getModifiers().isEmpty()) {
                             result.add(new CheckStatus().setCause(this)
-                                .setMainType(CheckStatus.errorType)
+                                .setMainType(CheckStatus.warningType)
                                 .setSubtype(Subtype.invalidPlaceHolder)
                                 .setMessage("Names must have a value for the ‘given‘ field. Mononyms (like ‘Lady Gaga’) use given, not surname"));
                         }
@@ -103,7 +146,7 @@ public class CheckPlaceHolders extends CheckCLDR {
                         // can't have surname2 unless we have surname
                         String modPath = parts.cloneAsThawed().setAttribute(-1, "type", Field.surname2.toString()).toString();
                         String surname2Value = getCldrFileToCheck().getStringValue(modPath);
-                        if (!surname2Value.equals("∅∅∅")) {
+                        if (surname2Value != null && !surname2Value.equals("∅∅∅")) {
                             result.add(new CheckStatus().setCause(this)
                                 .setMainType(CheckStatus.errorType)
                                 .setSubtype(Subtype.invalidPlaceHolder)
@@ -113,11 +156,29 @@ public class CheckPlaceHolders extends CheckCLDR {
                     default:
                         break;
                     }
-                }
+                } else { // real value
+                    // special checks for prefix/core
+                    final boolean hasPrefix = modifiers.contains(Modifier.prefix);
+                    final boolean hasCore = modifiers.contains(Modifier.core);
+                    if (hasPrefix || hasCore) {
+                        // We need consistency among the 3 values if we have either prefix or core
 
+                        String coreValue = hasCore ? value : modifiedFieldValue(parts, field, modifiers, Modifier.core);
+                        String prefixValue = hasPrefix ? value : modifiedFieldValue(parts, field, modifiers, Modifier.prefix);
+                        String plainValue = modifiedFieldValue(parts, field, modifiers, null);
+
+                        String errorMessage2 = Modifier.inconsistentPrefixCorePlainValues(prefixValue, coreValue, plainValue);
+                        if (errorMessage2 != null) {
+                            result.add(new CheckStatus().setCause(this)
+                            .setMainType(CheckStatus.errorType)
+                            .setSubtype(Subtype.invalidPlaceHolder)
+                            .setMessage(errorMessage2));
+                        }
+                    }
+                }
                 return this;
             case "personName":
-                //ldml/personNames/personName[@length="long"][@usage="addressing"][@style="formal"][@order="sorting"]/namePattern
+                //ldml/personNames/personName[@order="sorting"][@length="long"][@usage="addressing"][@style="formal"]/namePattern
 
                 // check that the name pattern is valid
 
@@ -246,6 +307,7 @@ public class CheckPlaceHolders extends CheckCLDR {
                 return this;
             }
             // done with person names
+            // note: depending on the switch value, may fall through
         }
 
         int startPlaceHolder = 0;
@@ -314,6 +376,42 @@ public class CheckPlaceHolders extends CheckCLDR {
             }
         }
         return this;
+    }
+
+    /**
+     * Gets a string value for a modified path
+     */
+    private String modifiedFieldValue(XPathParts parts, Field field, Set<Modifier> modifiers, Modifier toAdd) {
+        Set<Modifier> adjustedModifiers = Sets.difference(modifiers, CORE_AND_PREFIX);
+        if (toAdd != null) {
+            switch (toAdd) {
+            case core:
+                adjustedModifiers = Sets.union(adjustedModifiers, SINGLE_CORE);
+                break;
+            case prefix:
+                adjustedModifiers = Sets.union(adjustedModifiers, SINGLE_PREFIX);
+                break;
+            }
+        }
+        String modPath  = parts.cloneAsThawed().setAttribute(-1, "type", new ModifiedField(field, adjustedModifiers).toString()).toString();
+        String value = getCldrFileToCheck().getStringValue(modPath);
+        return "∅∅∅".equals(value) ? null : value;
+    }
+
+    private Set<String> checkForErrorsAndGetLocales(String value, Set<String> items) {
+        Set<String> orderErrors = null;
+        for (String item : SPLIT_SPACE.split(value)) {
+            boolean mv = LOCALE_MATCH_VALUE.is(item);
+            if (!mv) {
+                if (orderErrors == null) {
+                    orderErrors = new LinkedHashSet<>();
+                }
+                orderErrors.add(item);
+            } else {
+                items.add(item);
+            }
+        }
+        return orderErrors;
     }
 
     private void checkNothingAfter1(String value, List<CheckStatus> result) {

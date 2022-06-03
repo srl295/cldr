@@ -50,7 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload cldr-code
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: cldr-code
           path: tools/cldr-code/target/cldr-code.jar
@@ -65,7 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload cldr-prod
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: cldr-prod
           path: target/cldr-prod.zip
@@ -76,13 +76,13 @@ jobs:
     steps:
       - name: Download CLDR Production Artifact
         id: downloadprod
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: cldr-prod
           path: .
       - name: Download CLDR tools
         id: downloadtools
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: cldr-code
           path: cldr-code
@@ -91,7 +91,7 @@ jobs:
         with:
           java-version: 11
       - name: Setup Maven Settings
-        uses: s4u/maven-settings-action@v2.4.1
+        uses: s4u/maven-settings-action@v2.6.0
         with:
           servers: |
             [{
@@ -152,7 +152,7 @@ jobs:
       - name: Zip up icu-data.zip
         run: 'cd icu/icu4c/source && zip -rlq ../../../icu-data.zip data'
       - name: Upload icu-data.zip
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: icu-data
           path: icu-data.zip
@@ -174,7 +174,7 @@ jobs:
           ref: ${{ github.event.inputs.icu-ref }}
           lfs: false
       - name: Download icu-data.zip
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: icu-data
           path: .
@@ -192,7 +192,7 @@ jobs:
           make -j 2;
           make dist
       - name: Upload icu4c
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: icu4c
           path: icu4c/source/dist
@@ -220,7 +220,7 @@ jobs:
       - name: Checkout lfs objects
         run: git lfs pull
       - name: Download icu-data.zip
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: icu-data
           path: .
@@ -238,7 +238,7 @@ jobs:
           ant jar;
           ant releaseBinaries;
       - name: Upload icu4j
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: icu4j
           path: icu4j/release

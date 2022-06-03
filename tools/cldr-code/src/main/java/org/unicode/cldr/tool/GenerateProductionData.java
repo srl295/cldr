@@ -19,19 +19,7 @@ import java.util.regex.Pattern;
 
 import org.unicode.cldr.tool.Option.Options;
 import org.unicode.cldr.tool.Option.Params;
-import org.unicode.cldr.util.CLDRConfig;
-import org.unicode.cldr.util.CLDRFile;
-import org.unicode.cldr.util.CLDRPaths;
-import org.unicode.cldr.util.CldrUtility;
-import org.unicode.cldr.util.DtdType;
-import org.unicode.cldr.util.Factory;
-import org.unicode.cldr.util.Level;
-import org.unicode.cldr.util.LocaleIDParser;
-import org.unicode.cldr.util.LogicalGrouping;
-import org.unicode.cldr.util.Pair;
-import org.unicode.cldr.util.SupplementalDataInfo;
-import org.unicode.cldr.util.XMLSource;
-import org.unicode.cldr.util.XPathParts;
+import org.unicode.cldr.util.*;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -166,7 +154,8 @@ public class GenerateProductionData {
             }
         });
         if (!localeToSubdivisionsToMigrate.isEmpty()) {
-            System.err.println("WARNING: Subdivision files not written");
+            System.err.println("WARNING: Subdivision files not written, " + localeToSubdivisionsToMigrate.size() + " entries\n" +
+                    "For locales: " + localeToSubdivisionsToMigrate.keySet());
             for (Entry<String, Pair<String, String>> entry : localeToSubdivisionsToMigrate.entries()) {
                 System.err.println(entry.getKey() + " \t" + entry.getValue());
             }
@@ -316,7 +305,7 @@ public class GenerateProductionData {
                 // special-case the root values that are only for Survey Tool use
 
                 if (isRoot) {
-                    if (xpath.startsWith("//ldml/annotations/annotation")) {
+                    if (AnnotationUtil.pathIsAnnotation(xpath)) {
                         toRemove.add(xpath);
                         continue;
                     }
@@ -329,7 +318,7 @@ public class GenerateProductionData {
 
                 // remove items that are the same as their bailey values. This also catches Inheritance Marker
 
-                String bailey = cldrFileResolved.getConstructedBaileyValue(xpath, pathWhereFound, localeWhereFound);
+                String bailey = cldrFileResolved.getBaileyValue(xpath, pathWhereFound, localeWhereFound);
                 if (value.equals(bailey)
                     && (!ADD_SIDEWAYS
                         || pathEqualsOrIsAltVariantOf(xpath, pathWhereFound.value))

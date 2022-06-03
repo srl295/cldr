@@ -24,12 +24,12 @@ import org.unicode.cldr.util.CLDRInfo.CandidateInfo;
 import org.unicode.cldr.util.CLDRInfo.UserInfo;
 import org.unicode.cldr.util.CLDRLocale;
 import org.unicode.cldr.util.CldrUtility;
+import org.unicode.cldr.util.PatternPlaceholders;
 import org.unicode.cldr.util.PathHeader.PageId;
 import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.web.BallotBox;
 import org.unicode.cldr.web.BallotBox.VoteNotAcceptedException;
 import org.unicode.cldr.web.CookieSession;
-import org.unicode.cldr.web.Dashboard;
 import org.unicode.cldr.web.DataSection;
 import org.unicode.cldr.web.DataSection.DataRow;
 import org.unicode.cldr.web.DataSection.DataRow.CandidateItem;
@@ -172,7 +172,8 @@ public class VoteAPIHelper {
         // from DataSection.DataRow.toJSONString()
 
         // TODO: ourVote
-        row.xpath = XPathTable.getStringIDString(r.getXpath());
+        final String xpath = r.getXpath();
+        row.xpath = XPathTable.getStringIDString(xpath);
 
         row.code = r.getCode();
         row.resolver = r.getResolver();
@@ -191,6 +192,9 @@ public class VoteAPIHelper {
         row.rdf = r.getRDFURI();
 
         row.items = calculateItems(r, row);
+        PatternPlaceholders placeholders = PatternPlaceholders.getInstance();
+        row.placeholderStatus = placeholders.getStatus(xpath);
+        row.placeholderInfo = placeholders.get(xpath);
         return row;
     }
 
@@ -231,7 +235,7 @@ public class VoteAPIHelper {
             if (overrides != null) {
                 override = overrides.get(u);
             }
-            entries.add(new VoteEntry(u.id, u.getLevel().getVotes(), override));
+            entries.add(new VoteEntry(u.id, u.getVoteCount(), override));
         }
         return entries.toArray(new VoteEntry[entries.size()]);
     }
@@ -308,18 +312,7 @@ public class VoteAPIHelper {
         if (val != null) {
             try (SurveyMain.UserLocaleStuff uf = sm.getUserFile(mySession, locale);) {
                 final CLDRFile file = uf.cldrfile;
-                final String checkval = val;
-                if (CldrUtility.INHERITANCE_MARKER.equals(val)) {
-                    final Output<String> localeWhereFound = new Output<>();
-                    /*
-                     * TODO: this looks dubious, see https://unicode.org/cldr/trac/ticket/11299
-                     * temporarily for debugging, don't change checkval, but do call
-                     * getBaileyValue in order to get localeWhereFound
-                     */
-                    // checkval = file.getBaileyValue(xp, null, localeWhereFound);
-                    file.getBaileyValue(xp, null, localeWhereFound);
-                }
-                cc.check(xp, result, checkval);
+                cc.check(xp, result, val);
                 r.dataEmpty = file.isEmpty();
             }
         }

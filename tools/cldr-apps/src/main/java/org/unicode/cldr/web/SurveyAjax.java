@@ -1,5 +1,7 @@
 package org.unicode.cldr.web;
 
+import static org.unicode.cldr.web.XPathTable.getStringIDString;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -40,10 +42,24 @@ import org.unicode.cldr.test.DisplayAndInputProcessor;
 import org.unicode.cldr.test.SubmissionLocales;
 import org.unicode.cldr.test.TestCache;
 import org.unicode.cldr.test.TestCache.TestResultBundle;
-import org.unicode.cldr.util.*;
+import org.unicode.cldr.util.CLDRConfig;
+import org.unicode.cldr.util.CLDRConfigImpl;
+import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRInfo.CandidateInfo;
 import org.unicode.cldr.util.CLDRInfo.UserInfo;
+import org.unicode.cldr.util.CLDRLocale;
+import org.unicode.cldr.util.CldrUtility;
+import org.unicode.cldr.util.CoverageInfo;
+import org.unicode.cldr.util.DateTimeFormats;
 import org.unicode.cldr.util.DtdData.IllegalByDtdException;
+import org.unicode.cldr.util.Factory;
+import org.unicode.cldr.util.Level;
+import org.unicode.cldr.util.PathHeader;
+import org.unicode.cldr.util.SpecialLocales;
+import org.unicode.cldr.util.SupplementalDataInfo;
+import org.unicode.cldr.util.XMLSource;
+import org.unicode.cldr.util.XMLUploader;
+import org.unicode.cldr.util.XPathParts;
 import org.unicode.cldr.web.BallotBox.InvalidXPathException;
 import org.unicode.cldr.web.BallotBox.VoteNotAcceptedException;
 import org.unicode.cldr.web.CLDRProgressIndicator.CLDRProgressTask;
@@ -56,8 +72,6 @@ import org.unicode.cldr.web.WebContext.HTMLDirection;
 import com.ibm.icu.dev.util.ElapsedTimer;
 import com.ibm.icu.text.UnicodeSet;
 import com.ibm.icu.util.Output;
-
-import static org.unicode.cldr.web.XPathTable.getStringIDString;
 
 /**
  * Servlet implementation class SurveyAjax
@@ -179,20 +193,18 @@ public class SurveyAjax extends HttpServlet {
         PrintWriter out = response.getWriter();
         String what = request.getParameter(REQ_WHAT);
         String sess = request.getParameter(SurveyMain.QUERY_SESSION);
-        String loc = request.getParameter(SurveyMain.QUERY_LOCALE);
+        String rawloc = request.getParameter(SurveyMain.QUERY_LOCALE);
         String xpath = request.getParameter(SurveyForum.F_XPATH);
         String vhash = request.getParameter("vhash");
         String fieldHash = request.getParameter(SurveyMain.QUERY_FIELDHASH);
         CookieSession mySession = null;
 
-        CLDRLocale l = null;
-        if (sm != null && SurveyMain.isSetup && loc != null && !loc.isEmpty()) {
-            l = validateLocale(out, loc, sess);
-            if (l == null) {
-                return; // error was already thrown.
-            }
-            loc = l.toString(); // normalized
+        CLDRLocale l = validateLocale(out, rawloc, sess); // will send error
+        if (l == null && (rawloc != null && !rawloc.isEmpty())) {
+            return; // validateLocale has already sent an error to the user
         }
+        // Always sanitize 'loc'. Do not pass raw to user.
+        final String loc = (l == null)?null:l.toString();
         try {
             if (sm == null) {
                 sendNoSurveyMain(out);
@@ -803,15 +815,9 @@ public class SurveyAjax extends HttpServlet {
             } else {
                 sendError(out, "Unknown Request: " + what, ErrorCode.E_INTERNAL);
             }
-        } catch (SurveyException e) {
-            SurveyLog.logException(logger, e, "Processing: " + what);
+        } catch (Throwable e) {
+            SurveyLog.logException(logger, e, "Error in SurveyAjax?what=" + what + ": " + e.getMessage());
             sendError(out, e);
-        } catch (JSONException e) {
-            SurveyLog.logException(logger, e, "Processing: " + what);
-            sendError(out, "JSONException: " + e, ErrorCode.E_INTERNAL);
-        } catch (SQLException e) {
-            SurveyLog.logException(logger, e, "Processing: " + what);
-            sendError(out, "SQLException: " + e, ErrorCode.E_INTERNAL);
         }
     }
 
@@ -1082,6 +1088,9 @@ public class SurveyAjax extends HttpServlet {
      * @throws IOException
      */
     public static CLDRLocale validateLocale(PrintWriter out, String loc, String sess) throws IOException {
+        if (loc == null || loc.isEmpty()) {
+            return null;
+        }
         CLDRLocale ret = null;
         if (CookieSession.sm == null || SurveyMain.isSetup == false) {
             sendNoSurveyMain(out);
@@ -3015,8 +3024,7 @@ public class SurveyAjax extends HttpServlet {
         final String calendarType = "gregorian";
         final String title = com.ibm.icu.lang.UCharacter.toTitleCase(SurveyMain.TRANS_HINT_LOCALE.toLocale(), calendarType, null);
 
-        out.write("<h3>Review Date/Times : " + title + "</h3>");
-        writeReportInstructionsLink(out);
+        out.write("<h3>Calendar : " + title + "</h3>");
 
         STFactory fac = sm.getSTFactory();
         CLDRFile englishFile = fac.make("en", true);
@@ -3039,9 +3047,6 @@ public class SurveyAjax extends HttpServlet {
      * @throws IOException
      */
     private static void generateZonesReport(Writer out, SurveyMain sm, CLDRLocale l) throws IOException {
-        out.write("<h3>Review Zones</h3>");
-        writeReportInstructionsLink(out);
-
         CLDRFile englishFile = sm.getDiskFactory().make("en", true);
         CLDRFile nativeFile = sm.getSTFactory().make(l, true);
 
@@ -3057,25 +3062,10 @@ public class SurveyAjax extends HttpServlet {
      * @throws IOException
      */
     private static void generateNumbersReport(Writer out, SurveyMain sm, CLDRLocale l) throws IOException {
-        out.write("<h3>Review Numbers</h3>");
-        writeReportInstructionsLink(out);
-
         STFactory fac = sm.getSTFactory();
         CLDRFile nativeFile = fac.make(l, true);
 
         org.unicode.cldr.util.VerifyCompactNumbers.showNumbers(nativeFile, true, "EUR", out, fac);
-    }
-
-    /**
-     * Write html including a link to the instructions for using reports
-     *
-     * @param out the Writer
-     * @throws IOException
-     */
-    private static void writeReportInstructionsLink(Writer out) throws IOException {
-        out.write("<p>Please read the <a target='CLDR-ST-DOCS' href='"
-            + "http://cldr.unicode.org/translation/getting-started/review-formats"
-            + "'>instructions</a> before continuing.</p>");
     }
 
     /**

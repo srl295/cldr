@@ -14,6 +14,7 @@ import org.unicode.cldr.util.personname.PersonNameFormatter.ModifiedField;
 import org.unicode.cldr.util.personname.PersonNameFormatter.Modifier;
 import org.unicode.cldr.util.personname.PersonNameFormatter.NameObject;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.ibm.icu.util.ULocale;
 
@@ -25,10 +26,16 @@ import com.ibm.icu.util.ULocale;
 public class SimpleNameObject implements NameObject {
     private final ULocale nameLocale;
     private final Map<Field, Map<Set<Modifier>, String>> patternData;
+    private ImmutableMap<ModifiedField, String> modifiedFieldToValue;
 
     @Override
     public Set<Field> getAvailableFields() {
         return patternData.keySet();
+    }
+
+    @Override
+    public ImmutableMap<ModifiedField, String> getModifiedFieldToValue() {
+        return modifiedFieldToValue;
     }
 
     /**
@@ -95,24 +102,55 @@ public class SimpleNameObject implements NameObject {
 
     public SimpleNameObject(ULocale nameLocale, Map<ModifiedField, String> patternData) {
         this.nameLocale = nameLocale == null ? ULocale.ROOT : nameLocale;
+        this.modifiedFieldToValue = ImmutableMap.copyOf(patternData);
+
         Map<Field, Map<Set<Modifier>, String>> _patternData = new EnumMap<>(Field.class);
         for (Entry<ModifiedField, String> entry : patternData.entrySet()) {
             ModifiedField modifiedField = entry.getKey();
             final Field field = modifiedField.getField();
-            Map<Set<Modifier>, String> fieldData = _patternData.get(field);
-            if (fieldData == null) {
-                _patternData.put(field, fieldData = new TreeMap<>(Modifier.LONGEST_FIRST));
-            }
-            fieldData.put(modifiedField.getModifiers(), entry.getValue());
+            final Set<Modifier> modifiers = modifiedField.getModifiers();
+            final String value = entry.getValue();
+            putChain(_patternData, field, modifiers, value);
         }
-        // check data
+
+        // check data, and adjust as necessary
+
+        Map<Field, Map<Set<Modifier>, String>> additions = null;
         for (Entry<Field, Map<Set<Modifier>, String>> entry : _patternData.entrySet()) {
             Map<Set<Modifier>, String> map = entry.getValue();
-            if (map.get(ImmutableSet.of()) == null) {
-                throw new IllegalArgumentException("Every field must have a completely modified value " + entry);
+            if (map.get(Modifier.EMPTY) == null) {
+
+                // ok to have no empty map if there exists a core
+                // in that case, we manufacture a name
+                String coreValue = map.get(ImmutableSet.of(Modifier.core));
+                if (coreValue == null) {
+                    throw new IllegalArgumentException("Every field must have a completely modified value " + entry);
+                }
+                String prefixValue = map.get(ImmutableSet.of(Modifier.prefix));
+                if (additions == null) {
+                    additions = new EnumMap<>(Field.class);
+                }
+                Field field = entry.getKey();
+                putChain(additions, field, Modifier.EMPTY, prefixValue == null ? coreValue : prefixValue + " " + coreValue);
+            }
+        }
+        if (additions != null) { // copy in additions
+            for (Entry<Field, Map<Set<Modifier>, String>> entry : additions.entrySet()) {
+                Field field = entry.getKey();
+                for (Entry<Set<Modifier>, String> entry2 : entry.getValue().entrySet()) {
+                    putChain(_patternData, field, entry2.getKey(), entry2.getValue());
+                }
             }
         }
         this.patternData = CldrUtility.protectCollection(_patternData);
+    }
+
+    private void putChain(Map<Field, Map<Set<Modifier>, String>> _patternData, final Field field, final Set<Modifier> modifiers, final String value) {
+        Map<Set<Modifier>, String> fieldData = _patternData.get(field);
+        if (fieldData == null) {
+            _patternData.put(field, fieldData = new TreeMap<>(Modifier.LONGEST_FIRST));
+        }
+        fieldData.put(modifiers, value);
     }
 
     /*

@@ -69,7 +69,7 @@ import com.ibm.icu.util.ICUUncheckedIOException;
  */
 abstract public class CheckCLDR {
 
-    public static final boolean LIMITED_SUBMISSION = true; // TODO represent differently
+    public static final boolean LIMITED_SUBMISSION = false; // TODO represent differently
 
     private static CLDRFile displayInformation;
 
@@ -601,6 +601,7 @@ abstract public class CheckCLDR {
             .add(new CheckUnits())
             .add(new CheckWidths())
             .add(new CheckPlaceHolders())
+            .add(new CheckPersonNames())
             .add(new CheckNew(factory)) // this is at the end; it will check for other certain other errors and warnings and
             // not add a message if there are any.
             ;
@@ -724,7 +725,7 @@ abstract public class CheckCLDR {
             narrowDateFieldTooWide, illegalCharactersInExemplars, orientationDisagreesWithExemplars,
             inconsistentDatePattern, inconsistentTimePattern, missingDatePattern, illegalDatePattern,
             missingMainExemplars, mustNotStartOrEndWithSpace, illegalCharactersInNumberPattern,
-            numberPatternNotCanonical, currencyPatternMissingCurrencySymbol, missingMinusSign,
+            numberPatternNotCanonical, currencyPatternMissingCurrencySymbol, currencyPatternUnexpectedCurrencySymbol, missingMinusSign,
             badNumericType, percentPatternMissingPercentSymbol, illegalNumberFormat, unexpectedAttributeValue,
             metazoneContainsDigit, tooManyGroupingSeparators, inconsistentPluralFormat, missingZeros, sameAsEnglish, sameAsCode,
             dateSymbolCollision, incompleteLogicalGroup, extraMetazoneString, inconsistentDraftStatus,
@@ -734,7 +735,7 @@ abstract public class CheckCLDR {
             inheritanceMarkerNotAllowed, invalidDurationUnitPattern, invalidDelimiter, illegalCharactersInPattern,
             badParseLenient, tooManyValues, invalidSymbol, invalidGenderCode,
             mismatchedUnitComponent, longPowerWithSubscripts, gapsInPlaceholderNumbers, duplicatePlaceholders, largerDifferences,
-            missingNonAltPath
+            missingNonAltPath, badSamplePersonName, missingLanguage
             ;
 
             @Override
@@ -1114,7 +1115,7 @@ abstract public class CheckCLDR {
         // If we're being asked to run tests for an inheritance marker, then we need to change it
         // to the "real" value first before running tests. Testing the value CldrUtility.INHERITANCE_MARKER ("↑↑↑") doesn't make sense.
         if (CldrUtility.INHERITANCE_MARKER.equals(value)) {
-            value = cldrFileToCheck.getConstructedBaileyValue(path, null, null);
+            value = cldrFileToCheck.getBaileyValue(path, null, null);
             // If it hasn't changed, then don't run any tests.
             if (CldrUtility.INHERITANCE_MARKER.equals(value)) {
                 return this;
@@ -1211,7 +1212,7 @@ abstract public class CheckCLDR {
             // If we're being asked to run tests for an inheritance marker, then we need to change it
             // to the "real" value first before running tests. Testing the value CldrUtility.INHERITANCE_MARKER ("↑↑↑") doesn't make sense.
             if (CldrUtility.INHERITANCE_MARKER.equals(value)) {
-                value = getCldrFileToCheck().getConstructedBaileyValue(path, null, null);
+                value = getCldrFileToCheck().getBaileyValue(path, null, null);
             }
             for (Iterator<CheckCLDR> it = filteredCheckList.iterator(); it.hasNext();) {
                 CheckCLDR item = it.next();

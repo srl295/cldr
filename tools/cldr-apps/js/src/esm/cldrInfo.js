@@ -74,24 +74,17 @@ function show(str, tr, hideIfLast, fn) {
 
   if (tr && tr.theRow) {
     const { theRow } = tr;
-    const { helpHtml, rdf } = theRow;
+    const { helpHtml, rdf, placeholderStatus, placeholderInfo } = theRow;
     if (helpHtml || rdf) {
       cldrDeferHelp.addDeferredHelpTo(fragment, helpHtml, rdf);
     }
-    // extra attributes
-    if (
-      theRow.extraAttributes &&
-      Object.keys(theRow.extraAttributes).length > 0
-    ) {
-      var extraHeading = cldrDom.createChunk(
-        cldrText.get("extraAttribute_heading"),
-        "h3",
-        "extraAttribute_heading"
+    if (placeholderStatus !== "DISALLOWED") {
+      // Hide the placeholder status if DISALLOWED
+      cldrDeferHelp.addPlaceholderHelp(
+        fragment,
+        placeholderStatus,
+        placeholderInfo
       );
-      var extraContainer = cldrDom.createChunk("", "div", "extraAttributes");
-      appendExtraAttributes(extraContainer, theRow);
-      theHelp.appendChild(extraHeading);
-      theHelp.appendChild(extraContainer);
     }
   }
 
@@ -355,7 +348,7 @@ function updateRowVoteInfo(tr, theRow) {
       );
       isectionIsUsed = true;
     }
-    cldrSurvey.setLang(valdiv);
+    cldrSurvey.setLang(valdiv); // want the whole div to be marked as cldrValue
     if (value === cldrSurvey.INHERITANCE_MARKER) {
       /*
        * theRow.inheritedValue can be undefined here; then do not append
@@ -607,7 +600,6 @@ function showItemInfoFn(theRow, item) {
     }
 
     var span = cldrVote.appendItem(h3, displayValue, item.pClass);
-    cldrSurvey.setLang(span);
     h3.className = "span";
     td.appendChild(h3);
 

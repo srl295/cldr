@@ -5,15 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.unicode.cldr.test.CheckCLDR.CheckStatus.Subtype;
-import org.unicode.cldr.util.CLDRFile;
+import org.unicode.cldr.util.*;
 import org.unicode.cldr.util.CLDRFile.Status;
-import org.unicode.cldr.util.CLDRURLS;
-import org.unicode.cldr.util.CldrUtility;
-import org.unicode.cldr.util.Factory;
-import org.unicode.cldr.util.InternalCldrException;
-import org.unicode.cldr.util.LanguageTagParser;
-import org.unicode.cldr.util.RegexLookup;
-import org.unicode.cldr.util.XPathParts;
 
 import com.ibm.icu.text.UnicodeSet;
 import com.ibm.icu.util.ICUException;
@@ -115,13 +108,12 @@ public class CheckForCopy extends FactoryCheckCLDR {
          * otherwise nothing prevents voting to inherit the code value.
          *
          * TODO: clarify the purpose of using topStringValue and getConstructedValue here;
-         * cf. getConstructedBaileyValue. This code is confusing and warrants explanation.
-         * The meaning of "explicit" here seems to be the opposite of its meaning elsewhere.
+         * This code is confusing and warrants explanation.
          */
         String topStringValue = unresolvedFile.getStringValue(path);
-        final boolean isExplicitBailey = CldrUtility.INHERITANCE_MARKER.equals(topStringValue);
+        final boolean topValueIsInheritanceMarker = CldrUtility.INHERITANCE_MARKER.equals(topStringValue);
         String loc = cldrFile.getSourceLocaleID(path, status);
-        if (!contextIsVoteSubmission && !isExplicitBailey) {
+        if (!contextIsVoteSubmission && !topValueIsInheritanceMarker) {
             if (!cldrFile.getLocaleID().equals(loc)
                 || !path.equals(status.pathWhereFound)) {
                 return Failure.ok;
@@ -156,7 +148,7 @@ public class CheckForCopy extends FactoryCheckCLDR {
             return Failure.ok;
         }
         if (CldrUtility.INHERITANCE_MARKER.equals(value)) {
-            value = cldrFile.getConstructedBaileyValue(path, null, null);
+            value = cldrFile.getBaileyValue(path, null, null);
             if (value == null) {
                 return Failure.ok;
             }
@@ -165,24 +157,43 @@ public class CheckForCopy extends FactoryCheckCLDR {
             return Failure.ok;
         }
         String value2 = value;
-        if (isExplicitBailey) {
+        if (topValueIsInheritanceMarker) {
             value2 = cldrFile.getConstructedValue(path);
             if (value2 == null) { // no special constructed value
                 value2 = value;
             }
         }
+        if (reallySameAsCode(path, value2)) {
+            return Failure.same_as_code;
+        }
+        return failure;
+    }
 
+    private static boolean reallySameAsCode(String path, String value) {
+        if (AnnotationUtil.pathIsAnnotation(path)) {
+            return AnnotationUtil.matchesCode(value);
+        } else {
+            return sameAsCodePerAttributes(path, value);
+        }
+    }
+
+    /**
+     * Does the given value match the "code" for the given path?
+     *
+     * @param path like //ldml/localeDisplayNames/languages/language[@type="ace"]
+     * @param value like "ace"
+     * @return true if value matches one of the attributes in path
+     */
+    private static boolean sameAsCodePerAttributes(String path, String value) {
         XPathParts parts = XPathParts.getFrozenInstance(path);
-
         int elementCount = parts.size();
         for (int i = 2; i < elementCount; ++i) {
             Map<String, String> attributes = parts.getAttributes(i);
             for (Entry<String, String> attributeEntry : attributes.entrySet()) {
                 final String attributeValue = attributeEntry.getValue();
                 try {
-                    if (value2.equals(attributeValue)) {
-                        failure = Failure.same_as_code;
-                        break;
+                    if (value.equals(attributeValue)) {
+                        return true;
                     }
                 } catch (NullPointerException e) {
                     throw new ICUException("Value: " + value + "\nattributeValue: " + attributeValue
@@ -190,7 +201,7 @@ public class CheckForCopy extends FactoryCheckCLDR {
                 }
             }
         }
-        return failure;
+        return false;
     }
 
     private static boolean sameAsEnglishOK(String loc, String path, String value) {

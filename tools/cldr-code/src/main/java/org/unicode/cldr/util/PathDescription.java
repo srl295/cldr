@@ -103,6 +103,14 @@ public class PathDescription {
         + RegexLookup.SEPARATOR
         + "The name of “{1} calendar”. For more information, please see "
         + CLDRURLS.KEY_NAMES + ".\n"
+        + "^//ldml/localeDisplayNames/types/type\\[@key=\"em\"]\\[@type=\"([^\"]*)\"]"
+        + RegexLookup.SEPARATOR
+        + "The name of “emoji presentation style {1}”. For more information, please see "
+        + CLDRURLS.KEY_NAMES + ".\n"
+        + "^//ldml/localeDisplayNames/types/type\\[@key=\"fw\"]\\[@type=\"([^\"]*)\"]"
+        + RegexLookup.SEPARATOR
+        + "The name of “first day of the week is {1}”. For more information, please see "
+        + CLDRURLS.KEY_NAMES + ".\n"
         + "^//ldml/localeDisplayNames/types/type\\[@key=\"lb\"]\\[@type=\"([^\"]*)\"]"
         + RegexLookup.SEPARATOR
         + "The name of “{1} line break style”. For more information, please see "
@@ -339,6 +347,14 @@ public class PathDescription {
         + RegexLookup.SEPARATOR
         + "Special decimal pattern used to obtain the long plural forms of numbers with the same number of digits as {2}. See "
         + CLDRURLS.NUMBERS_PLURAL + " for details.\n"
+        + "^//ldml/numbers/currencyFormats/currencyPatternAppendISO"
+        + RegexLookup.SEPARATOR
+        + "Pattern used to combine a regular currency format with an ISO 4217 code (¤¤). For more information, please see "
+        + CLDRURLS.NUMBER_PATTERNS + ".\n"
+        + "^//ldml/numbers/currencyFormats\\[@numberSystem=\"([^\"]*)\"]/currencyPatternAppendISO"
+        + RegexLookup.SEPARATOR
+        + "Pattern used to combine a regular currency format with an ISO 4217 code (¤¤). For more information, please see "
+        + CLDRURLS.NUMBER_PATTERNS + ".\n"
         + "^//ldml/numbers/currencyFormats\\[@numberSystem=\"([^\"]*)\"]/unitPattern\\[@count=\"(\\w++)\"]"
         + RegexLookup.SEPARATOR
         + "Currency format used for numbers of type {2}. For more information, please see "
@@ -382,13 +398,29 @@ public class PathDescription {
         + RegexLookup.SEPARATOR
         + "Person name order for locales. For more information, please see "
         + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
-        + "^//ldml/personNames/initialPattern\\[@type=\"([^\"]*)\"]"
+        + "^//ldml/personNames/foreignSpaceReplacement"
         + RegexLookup.SEPARATOR
-        + "Initials patterns for person name formats. For more information, please see "
+        + "For foreign personal names displayed in your locale, any special character that replaces a space (defaults to regular space). For more information, please see "
         + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
-        + "^//ldml/personNames/personName"
+        + "^//ldml/personNames/initialPattern\\[@type=\"initial\"]"
         + RegexLookup.SEPARATOR
-        + "Person name formats by length, usage, style, order. For more information, please see "
+        + "The pattern used for a single initial in person name formats. For more information, please see "
+        + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
+        + "^//ldml/personNames/initialPattern\\[@type=\"initialSequence\"]"
+        + RegexLookup.SEPARATOR
+        + "The pattern used to compose sequences of initials in person name formats. For more information, please see "
+        + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
+        + "^//ldml/personNames/personName\\[@order=\"([^\"]*)\"]\\[@length=\"([^\"]*)\"]\\[@usage=\"referring\"]\\[@formality=\"([^\"]*)\"]"
+        + RegexLookup.SEPARATOR
+        + "Person name formats for referring to a person (with a particular order, length, formality). For more information, please see "
+        + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
+        + "^//ldml/personNames/personName\\[@order=\"([^\"]*)\"]\\[@length=\"([^\"]*)\"]\\[@usage=\"addressing\"]\\[@formality=\"([^\"]*)\"]"
+        + RegexLookup.SEPARATOR
+        + "Person name format for addressing a person (with a particular order, length, formality). For more information, please see "
+        + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
+        + "^//ldml/personNames/personName\\[@order=\"([^\"]*)\"]\\[@length=\"([^\"]*)\"]\\[@usage=\"monogram\"]\\[@formality=\"([^\"]*)\"]"
+        + RegexLookup.SEPARATOR
+        + "Person name formats for monograms (with a particular order, length, formality). For more information, please see "
         + CLDRURLS.PERSON_NAME_FORMATS + ".\n"
         + "^//ldml/personNames/sampleName"
         + RegexLookup.SEPARATOR
@@ -398,6 +430,14 @@ public class PathDescription {
         + "^//ldml/numbers/([a-z]*)Formats(\\[@numberSystem=\"([^\"]*)\"])?/\\1FormatLength/\\1Format\\[@type=\"standard\"]/pattern\\[@type=\"standard\"]$"
         + RegexLookup.SEPARATOR
         + "Special pattern used to compose {1} numbers. Note: before translating, be sure to read "
+        + CLDRURLS.NUMBER_PATTERNS + ".\n"
+        + "^//ldml/numbers/currencyFormats\\[@numberSystem=\"([^\"]*)\"]/currencyFormatLength/currencyFormat\\[@type=\"standard\"]/pattern\\[@type=\"standard\"]\\[@alt=\"alphaNextToNumber\"]"
+        + RegexLookup.SEPARATOR
+        + "Special pattern used to compose currency values when the currency symbol has a letter adjacent to the number. Note: before translating, be sure to read "
+        + CLDRURLS.NUMBER_PATTERNS + ".\n"
+        + "^//ldml/numbers/currencyFormats\\[@numberSystem=\"([^\"]*)\"]/currencyFormatLength/currencyFormat\\[@type=\"standard\"]/pattern\\[@type=\"standard\"]\\[@alt=\"noCurrency\"]"
+        + RegexLookup.SEPARATOR
+        + "Special pattern used to compose currency values for which no currency symbol should be shown. Note: before translating, be sure to read "
         + CLDRURLS.NUMBER_PATTERNS + ".\n"
         + "^//ldml/numbers/currencyFormats\\[@numberSystem=\"([^\"]*)\"]/currencyFormatLength/currencyFormat\\[@type=\"accounting\"]/pattern"
         + RegexLookup.SEPARATOR
@@ -567,11 +607,15 @@ public class PathDescription {
         + RegexLookup.SEPARATOR
         + "Provide a name for “the {1} of SOME_DATE”. For more information, please see "
         + CLDRURLS.DATE_TIME_NAMES + ".\n"
-
-        + "^//ldml/dates/calendars/calendar\\[@type=\"([^\"]*)\"]/dateTimeFormats/dateTimeFormatLength\\[@type=\"([^\"]*)\"]/dateTimeFormat\\[@type=\"([^\"]*)\"]/pattern\\[@type=\"([^\"]*)\"]"
+        + "^//ldml/dates/calendars/calendar\\[@type=\"([^\"]*)\"]/dateTimeFormats/dateTimeFormatLength\\[@type=\"([^\"]*)\"]/dateTimeFormat\\[@type=\"standard\"]/pattern\\[@type=\"([^\"]*)\"]"
         + RegexLookup.SEPARATOR
-        + "Provide the {2} version of the date-time pattern. Note: before translating, be sure to read "
+        + "Provide the {2} version of the date-time pattern suitable for most use cases, including combining a date with a time range. Note: before translating, be sure to read "
         + CLDRURLS.DATE_TIME_PATTERNS + ".\n"
+        + "^//ldml/dates/calendars/calendar\\[@type=\"([^\"]*)\"]/dateTimeFormats/dateTimeFormatLength\\[@type=\"([^\"]*)\"]/dateTimeFormat\\[@type=\"atTime\"]/pattern\\[@type=\"([^\"]*)\"]"
+        + RegexLookup.SEPARATOR
+        + "Provide the {2} version of the date-time pattern suitable for expressing a date at a specific time. Note: before translating, be sure to read "
+        + CLDRURLS.DATE_TIME_PATTERNS + ".\n"
+
         + "^//ldml/dates/calendars/calendar\\[@type=\"([^\"]*)\"]/dateFormats/dateFormatLength\\[@type=\"([^\"]*)\"]/dateFormat\\[@type=\"([^\"]*)\"]/pattern\\[@type=\"([^\"]*)\"]"
         + RegexLookup.SEPARATOR
         + "Provide the {2} version of the basic date pattern. Note: before translating, be sure to read "
