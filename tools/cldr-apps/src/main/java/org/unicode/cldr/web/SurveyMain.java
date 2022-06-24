@@ -3521,21 +3521,23 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
         }
     }
 
-    // ====== Utility Functions
+    // ====== Utility Functions. Should use a Duration format or similar
 
     /**
-     *
-     * @param a
-     * @return
-     *
-     * Called from AdminAjax.jsp and locally
+     * @param a an epoch millis
+     * @return how far in the past 'a' was
      */
     public static final String timeDiff(long a) {
         return timeDiff(a, System.currentTimeMillis());
     }
 
+    /**
+     * @param a a duration, in milliseconds
+     * @return the duration expressed as a string
+     */
     public static final String durationDiff(long a) {
-        return timeDiff(System.currentTimeMillis() - a);
+        long now = System.currentTimeMillis();
+        return timeDiff(now - a, now);
     }
 
     private static final String timeDiff(long a, long b) {

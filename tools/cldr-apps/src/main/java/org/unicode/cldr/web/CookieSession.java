@@ -166,7 +166,7 @@ public class CookieSession {
     }
 
     /**
-     * TODO: clarify who calls this and why; the usage of durationDiff with millisTillKick appears dubious
+     * Note: this function is used in the debugger, and shows up in server logs.
      */
     @Override
     public String toString() {
