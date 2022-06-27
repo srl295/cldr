@@ -151,7 +151,7 @@ Some non-goals (outside the scope of the format) currently are:
 1. Adaptation for screen scaling resolution. Instead, keyboards should define layouts based on physical size. Platforms may interpret physical size definitions and adapt for different physical screen sizes with different resolutions.
 2. Unify the world's vkey and scan code mapping information
 3. Unify pre-existing platform layouts themselves (i.e. existing fr-azerty on platform a, b, c)
-4. Support for prior (pre 3.0) CLDR keyboard files
+4. Support for prior (pre 3.0) CLDR keyboard files. See [Compatbility Notice](#Compatibility_Notice).
 
 <!-- 1. Display names or symbols for keycaps (eg, the German name for "Return"). If that were added to LDML, it would be in a different structure, outside the scope of this section.
 2. Advanced IME features, handwriting recognition, etc.
@@ -163,11 +163,10 @@ Note that in parts of this document, the format `@x` is used to indicate the _at
 
 ### 2.1 <a name="Compatibility_Notice" href="#Compatibility_Notice">Compatibility Notice</a>
 
-> :point_right: Note: CLDR-TC has agreed that the changes required were too extensive to maintain compatibility. For this reason, the DTD used here is _not_ compatible with DTDs from prior versions of CLDR such as v41 and prior.
+> 👉 Note: CLDR-TC has agreed that the changes required were too extensive to maintain compatibility. For this reason, the DTD used here is _not_ compatible with DTDs from prior versions of CLDR such as v41 and prior.
 >
-> To process earlier XML files, use the prior DTD and specification found at  (LINK TO v41 DTD) / (LINK TO v41 SPEC) …
-
-* * *
+> To process earlier XML files, use the prior DTD and specification, such as v41 found at <https://www.unicode.org/reports/tr35/tr35-66/tr35.html>
+>
 
 ## 3 <a name="Definitions" href="#Definitions">Definitions</a>
 
@@ -278,7 +277,7 @@ This is the top level element. All other elements defined below are under this e
 
 _Attribute:_ `locale` (required)
 
-This mandatory attribute represents the locale of the keyboard using Unicode locale identifiers (see [LDML](tr35.md)) - for example `"el"` for Greek. Sometimes, the locale may not specify the base language. For example, a Devanagari keyboard for many languages could be specified by BCP-47 code: `"und-Deva"`. For details, see [Keyboard IDs](#Keyboard_IDs) .
+This mandatory attribute represents the primary locale of the keyboard using Unicode locale identifiers (see [LDML](tr35.md)) - for example `"el"` for Greek. Sometimes, the locale may not specify the base language. For example, a Devanagari keyboard for many languages could be specified by BCP-47 code: `"mul-Deva"`. For details, see [Keyboard IDs](#Keyboard_IDs) .
 
 **Example** (for illustrative purposes only, not indicative of the real data)
 
@@ -304,6 +303,12 @@ For purposes of this current draft spec, the value should always be `techpreview
 ```xml
 <keyboard … conformsTo="techpreview"/>
 ```
+
+* * *
+
+### 5.x <a name="Element_locales" href="#Element_locales">Element: locales</a>
+
+The optional `<locales>` element allows specifying additional or alternate locales. Denotes intentional support for an extra language, not just that a keyboard .
 
 * * *
 
