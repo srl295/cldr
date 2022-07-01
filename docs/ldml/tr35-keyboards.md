@@ -67,20 +67,22 @@ The LDML specification is divided into the following parts:
 * 1 [Keyboards](#Introduction)
 * 2 [Goals and Non-goals](#Goals_and_Nongoals)
   * 2.1 [Compatibility Notice](#Compatibility_Notice)
+  * 2.2 [Accessibility](#Accessibility)
 * 3 [Definitions](#Definitions)
   * 3.1 [Escaping](#Escaping)
 * 4 [File and Directory Structure](#File_and_Dir_Structure)
+  * 4.1 [Extensibility](#Extensibility)
 * 5 [Element Hierarchy - Layout File](#Element_Heirarchy_Layout_File)
   * 5.1 [Element: keyboard](#Element_Keyboard)
+  * 5.x [Element: locales](#Element_locales)
   * 5.2 [Element: version](#Element_version)
-  * 5.3 ~~[Element: generation](#Element_generation)~~
   * 5.4 [Element: info](#Element_info)
   * 5.5 [Element: names](#Element_names)
   * 5.6 [Element: name](#Element_name)
   * 5.7 [Element: settings](#Element_settings)
-  * 5.8 [Element: keyMap](#Element_keyMap)
+  * 5.8 [Element: keys](#Element_keys)
     * Table: [Possible Modifier Keys](#Possible_Modifier_Keys)
-  * 5.9 [Element: map](#Element_map)
+  * 5.9 [Element: key](#Element_key)
     * 5.9.1 [Elements: flicks, flick](#Element_flicks)
   * 5.10 [Element: import](#Element_import)
   * 5.11 [Element: displayMap](#Element_displayMap)
@@ -139,6 +141,7 @@ Some goals of this format are:
     * For example, a new French standard keyboard layout would have a single definition which would be usable across all implementations.
 3. Allow platforms to be able to use CLDR keyboard data for the character-emitting keys (non-frame) aspects of keyboard layouts.
     * For example, platform-specific keys such as Fn, Numpad, IME swap keys, and cursor keys are out of scope.
+    * This also means that modifier (frame) keys cannot generate output, such as capslock -> backslash.
 4. Deprecate & archive existing LDML platform-specific layouts so they are not part of future releases
 
 <!--
@@ -151,7 +154,7 @@ Some non-goals (outside the scope of the format) currently are:
 1. Adaptation for screen scaling resolution. Instead, keyboards should define layouts based on physical size. Platforms may interpret physical size definitions and adapt for different physical screen sizes with different resolutions.
 2. Unify the world's vkey and scan code mapping information
 3. Unify pre-existing platform layouts themselves (i.e. existing fr-azerty on platform a, b, c)
-4. Support for prior (pre 3.0) CLDR keyboard files. See [Compatbility Notice](#Compatibility_Notice).
+4. Support for prior (pre 3.0) CLDR keyboard files. See [Compatibility Notice](#Compatibility_Notice).
 
 <!-- 1. Display names or symbols for keycaps (eg, the German name for "Return"). If that were added to LDML, it would be in a different structure, outside the scope of this section.
 2. Advanced IME features, handwriting recognition, etc.
@@ -167,6 +170,15 @@ Note that in parts of this document, the format `@x` is used to indicate the _at
 >
 > To process earlier XML files, use the prior DTD and specification, such as v41 found at <https://www.unicode.org/reports/tr35/tr35-66/tr35.html>
 >
+
+### 2.2 <a name="Accessibility" href="#Accessibility">Accessibility</a>
+
+Keyboard use can be challenging for individuals with various types of disabilities. For this revision, the committee is not evaluating features or architectural designs for the purpose of improving accessibility. Such consideration could be fruitful for future revisions. However, some points on this topic should be made:
+
+1. Having an industry-wide standard format for keyboards will enable accessibility software to make use of keyboard data with a reduced dependence on platform-specific knowledge.
+2. Some features, such as multitap and flicks, have the potential to reduce accessibility and thus should be discouraged. For example, multitap requires pressing keys at a certain speed, and flicks require a more complex movement (press-and-flick) beyond a simple tap.
+3. Public feedback is welcome on any aspects of this document which might hinder accessibility.
+
 
 ## 3 <a name="Definitions" href="#Definitions">Definitions</a>
 
@@ -237,7 +249,7 @@ Characters of general category of Combining Mark (M), Control characters (Cc), F
 ## 4 <a name="File_and_Dir_Structure" href="#File_and_Dir_Structure">File and Directory Structure</a>
 
 * New collection of layouts that are prescriptive, and define the common core for a keyboard that can be consumed as data for implementation on different platforms. This collection will be in a different location than the existing CLDR keyboard files under main/keyboards. We should remove the existing data files, but keep the old DTD in the same place for compatibility, and also so that conversion tools can use it to read older files.
-* New layouts are designed to be used outside of the CLDR source tree, and so need to use a URN or FPI. See <https://unicode-org.atlassian.net/browse/CLDR-15505> for discussion.
+* New layouts are designed to be used outside of the CLDR source tree, and should ideally use a URN or FPI. See <https://unicode-org.atlassian.net/browse/CLDR-15505> for discussion. For this tech preview, a relative path to the dtd will continue to be used.
 * New layouts will have version metadata to indicate their spec compliance versi​​on number:
 
 ```xml
@@ -250,6 +262,12 @@ Characters of general category of Combining Mark (M), Control characters (Cc), F
 2. Multiple layout files named by their locale identifiers. (eg. `lt-t-k0-chromeos.xml` or `ne-t-k0-windows.xml`).
 
 Keyboard data that is not supported on a given platform, but intended for use with that platform, may be added to the directory `/und/`. For example, there could be a file `/und/lt-t-k0-chromeos.xml`, where the data is intended for use with ChromeOS, but does not reflect data that is distributed as part of a standard ChromeOS release. -->
+
+### 4.1 <a name="Extensibility" href="#Extensibility">Extensibility</a>
+
+For extensibility, the `<special>` element will be allowed at every level.
+
+See [Element special](tr35.md#special) in Part 1.
 
 * * *
 
@@ -766,6 +784,8 @@ where a flick to the Northeast then South produces two code points.
 
 ### 5.10 <a name="Element_import" href="#Element_import">Element: import</a>
 
+<!-- TODO: more work needed here -->
+
 The `import` element references another file of the same type and includes all the subelements of the top level element as though the `import` element were being replaced by those elements, in the appropriate section of the XML file. For example:
 
 **Syntax**
@@ -822,7 +842,22 @@ The following elements are not imported from the source file:
 
 The displayMap can be used to describe what is to be displayed on the keytops for various keys. For the most part, such explicit information is unnecessary since the `@to` element from the `keyMap/map` element can be used. But there are some characters, such as diacritics, that do not display well on their own and so explicit overrides for such characters can help. The `displayMap` consists of a list of display subelements.
 
-DisplayMaps are designed to be shared across many different keyboard layout descriptions, and included in where needed.
+DisplayMaps are designed to be shared across many different keyboard layout descriptions, and `<import>`ed in where needed.
+
+For combining characters, U+25CC `◌` is used as a base.
+For example, a key which outputs a combining tilde (U+0303) can be represented as follows:
+
+```xml
+    <display to="\u0303" display="◌̃" />  <!-- \u25CC \u0303-->
+```
+
+This way, a key which outputs a combining tilde (U+0303) will be represented as `◌̃` (a tilde on a dotted circle).
+
+> **TODO under discussion** Some scripts/languages may prefer a different base.
+> For Lao for example, `x` is often used as a base instead of `◌`.
+> The mechanism for this is still being discussed, but implementations may substitute U+25CC
+> for another character.
+
 
 **Syntax**
 
