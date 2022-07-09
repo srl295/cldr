@@ -611,7 +611,12 @@ _Attribute:_ `flicks="flick-id"` (optional)
 
 _Attribute:_ `gap="true"` (optional)
 
-> The `gap` attribute indicates that this key does not have any appearance, but represents a "gap" of the specified number of key widths.
+> The `gap` attribute indicates that this key does not have any appearance, but represents a "gap" of the specified number of key widths. Can be used with `width` to set a width.
+
+
+```xml
+<key id="mediumgap" gap="true" width="1.5"/>
+```
 
 _Attribute:_ `longPress="optional"` (optional) (discouraged, see [Accessibility](#Accessibility))
 
@@ -645,11 +650,6 @@ _Attribute:_ `switch="shift"` (optional)
 > Also note that `switch=` is ignored for hardware layouts: their shifting is controlled via
 > the modifier keys.
 
-<!-- TODO is this true? -->
-
-```xml
-<key id="mediumgap" gap="1.5"/>
-```
 
 _Attribute:_ `to` (required)
 
@@ -659,7 +659,7 @@ _Attribute:_ `transform="no"` (optional)
 
 > The `transform` attribute is used to define a key that never participates in a transform but its output shows up as part of a transform. This attribute is necessary because two different keys could output the same characters (with different keys or modifier combinations) but only one of them is intended to be a dead-key and participate in a transform. This attribute value must be no if it is present.
 
-For example, suppose there are the following keys, their output and one transform:
+> For example, suppose there are the following keys, their output and one transform:
 
 ```xml
 <keys>
@@ -676,13 +676,11 @@ For example, suppose there are the following keys, their output and one transfor
 * Option-**X** outputs `^` but is intended to be the first part of a transform.
 * Option-**X** + `e` → `ê`
 
-Without the `transform="no"` on the base key **X**, it would not be possible to
-type the sequence `^e` (carat+e) as it would turn into `ê` per the transform.
-However, since there is `transform="no`" on **X**, if the user types **X** + `e` the sequence remains `^e`.
+> Without the `transform="no"` on the base key **X**, it would not be possible to
+> type the sequence `^e` (carat+e) as it would turn into `ê` per the transform.
+> However, since there is `transform="no`" on **X**, if the user types **X** + `e` the sequence remains `^e`.
 
 * **X** + `e` → `^e`
-
-
 
 _Attribute:_ `width="1.2"` (optional, default "1.0")
 
@@ -690,6 +688,7 @@ _Attribute:_ `width="1.2"` (optional, default "1.0")
 
 ```xml
 <key id="wide-a" to="a" width="1.2"/>
+<key id="wide-gap" gap="true" width="2.5"/>
 ```
 
 * * *
@@ -871,13 +870,16 @@ The following elements are not imported from the source file:
 
 ### 5.11 <a name="Element_displayMap" href="#Element_displayMap">Element: displayMap</a>
 
-The displayMap can be used to describe what is to be displayed on the keytops for various keys. For the most part, such explicit information is unnecessary since the `@to` element from the `keyMap/map` element can be used. But there are some characters, such as diacritics, that do not display well on their own and so explicit overrides for such characters can help. The `displayMap` consists of a list of display subelements.
+The displayMap can be used to describe what is to be displayed on the keytops for various keys. For the most part, such explicit information is unnecessary since the `@to` element from the `keys/key` element can be used. But there are some characters, such as diacritics, that do not display well on their own and so explicit overrides for such characters can help.
+Another useful scenario is where there are doubled diacritics, or multiple characters with spacing issues.
 
-<!-- TODO: more discussion of motivation for this element -->
+The `displayMap` consists of a list of display subelements.
 
-displayMaps are designed to be shared across many different keyboard layout descriptions, and `<import>`ed in where needed.
+
+displayMaps are designed to be shared across many different keyboard layout descriptions, and imported with `<import>` in where needed.
 
 For combining characters, U+25CC `◌` is used as a base.
+
 For example, a key which outputs a combining tilde (U+0303) can be represented as follows:
 
 ```xml
@@ -910,7 +912,7 @@ An implementation may substitute a different character for U+25CC.
 
 ### 5.12 <a name="Element_display" href="#Element_display">Element: display</a>
 
-The `display` element describes how a character, that has come from a `keyMap/map` element, should be displayed on a keyboard layout where such display is possible.
+The `display` element describes how a character, that has come from a `keys/key` element, should be displayed on a keyboard layout where such display is possible.
 
 **Syntax**
 
@@ -928,7 +930,7 @@ The `display` element describes how a character, that has come from a `keyMap/ma
 
 _Attribute:_ `to` (required)
 
-> Specifies the character or character sequence from the `keyMap/map` element that is to have a special display.
+> Specifies the character or character sequence from the `keys/key` element that is to have a special display.
 
 _Attribute:_ `display` (required)
 
@@ -938,17 +940,17 @@ _Attribute:_ `display` (required)
 
 ```xml
 <keyboard>
-    <keyMap>
-        <map iso="C01" to="a" longpress="\u0301 \u0300" />
-    </keyMap>
+    <keys>
+        <key id="a" to="a" longpress="\u0301 \u0300" />
+    </keys>
     <displayMap>
-        <display to="\u0300" display="\u02CB" />
-        <display to="\u0301" display="\u02CA" />
+        <display to="\u0300" display="ˋ" /> <!-- \u02CB -->
+        <display to="\u0301" display="ˊ" /> <!-- \u02CA -->
     </displayMap>
 </keyboard>
 ```
 
-To allow `displayMap`s to be shared across descriptions, there is no requirement that `@to` in a `display` element matches any `@to` in any `keyMap/map` element in the keyboard description.
+To allow `displayMap`s to be shared across descriptions, there is no requirement that `@to` in a `display` element matches any `@to` in any `keys/key` element in the keyboard description.
 
 * * *
 
@@ -974,25 +976,11 @@ A `layer` element describes the configuration of keys on a particular layer of a
 
 _Attribute:_ `modifier` (required)
 
-> This has two roles. It acts as an identifier for the `layer` element and also provides the linkage into a keyMap. A modifier is a single modifier combination such that it is matched by one of the modifier combinations in one of the `keyMap/@modifiers` attribute. To indicate that no modifiers apply the reserved name of "none" is used. For the purposes of fallback vkey mapping, the following modifier components are reserved: "shift", "ctrl", "alt", "caps", "cmd", "opt" along with the "L" and "R" optional single suffixes for the first 3 in that list. There must be a `keyMap` whose `@modifiers` attribute matches the `@modifier` attribute of the `layer` element. It is an error if there is no such `keyMap`.
+> This has two roles. It acts as an identifier for the `layer` element for hardware keyboards (in the absence of the id= element) and also provides the linkage from the hardware modifiers into the correct `layer`. To indicate that no modifiers apply the reserved name of "none" can be used. For the purposes of fallback vkey mapping, the following modifier components are reserved: "shift", "ctrl", "alt", "caps", "cmd", "opt" along with the "L" and "R" optional single suffixes for the first 3 in that list.
 
-The `keymap/@modifier` often includes multiple combinations that match. It is not necessary (or prefered) to include all of these. Instead a minimal matching element should be used, such that exactly one keymap is matched.
 
-The following are examples of situations where the `@modifiers` and `@modifier` do not match, with a different keymap definition than above.
 
-| `keyMap/@modifiers` | `layer/@modifier`   |
-|---------------------|---------------------|
-| `shiftL`            | `shift` (ambiguous) |
-| `altR`              | `alt`               |
-| `shiftL?+shiftR`    | `shift`             |
-
-And these do match:
-
-| `keyMap/@modifiers` | `layer/@modifier` |
-|---------------------|-------------------|
-| `shiftL shiftR`     | `shift`           |
-
-The use of `@modifier` as an identifier for a layer, is sufficient since it is always unique among the set of `layer` elements in a keyboard.
+For hardware layouts, the use of `@modifier` as an identifier for a layer, is sufficient since it is always unique among the set of `layer` elements in a keyboard.
 
 * * *
 
