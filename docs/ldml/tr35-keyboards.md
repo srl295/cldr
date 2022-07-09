@@ -954,33 +954,62 @@ To allow `displayMap`s to be shared across descriptions, there is no requirement
 
 * * *
 
-### 5.13 <a name="Element_layer" href="#Element_layer">Element: layer</a>
+### 5.13.0 <a name="Element_layerMaps" href="#Element_layerMaps">Element: layerMaps</a>
 
-A `layer` element describes the configuration of keys on a particular layer of a keyboard. It contains one or more `row` elements to describe which keys exist in each `row` and optionally one or more `switch` elements that describe how keys in the layer switch the layer to another. In addition, for platforms that require a mapping from a key to a virtual key (for example Windows or Mac) there is also an optional `vkeys` element to describe the mapping.
+This element represents a set of `layerMap` elements with a specific physical form factor, whether
+hardware or touch layout.
+
+> <small>
+>
+> Parents: [keyboard](#Element_keyboard)
+> Children: [layerMap](#Element_layerMap)
+> Occurence: required, multiple
+>
+> </small>
+
+_Attribute:_ `form` (required)
+
+> `form` may be either `hardware` or `touch`.
+>
+> There may only be a single `layerMap` with `form="hardware"`.
+>
+> It is recommended to always have one
+> `<layerMaps form="hardware">` element.
+> If there is no `hardware` form, the implementation may need
+> to choose a different keyboard file, or use some other fallback behavior when using a
+> hardware keyboard.
+>
+> When using an on-screen keyboard, if there is not a `<layerMaps form="touch">`
+> element, the `<layerMaps form="hardware">` element can be used for on-screen use.
+
+### 5.13.1 <a name="Element_layerMap" href="#Element_layerMap">Element: layerMap</a>
+
+A `layerMap` element describes the configuration of keys on a particular layer of a keyboard. It contains one or more `row` elements to describe which keys exist in each row.
 
 **Syntax**
 
 ```xml
-<layer modifier="{Set of Modifier Combinations}">
+<layerMap id="layerId" modifier="{Set of Modifier Combinations}">
     ...
-</layer>
+</layerMap>
 ```
 
 > <small>
 >
 > Parents: [keyboard](#Element_keyboard)
-> Children: [row](#Element_row), [switch](#Element_switch), [vkeys](#Element_vkeys)
+> Children: [row](#Element_row)
 > Occurence: optional, multiple
 >
 > </small>
 
-_Attribute:_ `modifier` (required)
+_Attribute_ `id` (required for `touch`)
+
+
+_Attribute:_ `modifier` (required for `hardware`)
 
 > This has two roles. It acts as an identifier for the `layer` element for hardware keyboards (in the absence of the id= element) and also provides the linkage from the hardware modifiers into the correct `layer`. To indicate that no modifiers apply the reserved name of "none" can be used. For the purposes of fallback vkey mapping, the following modifier components are reserved: "shift", "ctrl", "alt", "caps", "cmd", "opt" along with the "L" and "R" optional single suffixes for the first 3 in that list.
 
-
-
-For hardware layouts, the use of `@modifier` as an identifier for a layer, is sufficient since it is always unique among the set of `layer` elements in a keyboard.
+For hardware layouts, the use of `@modifier` as an identifier for a layer, is sufficient since it is always unique among the set of `layerMap` elements in a keyboard.
 
 * * *
 
@@ -1006,7 +1035,7 @@ ISOKey denotes a key having an [ISO Position](#Definitions). SpecialKey is used 
 
 > <small>
 >
-> Parents: [layer](#Element_layer)
+> Parents: [layerMap](#Element_layerMap)
 > Children: _none_
 > Occurence: required, multiple
 >
