@@ -659,13 +659,30 @@ _Attribute:_ `transform="no"` (optional)
 
 > The `transform` attribute is used to define a key that never participates in a transform but its output shows up as part of a transform. This attribute is necessary because two different keys could output the same characters (with different keys or modifier combinations) but only one of them is intended to be a dead-key and participate in a transform. This attribute value must be no if it is present.
 
-<!-- TODO FORMATTING For example, suppose there are the following keys, their output and one transform:
+For example, suppose there are the following keys, their output and one transform:
 
-E00 outputs `
-Option+E00 outputs ` (the dead-version which participates in transforms).
-`e → è -->
+```xml
+<keys>
+    <key id="X" to="^" transform="no"/>
+    <key id="OptX" to="^"/>
+</keys>
+…
+<transforms …>
+    <transform from="^e" to="ê"/>
+</transforms>
+```
 
-<!-- Then the first key must be tagged with `transform="no"` to indicate that it should never participate in a transform. -->
+* **X** outputs `^` (the Carat)
+* Option-**X** outputs `^` but is intended to be the first part of a transform.
+* Option-**X** + `e` → `ê`
+
+Without the `transform="no"` on the base key **X**, it would not be possible to
+type the sequence `^e` (carat+e) as it would turn into `ê` per the transform.
+However, since there is `transform="no`" on **X**, if the user types **X** + `e` the sequence remains `^e`.
+
+* **X** + `e` → `^e`
+
+
 
 _Attribute:_ `width="1.2"` (optional, default "1.0")
 
