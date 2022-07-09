@@ -540,102 +540,55 @@ Indicates that:
 
 ### 5.8 <a name="Element_keys" href="#Element_keys">Element: keys</a>
 
-This element defines the properties of all of the keys [`<key>` elements](#Element_key) used in all layouts.
-It is a “bag of keys.”
+This element defines the properties of all possible keys via [`<key>` elements](#Element_key) used in all layouts.
+It is a “bag of keys” without specifying any ordering or relation between the keys.
+There is only a single `<keys>` element in each layout.
 
 **Syntax**
 
-<!-- ```xml
-<mey [modifiers="{Set of Modifier Combinations}"]>
-    {a set of map elements}
-</keyMap>
-``` -->
+```xml
+<keys>
+    <key … />
+    <key … />
+    <key … />
+    <flicks … />
+    <key … />
+    <flicks … />
+</keys>
+```
+
+`key` and `flicks` elements may be interleaved in any order.
 
 > <small>
 >
 > Parents: [keyboard](#Element_keyboard)
 > Children: [key](#Element_key), [flicks](#Element_flicks)
-> Occurence: required, multiple
+> Occurence: required, single
 >
 > </small>
 
-<!-- > A set of modifier combinations that cause this key map to be "active". Each combination is separated by a space. The interpretation is that there is a match if any of the combinations match, that is, they are ORed. Therefore, the order of the combinations within this attribute does not matter.
 
-> A combination is simply a concatenation of words to represent the simultaneous activation of one or more modifier keys. The order of the modifier keys within a combination does not matter, although don't care cases are generally added to the end of the string for readability (see next paragraph). For example: `"cmd+caps"` represents the Caps Lock and Command modifier key combination. Some keys have right or left variant keys, specified by a 'R' or 'L' suffix. For example: `"ctrlR+caps"` would represent the Right-Control and Caps Lock combination. For simplicity, the presence of a modifier without a 'R' or 'L' suffix means that either its left or right variants are valid. So `"ctrl+caps"` represents the same as `"ctrlL+ctrlR?+caps ctrlL?+ctrlR+caps"`.
-
-A modifier key may be further specified to be in a "don't care" state using the '?' suffix. The "don't care" state simply means that the preceding modifier key may be either ON or OFF. For example `"ctrl+shift?"` could be expanded into `"ctrl ctrl+shift"`.
-
-Within a combination, the presence of a modifier WITHOUT the '?' suffix indicates this key MUST be on. The converse is also true, the absence of a modifier key means it MUST be off for the combination to be active.
-
-Here is an exhaustive list of all possible modifier keys:
-
-###### Table: <a name="Possible_Modifier_Keys" href="#Possible_Modifier_Keys">Possible Modifier Keys</a>
-
-| Modifier Keys |          | Comments                        |
-|---------------|----------|---------------------------------|
-| `altL`        | `altR`   | xAlty → xAltR+AltL? xAltR?AltLy |
-| `ctrlL`       | `ctrlR`  | ditto for Ctrl                  |[](re:%20survey%20tool%20hosed)
-| `shiftL`      | `shiftR` | ditto for Shift                 |
-| `optL`        | `optR`   | ditto for Opt                   |
-| `caps`        |          | Caps Lock                       |
-| `cmd`         |          | Command on the Mac              |
-
-All sets of modifier combinations within a layout are disjoint with no-overlap existing between the key maps. That is, for every possible modifier combination, there is at most a single match within the layout file. There are thus never multiple matches. If no exact match is available, the match falls back to the base map unless the `fallback="omit"` attribute in the `settings` element is set, in which case there would be no output at all.
-
-**Example**
-
-To illustrate, the following example produces an invalid layout because pressing the "Ctrl" modifier key produces an indeterminate result:
-
-```xml
-<keyMap modifiers="ctrl+shift?">
-    …
-</keyMap>
-```
-
-```xml
-<keyMap modifiers="ctrl">
-    …
-</keyMap>
-```
-
-Modifier Examples:
-
-```xml
-<keyMap modifiers="cmd?+opt+caps?+shift" />
-```
-
-Caps-Lock may be ON or OFF, Option must be ON, Shift must be ON and Command may be ON or OFF.
-
-```xml
-<keyMap modifiers="shift caps" />
-```
-
-Caps-Lock must be ON OR Shift must be ON.
-
-If the `modifiers` attribute is not present on a `keyMap` then that particular key map is the base map. -->
 
 * * *
 
 ### 5.9 <a name="Element_key" href="#Element_key">Element: key</a>
 
-This element defines a mapping between the base character and the output for a particular set of active modifier keys. This element must have the `keyMap` element as its parent.
-
-If a `map` element for a particular ISO layout position has not been defined then if this key is pressed, no output is produced.
+This element defines a mapping between an abstract key and its output. This element must have the `keys` element as its parent. The `key` element is referened by the `keys=` attribute of the [`row` element](#Element_row).
 
 **Syntax**
 
 ```xml
-<map
+<key
  id="{key id}"
- to="{the output}"
+ [flicks="{flicks identifier}"]
+ [gap="true"]
  [longPress="{long press keys}"]
  [longPressDefault="{default longpress target}"]
- [transform="no"]
  [multitap="{the output on subsequent taps}"]
- [gap="gap width"]
- [flicks="{flicks identifier}"]
- [width="key width"]
- [switch="otherLayer"]
+ [switch="{layer id}"]
+ [to="{the output}"]
+ [transform="no"]
+ [width="{key width}"]
  /><!-- {Comment to improve readability (if needed)} -->
 ```
 
@@ -646,15 +599,21 @@ If a `map` element for a particular ISO layout position has not been defined the
 > Occurence: optional, multiple
 > </small>
 
+**Note**: The `id` attribute is required, as is _at least one of_ `switch`, `gap`, or `to`.
+
 _Attribute:_ `id`
 
 > The `id` attribute uniquely identifies the key. NMTOKEN, restricted to "[a-zA-Z0-9_.-]". It can (but needn't be) the Latin key name for a Latn script keyboard (a, b, c, A, B, C, …), or any other valid token (e-acute, alef, alif, alpha, …)
 
-_Attribute:_ `to` (required)
+_Attribute:_ `flicks="flick-id"` (optional)
 
-> The `to` attribute contains the output sequence of characters that is emitted when pressing this particular key. Control characters, whitespace (other than the regular space character) and combining marks in this attribute are escaped using the `\u{...}` notation. More than one key may output the same output.
+> The `flicks` attribute indicates that this key makes use of a [`flicks`](#Element_flicks) set with the specified id.
 
-_Attribute:_ `longPress="optional"` (optional)
+_Attribute:_ `gap="true"` (optional)
+
+> The `gap` attribute indicates that this key does not have any appearance, but represents a "gap" of the specified number of key widths.
+
+_Attribute:_ `longPress="optional"` (optional) (discouraged, see [Accessibility](#Accessibility))
 
 > The `longPress` attribute contains any characters that can be emitted by "long-pressing" a key, this feature is prominent in mobile devices. The possible sequences of characters that can be emitted are whitespace delimited. Control characters, combining marks and whitespace (which is intended to be a long-press option) in this attribute are escaped using the `\u{...}` notation.
 
@@ -665,7 +624,8 @@ _Attribute:_ `longPressDefault` (optional)
 >
 > ![keycap hint](images/keycapHint.png)
 
-_Attribute:_ `multitap` (optional)
+_Attribute:_ `multitap` (optional) (discouraged, see [Accessibility]
+
 > A space-delimited list of strings, where each successive element of the list is produced by the corresponding number of quick taps. For example, three taps on the key C01 will produce a “c” in the following example (first tap produces “a”, two taps produce “bb” etc.).
 >
 > _Example:_
@@ -676,32 +636,36 @@ _Attribute:_ `multitap` (optional)
 >
 > Control characters, combining marks and whitespace (which is intended to be a multitap option) in this attribute are escaped using the `\u{...}` notation.
 
-_Attribute:_ `transform="no"` (optional)
-
-> The `transform` attribute is used to define a key that never participates in a transform but its output shows up as part of a transform. This attribute is necessary because two different keys could output the same characters (with different keys or modifier combinations) but only one of them is intended to be a dead-key and participate in a transform. This attribute value must be no if it is present.
-
-For example, suppose there are the following keys, their output and one transform:
-
-```
-E00 outputs `
-Option+E00 outputs ` (the dead-version which participates in transforms).
-`e → è
-```
-
-Then the first key must be tagged with `transform="no"` to indicate that it should never participate in a transform.
+**Note**: Behavior past the end of the multitap list is implementation specific.
 
 _Attribute:_ `switch="shift"` (optional)
 
 > The `switch` attribute indicates that this key switches to another `layerMap` with the specified id (such as `<layerMap id="shift"/>` in this example).
 > Note that a key may have both a `switch=` and a `to=` attribute, indicating that the key outputs prior to switching layers.
+> Also note that `switch=` is ignored for hardware layouts: their shifting is controlled via
+> the modifier keys.
 
-_Attribute:_ `gap="1.5"` (optional)
-
-> The `gap` attribute indicates that this key does not have any appearance, but represents a "gap" of the specified number of key widths.
+<!-- TODO is this true? -->
 
 ```xml
 <key id="mediumgap" gap="1.5"/>
 ```
+
+_Attribute:_ `to` (required)
+
+> The `to` attribute contains the output sequence of characters that is emitted when pressing this particular key. Control characters, whitespace (other than the regular space character) and combining marks in this attribute are escaped using the `\u{...}` notation. More than one key may output the same output.
+
+_Attribute:_ `transform="no"` (optional)
+
+> The `transform` attribute is used to define a key that never participates in a transform but its output shows up as part of a transform. This attribute is necessary because two different keys could output the same characters (with different keys or modifier combinations) but only one of them is intended to be a dead-key and participate in a transform. This attribute value must be no if it is present.
+
+<!-- TODO FORMATTING For example, suppose there are the following keys, their output and one transform:
+
+E00 outputs `
+Option+E00 outputs ` (the dead-version which participates in transforms).
+`e → è -->
+
+<!-- Then the first key must be tagged with `transform="no"` to indicate that it should never participate in a transform. -->
 
 _Attribute:_ `width="1.2"` (optional, default "1.0")
 
@@ -710,15 +674,6 @@ _Attribute:_ `width="1.2"` (optional, default "1.0")
 ```xml
 <key id="wide-a" to="a" width="1.2"/>
 ```
-
-_Attribute:_ `switch="shift"` (optional)
-
-> The `switch` attribute indicates that this key switches to another `layerMap` with the specified id (such as `<layerMap id="shift"/>` in this example).
-> Note that a key may have both a `switch=` and a `to=` attribute, indicating that the key outputs prior to switching layers.
-
-_Attribute:_ `flicks="flicks-a"` (optional)
-
-> The `flicks` attribute indicates that this key makes use of a [`flicks`](#Element_flicks) set with the specified id.
 
 * * *
 
@@ -784,19 +739,72 @@ where a flick to the Northeast then South produces two code points.
 
 ### 5.10 <a name="Element_import" href="#Element_import">Element: import</a>
 
-<!-- TODO: more work needed here -->
 
-The `import` element references another file of the same type and includes all the subelements of the top level element as though the `import` element were being replaced by those elements, in the appropriate section of the XML file. For example:
+The `import` element is used to reference another xml file so that elements are imported from
+another file.
+
+The use case is to be able to import a standard set of vkeyMaps, transforms, and similar
+from the CLDR repository.  `<import>` is not recommended as a way for keyboard authors to
+split up their keyboard into multiple files, as the intent is for each single XML file to contain all that is needed for a keyboard layout.
+
+`<import>` can be used as a child of a number of elements.
+<!-- TODO: which ones?-->
+
 
 **Syntax**
 
 ```xml
-<import path="standard_transforms.xml">
+<!-- in a keyboard xml file-->
+…
+<transforms type="simple">
+    <!-- This line is before the import -->
+    <transform from="` " to="`" />
+    <import path="cldr/standard_transforms.xml"/>
+    <!-- This line is after the import -->
+    <transform from="^ " to="^" />
+</transforms>
+…
+
+
+<!-- contents of cldr/standard_transforms.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE transforms SYSTEM "../dtd/ldmlKeyboard.dtd">
+<transforms>
+    <!-- begin imported part-->
+    <transform from="`a" to="à" />
+    <transform from="`e" to="è" />
+    <transform from="`i" to="ì" />
+    <transform from="`o" to="ò" />
+    <transform from="`u" to="ù" />
+    <!-- end imported part -->
+</transforms>
+```
+
+Note that the DOCTYPE and root element, here `transforms`, is the same as
+the _parent_ of the `<import/>` element. It is an error to import an XML file
+whois root element is different than the parent element of the `<import/>` element.
+
+After loading, the above example will be the equivalent of the following.
+
+```xml
+<transforms type="simple">
+    <!-- This line is before the import -->
+    <transform from="` " to="`" />
+    <!-- begin imported part-->
+    <transform from="`a" to="à" />
+    <transform from="`e" to="è" />
+    <transform from="`i" to="ì" />
+    <transform from="`o" to="ò" />
+    <transform from="`u" to="ù" />
+    <!-- end imported part -->
+    <!-- This line is after the import -->
+    <transform from="^ " to="^" />
+</transforms>
 ```
 
 > <small>
 >
-> Parents: [keyboard](#Element_keyboard)
+> Parents: _various_
 > Children: _none_
 > Occurence: optional, multiple
 >
@@ -804,9 +812,13 @@ The `import` element references another file of the same type and includes all t
 
 _Attribute:_ `path` (required)
 
-> The value is contains a relative path to the included ldml file. There is a standard set of directories to be searched that an application may provide. This set is always prepended with the directory in which the current file being read, is stored.
+> The value is contains a relative path to the included XML file. There is a standard set of directories to be searched that an application may provide. This set is always prepended with the directory in which the current file being read, is stored.
 
-If two identical elements, as described below, are defined, the later element will take precedence. Thus if a `hardwareMap/map` for the same keycode on the same page is defined twice (for example once in an included file), the later one will be the resulting mapping.
+If two identical elements <!-- , as described below, --> are defined, the later element will take precedence.
+
+<!-- TODO: Rework the below discussion. -->
+
+<!-- Thus if a `hardwareMap/map` for the same keycode on the same page is defined twice (for example once in an included file), the later one will be the resulting mapping.
 
 Elements are considered to have three attributes that make them unique: the tag of the element, the parent and the identifying attribute. The parent in its turn is a unique element and so on up the chain. If the distinguishing attribute is optional, its non-existence is represented with an empty value. Here is a list of elements and their defining attributes. If an element is not listed then if it is a leaf element, only one occurs and it is merely replaced. If it has children, then the subelements are considered, in effect merging the element in question.
 
@@ -836,13 +848,17 @@ The following elements are not imported from the source file:
 * `names`
 * `settings`
 
+-->
+
 * * *
 
 ### 5.11 <a name="Element_displayMap" href="#Element_displayMap">Element: displayMap</a>
 
 The displayMap can be used to describe what is to be displayed on the keytops for various keys. For the most part, such explicit information is unnecessary since the `@to` element from the `keyMap/map` element can be used. But there are some characters, such as diacritics, that do not display well on their own and so explicit overrides for such characters can help. The `displayMap` consists of a list of display subelements.
 
-DisplayMaps are designed to be shared across many different keyboard layout descriptions, and `<import>`ed in where needed.
+<!-- TODO: more discussion of motivation for this element -->
+
+displayMaps are designed to be shared across many different keyboard layout descriptions, and `<import>`ed in where needed.
 
 For combining characters, U+25CC `◌` is used as a base.
 For example, a key which outputs a combining tilde (U+0303) can be represented as follows:
@@ -853,11 +869,9 @@ For example, a key which outputs a combining tilde (U+0303) can be represented a
 
 This way, a key which outputs a combining tilde (U+0303) will be represented as `◌̃` (a tilde on a dotted circle).
 
-> **TODO under discussion** Some scripts/languages may prefer a different base.
-> For Lao for example, `x` is often used as a base instead of `◌`.
-> The mechanism for this is still being discussed, but implementations may substitute U+25CC
-> for another character.
-
+Some scripts/languages may prefer a different base.
+For Lao for example, `x` is often used as a base instead of `◌`.
+An implementation may substitute a different character for U+25CC.
 
 **Syntax**
 
