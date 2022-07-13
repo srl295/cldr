@@ -2,6 +2,7 @@ package org.unicode.cldr.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ import com.ibm.icu.util.ICUUncheckedIOException;
 class LocalesTxtReader {
     Map<Organization, Map<String, Level>> platform_locale_level = null;
     Map<Organization, Relation<Level, String>> platform_level_locale = null;
-    Map<String, Map<String, String>> platform_locale_levelString = null;
+    public Set<String> platform_stringSet = null;
     Map<Organization, Map<String, Integer>> organization_locale_weight = null;
     Map<Organization, Map<String, Set<String>>> organization_locale_match = null;
 
@@ -72,6 +73,9 @@ class LocalesTxtReader {
                 try {
                     organization = Organization.fromString(stuff.get(0));
                 } catch (Exception e) {
+                    throw new IllegalArgumentException("Exception parsing organization in Locales.txt: " + line);
+                }
+                if (organization == null) {
                     throw new IllegalArgumentException("Invalid organization in Locales.txt: " + line);
                 }
 
@@ -128,7 +132,7 @@ class LocalesTxtReader {
 
                 Level status = Level.get(stuff.get(2));
                 if (status == Level.UNDETERMINED) {
-                    System.out.println("Warning: Level unknown on: " + line);
+                    throw new IllegalArgumentException("Warning: Level unknown on: " + line);
                 }
                 Map<String, Level> locale_status = platform_locale_level.get(organization);
                 if (locale_status == null) {
@@ -183,23 +187,20 @@ class LocalesTxtReader {
                 }
             }
         }
-        // backwards compat hack
-        platform_locale_levelString = new TreeMap<>();
+        // For compatibility, we map from Organization to String (locale) to Level, but also
+        // from String to String to String.
+        final Set<String> stringSet = new TreeSet<String>();
         platform_level_locale = new EnumMap<>(Organization.class);
         for (Organization platform : platform_locale_level.keySet()) {
-            Map<String, String> locale_levelString = new TreeMap<>();
-            platform_locale_levelString.put(platform.toString(), locale_levelString);
+            stringSet.add(platform.toString());
             Map<String, Level> locale_level = platform_locale_level.get(platform);
-            for (String locale : locale_level.keySet()) {
-                locale_levelString.put(locale, locale_level.get(locale).toString());
-            }
-            Relation level_locale = Relation.of(new EnumMap(Level.class), HashSet.class);
+            Relation<Level, String> level_locale = Relation.of(new EnumMap<>(Level.class), HashSet.class);
             level_locale.addAllInverted(locale_level).freeze();
             platform_level_locale.put(platform, level_locale);
         }
         CldrUtility.protectCollection(platform_level_locale);
         platform_locale_level = CldrUtility.protectCollection(platform_locale_level);
-        platform_locale_levelString = CldrUtility.protectCollection(platform_locale_levelString);
+        platform_stringSet = Collections.unmodifiableSet(stringSet);
         return this;
     }
 }

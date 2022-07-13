@@ -1,0 +1,3 @@
+# see the test: TestLocalesTxtReader
+# BAD: default content
+guest ; fr_FR ; basic ; All

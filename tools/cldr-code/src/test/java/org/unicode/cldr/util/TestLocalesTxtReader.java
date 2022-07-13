@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
@@ -28,7 +29,7 @@ public class TestLocalesTxtReader {
 
             () -> assertFalse(rdr.platform_level_locale.isEmpty()),
             () -> assertFalse(rdr.platform_locale_level.isEmpty()),
-            () -> assertFalse(rdr.platform_locale_levelString.isEmpty()));
+            () -> assertFalse(rdr.platform_stringSet.isEmpty()));
     }
 
     @Test
@@ -41,7 +42,8 @@ public class TestLocalesTxtReader {
                 () -> assertFalse(rdr.organization_locale_weight.isEmpty()),
                 () -> assertFalse(rdr.platform_level_locale.isEmpty()),
                 () -> assertFalse(rdr.platform_locale_level.isEmpty()),
-                () -> assertFalse(rdr.platform_locale_levelString.isEmpty()),
+                () -> assertFalse(rdr.platform_stringSet.isEmpty()),
+                () -> assertTrue(rdr.platform_stringSet.contains("adlam")),
                 () -> assertTrue(rdr.organization_locale_match.containsKey(Organization.adlam)),
                 () -> assertTrue(rdr.organization_locale_weight.containsKey(Organization.adlam)),
                 () -> assertTrue(rdr.platform_locale_level.containsKey(Organization.adlam)),
@@ -75,5 +77,24 @@ public class TestLocalesTxtReader {
                 () -> assertEquals(Level.BASIC, wikimedia_level.get(StandardCodes.ALL_LOCALES), "wikimedia: *"));
 
         }
+    }
+
+    void loadBadLocales(final String n) throws IOException {
+        try (BufferedReader r = FileReaders.openFile(TestLocalesTxtReader.class, n);) {
+            LocalesTxtReader rdr = new LocalesTxtReader().read(StandardCodes.make(), r);
+            assertNotNull(rdr);
+        }
+    }
+
+    @Test
+    void TestBadLocales() throws IOException {
+        assertAll("verify bad locales",  // See each .txt file for error description
+            () -> assertThrows(IllegalArgumentException.class,
+                () -> loadBadLocales("BadLocales0.txt")),
+            () -> assertThrows(IllegalArgumentException.class,
+                () -> loadBadLocales("BadLocales1.txt")),
+            () -> assertThrows(IllegalArgumentException.class,
+                () -> loadBadLocales("BadLocales2.txt"))
+        );
     }
 }

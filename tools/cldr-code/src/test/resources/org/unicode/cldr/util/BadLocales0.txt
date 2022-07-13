@@ -1,0 +1,3 @@
+# see the test: TestLocalesTxtReader
+# BAD: unknown locale 'superfluous'
+guest ; * ; superfluous ; All

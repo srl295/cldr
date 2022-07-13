@@ -1,0 +1,3 @@
+# see the test: TestLocalesTxtReader
+# BAD: unknown org
+not_invited_to_the_party ; * ; basic ; All

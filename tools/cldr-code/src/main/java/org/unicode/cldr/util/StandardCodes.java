@@ -447,7 +447,7 @@ public class StandardCodes {
     }
 
     public Set<String> getLocaleCoverageOrganizationStrings() {
-        return loadPlatformLocaleStatus().platform_locale_levelString.keySet();
+        return loadPlatformLocaleStatus().platform_stringSet;
     }
 
     public Set<String> getLocaleCoverageLocales(String organization) {
