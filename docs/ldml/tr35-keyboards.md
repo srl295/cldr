@@ -85,7 +85,8 @@ The LDML specification is divided into the following parts:
     * 5.9.1 [Elements: flicks, flick](#Element_flicks)
   * 5.10 [Element: import](#Element_import)
   * 5.11 [Element: displayMap](#Element_displayMap)
-  * 5.12 [Element: display](#Element_display)
+  * 5.12.1 [Element: display](#Element_display)
+  * 5.12.2 [Element: displayOptions](#Element_displayOptions)
   * 5.13.0 [Element: layerMaps](#Element_layerMaps)
   * 5.13.1 [Element: layerMap](#Element_layerMap)
   * 5.14 [Element: row](#Element_row)
@@ -888,9 +889,8 @@ For example, a key which outputs a combining tilde (U+0303) can be represented a
 
 This way, a key which outputs a combining tilde (U+0303) will be represented as `◌̃` (a tilde on a dotted circle).
 
-Some scripts/languages may prefer a different base.
-For Lao for example, `x` is often used as a base instead of `◌`.
-An implementation may substitute a different character for U+25CC.
+Some scripts/languages may prefer a different base than U+25CC.
+See  [`<displayOptions baseCharacter=…/>`](#Element_displayOptions).
 
 **Syntax**
 
@@ -903,14 +903,14 @@ An implementation may substitute a different character for U+25CC.
 > <small>
 >
 > Parents: [keyboard](#Element_keyboard)
-> Children: [display](#Element_display)
+> Children: [display](#Element_display), [displayOptions](#Element_displayOptions)
 > Occurrence: optional, single
 >
 > </small>
 
 * * *
 
-### 5.12 <a name="Element_display" href="#Element_display">Element: display</a>
+### 5.12.1 <a name="Element_display" href="#Element_display">Element: display</a>
 
 The `display` element describes how a character, that has come from a `keys/key` element, should be displayed on a keyboard layout where such display is possible.
 
@@ -951,6 +951,41 @@ _Attribute:_ `display` (required)
 ```
 
 To allow `displayMap`s to be shared across descriptions, there is no requirement that `@to` in a `display` element matches any `@to` in any `keys/key` element in the keyboard description.
+
+* * *
+
+### 5.12.2 <a name="Element_displayOptions" href="#Element_displayOptions">Element: displayOptions</a>
+
+The `displayOptions` is an optional singleton element providing additional settings on this `displayMap`.  It is structured so as to provide for future flexibility in such options.
+
+**Syntax**
+
+```xml
+<displayMap>
+    <display …/>
+    <displayOptions baseCharacter="x"/>
+</displayMap>
+```
+
+> <small>
+>
+> Parents: [displayMap](#Element_displayMap)
+> Children: _none_
+> Occurrence: optional, single
+>
+> </small>
+
+_Attribute:_ `baseCharacter` (optional)
+
+**Note:** At present, this is the only option settable in the `displayOptions`.
+
+> Some scripts/languages may prefer a different base than U+25CC.
+> For Lao for example, `x` is often used as a base instead of `◌`.
+> Setting `baseCharacter="x"` (for example) is a _hint_ to the implementation which
+> requests U+25CC to be substituted with `x` on display.
+> As a hint, the implementation may ignore this option.
+>
+> **Note** that not all base characters will be suitable as bases.
 
 * * *
 
