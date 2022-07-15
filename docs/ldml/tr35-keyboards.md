@@ -126,7 +126,7 @@ For example, a web-based virtual keyboard may transform text in the following wa
 
 The data can also be used in analysis of the capabilities of different keyboards. It also allows better interoperability by making it easier for keyboard designers to see which characters are generally supported on keyboards for given languages.
 
-To illustrate this specification, here is an abridged layout representing the English US 101 keyboard on the Mac OS X operating system (with an inserted long-press example). For more complete examples, and information collected about keyboards, see keyboard data in XML.
+To illustrate this specification, here is an abridged layout representing the English US 101 keyboard on the macOS operating system (with an inserted long-press example). For more complete examples, and information collected about keyboards, see keyboard data in XML.
 
 -->
 
