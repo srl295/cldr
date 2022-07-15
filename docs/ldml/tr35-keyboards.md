@@ -516,7 +516,7 @@ _Attribute:_ `transformPartial="hide"` (optional)
 
 > This attribute describes the behavior of the system while in a transform. When this attribute is present then don't show the values of the buffer as the user is typing a transform (this behavior can be seen on Windows or Linux platforms).
 
-By default (when this attribute is not present), show the values of the buffer as the user is typing a transform (this behavior can be seen on the Mac OS X platform).
+By default (when this attribute is not present), show the values of the buffer as the user is typing a transform (this behavior can be seen on the macOS platform).
 
 If this attribute is present, it must have a value of hide.
 
