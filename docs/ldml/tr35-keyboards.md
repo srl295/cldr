@@ -297,7 +297,7 @@ This is the top level element. All other elements defined below are under this e
 
 _Attribute:_ `locale` (required)
 
-This mandatory attribute represents the locale of the keyboard using Unicode locale identifiers (see [LDML](tr35.md)) - for example `"el"` for Greek. Sometimes, the locale may not specify the base language. For example, a Devanagari keyboard for many languages could be specified by BCP-47 code: `"mul-Deva"`. For details, see [Keyboard IDs](#Keyboard_IDs).
+This mandatory attribute represents the primary locale of the keyboard using Unicode locale identifiers (see [LDML](tr35.md)) - for example `"el"` for Greek. Sometimes, the locale may not specify the base language. For example, a Devanagari keyboard for many languages could be specified by BCP-47 code: `"mul-Deva"`. For further details, see [Keyboard IDs](#Keyboard_IDs).
 
 **Example** (for illustrative purposes only, not indicative of the real data)
 
@@ -328,7 +328,62 @@ For purposes of this current draft spec, the value should always be `techpreview
 
 ### 5.x <a name="Element_locales" href="#Element_locales">Element: locales</a>
 
-The optional `<locales>` element allows specifying additional or alternate locales. Denotes intentional support for an extra language, not just that a keyboard .
+The optional `<locales>` element allows specifying additional or alternate locales. Denotes intentional support for an extra language, not just that a keyboard incidentally supports a language’s orthography.
+
+**Syntax**
+
+```xml
+<locales>
+    <locale id="…"/>
+    <locale id="…"/>
+</locales>
+```
+
+> <small>
+>
+> Parents: `keyboard`
+> Children: `locale`
+> Occurrence: optional, single
+>
+> </small>
+
+### 5.y <a name="Element_locale" href="#Element_locale">Element: locale</a>
+
+The optional `<locales>` element allows specifying additional or alternate locales. Denotes intentional support for an extra language, not just that a keyboard incidentally supports a language’s orthography.
+
+**Syntax**
+
+```xml
+<locale id="{id}"/>
+```
+
+> <small>
+>
+> Parents: `locales`
+> Children: _none_
+> Occurrence: optional, multiple
+>
+> </small>
+
+_Attribute:_ `id` (required)
+
+> The BCP47 locale ID of an additional language supported by this keyboard.
+> Do _not_ include the `-k0-` subtag for this additional language.
+
+**Example**
+
+See [Principles for Keyboard IDs](#Principles_for_Keyboard_IDs) for discussion and further examples.
+
+```xml
+<!-- Pan Nigerian Keyboard-->
+<keyboard locale="mul-Latn-NG-t-k0-panng">
+    <locales>
+    <locale id="ha"/>
+    <locale id="ig"/>
+    <!-- others … -->
+    </locales>
+</keyboard>
+```
 
 * * *
 
@@ -693,6 +748,28 @@ _Attribute:_ `width="1.2"` (optional, default "1.0")
 <key id="wide-gap" gap="true" width="2.5"/>
 ```
 
+##### Implied Keys
+
+Not all keys need to be listed explicitly.  The following keys can be assumed to already exist:
+
+```xml
+<!--  all 26 upper and lower case English letters -->
+<key id="a" to="a"/>
+<key id="b" to="b"/>
+<key id="c" to="c"/>
+…
+<key id="A" to="A"/>
+<key id="B" to="B"/>
+<key id="C" to="C"/>
+…
+
+<key id="space" to=" "/>  <!-- Note: 'space' is always considered 'stretchable'-->
+
+<!-- modifiers-->
+<key id="shift" shift="shift"/>
+… 
+```
+
 * * *
 
 #### 5.9.1 <a name="Element_flicks" href="#Element_flicks">Elements: flicks, flick</a>
@@ -929,13 +1006,17 @@ The `display` element describes how a character, that has come from a `keys/key`
 >
 > </small>
 
-_Attribute:_ `to` (required)
+_Attribute:_ `to` (optional- `to` or `id` is required, or both)
 
 > Specifies the character or character sequence from the `keys/key` element that is to have a special display.
 
+_Attribute:_ `id` (optional- `to` or `id` is required, or both)
+
+> Specifies the `key` id. This is useful for keys which do not produce any output (no `to=` value), such as a shift key.
+
 _Attribute:_ `display` (required)
 
-> Required and specifies the character sequence that should be displayed on the keytop for any key that generates the `@to` sequence. (It is an error if the value of the `display` attribute is the same as the value of the `to` attribute.)
+> Required and specifies the character sequence that should be displayed on the keytop for any key that generates the `@to` sequence or has the `@id`. (It is an error if the value of the `display` attribute is the same as the value of the `to` attribute, this would be an extraneous entry.)
 
 **Example**
 
@@ -943,15 +1024,17 @@ _Attribute:_ `display` (required)
 <keyboard>
     <keys>
         <key id="a" to="a" longpress="\u0301 \u0300" />
+        <key id="shift" switch="shift" />
     </keys>
     <displayMap>
         <display to="\u0300" display="ˋ" /> <!-- \u02CB -->
         <display to="\u0301" display="ˊ" /> <!-- \u02CA -->
+        <display id="shift"  display="⇪" /> <!-- U+21EA -->
     </displayMap>
 </keyboard>
 ```
 
-To allow `displayMap`s to be shared across descriptions, there is no requirement that `@to` in a `display` element matches any `@to` in any `keys/key` element in the keyboard description.
+To allow `displayMap`s to be shared across keyboards, there is no requirement that `@to` in a `display` element matches any `@to`/`@id` in any `keys/key` element in the keyboard description.
 
 * * *
 
@@ -986,7 +1069,7 @@ _Attribute:_ `baseCharacter` (optional)
 > requests U+25CC to be substituted with `x` on display.
 > As a hint, the implementation may ignore this option.
 >
-> **Note** that not all base characters will be suitable as bases.
+> **Note** that not all base characters will be suitable as bases for combining marks.
 
 * * *
 
@@ -1040,6 +1123,8 @@ A `layerMap` element describes the configuration of keys on a particular layer o
 
 _Attribute_ `id` (required for `touch`)
 
+> The `id` attribute identifies the layer for touch layouts.  This identifier specifies the layout as the target for layer switching, as specified by the `switch=` attribute on the [`<key>`](#Element_key) element.
+> Touch layouts must have one `layerMap` with `id="base"` to serve as the base layer.
 
 _Attribute:_ `modifier` (required for `hardware`)
 
@@ -1051,22 +1136,14 @@ For hardware layouts, the use of `@modifier` as an identifier for a layer is suf
 
 ### 5.14 <a name="Element_row" href="#Element_row">Element: row</a>
 
-A `row` element describes the keys that are present in the row of a keyboard. `row` elements are ordered within a `layout` element with the top visual row being stored first.
+A `row` element describes the keys that are present in the row of a keyboard.
 
-The row element introduces the `keyId` which may be an `ISOKey` or a `specialKey`. More formally:
 
-```
-keyId = ISOKey | specialKey
-ISOKey = [A-Z][0-9][0-9]
-specialKey = [a-z][a-zA-Z0-9]{2,7}
-```
-
-ISOKey denotes a key having an [ISO Position](#Definitions). SpecialKey is used to identify functional keys occurring on a virtual keyboard layout.
 
 **Syntax**
 
 ```xml
-<row keys="{keyId}" />
+<row keys="{keyId} {keyId} …" />
 ```
 
 > <small>
@@ -1079,87 +1156,21 @@ ISOKey denotes a key having an [ISO Position](#Definitions). SpecialKey is used 
 
 _Attribute:_ `keys` (required)
 
-> This is a string that lists the `keyId` for each of the keys in a row. Key ranges may be contracted to firstkey-lastkey but only for `ISOKey` type `keyId`s. The interpolation between the first and last keys names is entirely numeric. Thus `D00-D03` is equivalent to `D00 D01 D02 D03`. It is an error if the first and last keys do not have the same alphabetic prefix or the last key numeric component is less than or equal to the first key numeric component.
-
-`specialKey` type `keyId`s may take any value within their syntactic constraint. But the following `specialKey`s are reserved to allow applications to identify them and give them special handling:
-
-* `"bksp"`, `"enter"`, `"space"`, `"tab"`, "`esc"`, `"sym"`, `"num"`
-* all the reserved modifier names
-* specialKeys starting with the letter "x" for future reserved names.
+> This is a string that lists the id of [`key` elements](#Element_key) for each of the keys in a row, whether those are explicitly listed in the file or are implied.  See the `key` documentation for more detail.
 
 **Example**
 
 Here is an example of a `row` element:
 
 ```xml
-<layer modifier="none">
-    <row keys="D01-D10" />
-    <row keys="C01-C09" />
-    <row keys="shift B01-B07 bksp" />
-    <row keys="sym A01 smilies A02-A03 enter" />
-</layer>
-```
-
-* * *
-
-### 5.15 <a name="Element_switch" href="#Element_switch">Element: switch</a>
-
-The `switch` element describes a function key that has been included in the layout. It specifies which layer pressing the key switches you to and also what the key looks like.
-
-**Syntax**
-
-```xml
-<switch iso="{specialKey}"
-        layer="{Set of Modifier Combinations}"
-        display="{show as}" />
-```
-
-> <small>
->
-> Parents: [layer](#Element_layer)
-> Children: _none_
-> Occurrence: optional, multiple
->
-> </small>
-
-_Attribute:_ `iso` (required)
-
-> The `keyId` as specified in one of the `row` elements. This must be a `specialKey` and not an `ISOKey`.
-
-_Attribute:_ `layer` (required)
-
-> The modifier attribute of the resulting `layer` element that describes the layer the user gets switched to.
-
-_Attribute:_ `display` (required)
-
-> A string to be displayed on the key.
-
-**Example**
-
-Here is an example of a `switch` element for a shift key:
-
-```xml
-<layer modifier="none">
-    <row keys="D01-D10" />
-    <row keys="C01-C09" />
-    <row keys="shift B01-B07 bksp" />
-    <row keys="sym A01 smilies A02-A03 enter" />
-    <switch iso="shift" layer="shift" display="&#x21EA;" />
-</layer>
-<layer modifier="shift">
-    <row keys="D01-D10" />
-    <row keys="C01-C09" />
-    <row keys="shift B01-B07 bksp" />
-    <row keys="sym A01 smilies A02-A03 enter" />
-    <switch iso="shift" layer="none" display="&#x21EA;" />
-</layer>
+<row keys="a z e r t y u i o p caret dollar" />
 ```
 
 * * *
 
 ### 5.16 <a name="Element_vkeyMaps" href="#Element_vkeyMaps">Element: vkeyMaps</a>
 
-On some architectures, applications may directly interact with keys before they are converted to characters. The keys are identified using a virtual key identifier or vkey. The mapping between a physical keyboard key and a vkey is keyboard-layout dependent. For example, a French keyboard would identify the top-left key (ISO D01) as being an 'a' with a vkey of 'a' as opposed to 'q' on a US English keyboard. While vkeys are layout dependent, they are not modifier dependent. A shifted key always has the same vkey as its unshifted counterpart. In effect, a key is identified by its vkey and the modifiers active at the time the key was pressed.
+On some architectures, applications may directly interact with keys before they are converted to characters. The keys are identified using a virtual key identifier or vkey. The mapping between a physical keyboard key and a vkey is keyboard-layout dependent. For example, a French keyboard would identify the top-left key (ISO D01) as being an `A` with a vkey of `A` as opposed to `Q` on a US English keyboard. While vkeys are layout dependent, they are not modifier dependent. A shifted key always has the same vkey as its unshifted counterpart. In effect, a key may be identified by its vkey and the modifiers active at the time the key was pressed.
 
 **Syntax**
 
@@ -1252,7 +1263,6 @@ _Attribute:_ `type` (required)
 
 > Current values: `simple`, `final`.
 
-
 There are other keying behaviors that are needed particularly in handing complex orthographies from various parts of the world. The behaviors intended to be covered by the transforms are:
 
 * Reordering combining marks. The order required for underlying storage may differ considerably from the desired typing order. In addition, a keyboard may want to allow for different typing orders.
@@ -1290,7 +1300,7 @@ _Attribute:_ `from` (required)
 
 For example, suppose there are the following transforms:
 
-```
+```default
 ^e → ê
 ^a → â
 ^o → ô
@@ -1308,7 +1318,7 @@ Most transforms in practice have only a couple of characters. But for completene
 
 Suppose that there are the following transforms:
 
-```
+```default
 ab → x
 abc → y
 abef → z
@@ -1394,13 +1404,13 @@ In terms of how these different attributes work in processing a sequence of tran
 
 This would transform the string:
 
-```
+```default
 XYZ → XBZ
 ```
 
 If we mark where the current match position is before and after the transform we see:
 
-```
+```default
 X | Y Z → X B | Z
 ```
 
@@ -1508,7 +1518,7 @@ There is no `@error` attribute.
 
 For `@from` attributes with a match string length greater than 1, the sort key information (`@order`, `@tertiary`, `@tertiary_base`, `@prebase`) may consist of a space separated list of values, one for each element matched. The last value is repeated to fill out any missing values. Such a list may not contain more values than there are elements in the `@from` attribute:
 
-```
+```java
 if len(@from) < len(@list) then error
 else
     while len(@from) > len(@list)
@@ -1773,116 +1783,32 @@ The backspace transform is much like other transforms except in its processing m
 
 This would transform the string:
 
-```
+```default
 XYZ → XBZ
 ```
 
 If we mark where the current match position is before and after the transform we see:
 
-```
+```default
 X Y | Z → X B | Z
 ```
 
 Whereas a simple or final transform would then run other transforms in the transform list, advancing the processing position until it gets to the end of the string, the backspace transform only matches a single backspace rule and then finishes.
 
-* * *
 
-## 6 <a name="Element_Heirarchy_Platform_File" href="#Element_Heirarchy_Platform_File">Element Hierarchy - Platform File</a>
-
-There is a separate XML structure for platform-specific configuration elements. The most notable component is a mapping between the hardware key codes to the ISO layout positions for that platform.
-
-### 6.1 <a name="Element_platform" href="#Element_platform">Element: platform</a>
-
-This is the top level element. This element contains a set of elements defined below. A document shall only contain a single instance of this element.
-
-**Syntax**
-
-```xml
-<platform>
-    {platform-specific elements}
-</platform>
-```
-
-> <small>
->
-> Parents: _none_
-> Children: [hardwareMap](#Element_hardwareMap)
-> Occurrence: required, single
->
-> </small>
-
-
-### 6.2 <a name="Element_hardwareMap" href="#Element_hardwareMap">Element: hardwareMap</a>
-
-This element must have a `platform` element as its parent. This element contains a set of map elements defined below. A document shall only contain a single instance of this element.
-
-**Syntax**
-
-```xml
-<platform>
-    <hardwareMap>
-        {a set of map elements}
-    </hardwareMap>
-</platform>
-```
-
-> <small>
->
-> Parents: [platform](#Element_platform)
-> Children: [map](#Element_hardwareMap_map)
-> Occurrence: optional, single
->
-> </small>
-
-### 6.3 <a name="Element_hardwareMap_map" href="#Element_hardwareMap_map">Element: map</a>
-
-This element must have a `hardwareMap` element as its parent. This element maps between a hardware keycode and the corresponding ISO layout position of the key.
-
-**Syntax**
-
-```xml
-<map keycode="{hardware keycode}" iso="{ISO layout position}" />
-```
-
-> <small>
->
-> Parents: [hardwareMap](#Element_hardwareMap)
-> Children: _none_
-> Occurrence: required, multiple
-> </small>
-
-_Attribute:_ `keycode` (required)
-
-> The hardware key code value of the key. This value is an integer which is provided by the keyboard driver.
-
-_Attribute:_ `iso` (required)
-
-> The corresponding position of a key using the ISO layout convention where rows are identified by letters and columns are identified by numbers. For example, "D01" corresponds to the "Q" key on a US keyboard. (See the definition at the beginning of the document for a diagram.)
-
-**Example**
-
-```xml
-<platform>
-    <hardwareMap>
-        <map keycode="2" iso="E01" />
-        <map keycode="3" iso="E02" />
-        <map keycode="4" iso="E03" />
-        <map keycode="5" iso="E04" />
-        <map keycode="6" iso="E05" />
-        <map keycode="7" iso="E06" />
-        <map keycode="41" iso="E00" />
-    </hardwareMap>
-</platform>
-```
+<!-- There is no section 6. -->
 
 * * *
 
 ## 7 <a name="Invariants" href="#Invariants">Invariants</a>
 
 Beyond what the DTD imposes, certain other restrictions on the data are imposed on the data.
+Please note the constraints given under each element section above.
+DTD validation alone is not sufficient to verify a keyboard file.
 
-1.  For a given platform, every `map[@iso]` value must be in the hardwareMap if there is one (`_keycodes.xml`)
-2.  Every `map[@base]` value must also be in `base[@base]` value
+<!--
+TODO: Rewrite this? Probably push out to each element's section?
+
 3.  No `keyMap[@modifiers]` value can overlap with another `keyMap[@modifiers]` value.
     * eg you can't have `"RAlt Ctrl"` in one `keyMap`, and `"Alt Shift"` in another (because Alt = RAltLAlt).
 4.  Every sequence of characters in a `transform[@from]` value must be a concatenation of two or more `map[@to]` values.
@@ -1914,6 +1840,7 @@ Beyond what the DTD imposes, certain other restrictions on the data are imposed 
 | xY? ⋁ x ⇒ xY?                              |                                              |
 | xLY? ⋁ x ⇒ xLY?                            |                                              |
 | xLY ⋁ x ⇒ xLY?                             |                                              |
+-->
 
 * * *
 
@@ -1954,10 +1881,43 @@ The following are the design principles for the IDs.
 3. The platform goes first, if it exists. If a keyboard on the platform changes over time, both are dated, eg `bg-t-k0-chromeos-2011`. When selecting, if there is no date, it means the latest one.
 4. Keyboards are only tagged that differ from the "standard for each platform". That is, for each language on a platform, there will be a keyboard with no subtags other than the platform. Subtags with a common semantics across platforms are used, such as `-extended`, `-phonetic`, `-qwerty`, `-qwertz`, `-azerty`, …
 5. In order to get to 8 letters, abbreviations are reused that are already in [bcp47](https://github.com/unicode-org/cldr/tree/main/common/bcp47/) -u/-t extensions and in [language-subtag-registry](https://www.iana.org/assignments/language-subtag-registry) variants, eg for Traditional use `-trad` or `-traditio` (both exist in [bcp47](https://github.com/unicode-org/cldr/tree/main/common/bcp47/)).
-6. Multiple languages cannot be indicated, so the predominant target is used.
+6. Multiple languages cannot be indicated in the locale id, so the predominant target is used.
    1. For Finnish + Sami, use `fi-t-k0-smi` or `extended-smi`
+   2. The [`<locales>`](#Element_locales) element may be used to identify additional languages.
 7. In some cases, there are multiple subtags, like `en-US-t-k0-chromeos-intl-altgr.xml`
 8. Otherwise, platform names are used as a guide.
+
+**Examples**
+
+```xml
+<!-- Pan Nigerian Keyboard-->
+<keyboard locale="mul-Latn-NG-t-k0-panng">
+    <locales>
+    <locale id="ha"/>
+    <locale id="ig"/>
+    <!-- others … -->
+    </locales>
+</keyboard>
+```
+
+```xml
+<!-- Finnish Keyboard including Skolt Sami -->
+<keyboard locale="fi-t-k0-smi">
+    <locales>
+    <locale id="sms"/>
+    </locales>
+</keyboard>
+```
+
+```xml
+<!-- Serbian Latin -->
+<keyboard locale="sr-Latn"/>
+```
+
+```xml
+<!-- Serbian Cyrillic -->
+<keyboard locale="sr-Cyrl"/>
+```
 
 * * *
 
