@@ -75,6 +75,7 @@ The LDML specification is divided into the following parts:
 * 5 [Element Hierarchy - Layout File](#Element_Heirarchy_Layout_File)
   * 5.1 [Element: keyboard](#Element_Keyboard)
   * 5.x [Element: locales](#Element_locales)
+  * 5.y [Element: locale](#Element_locale)
   * 5.2 [Element: version](#Element_version)
   * 5.4 [Element: info](#Element_info)
   * 5.5 [Element: names](#Element_names)
@@ -82,6 +83,7 @@ The LDML specification is divided into the following parts:
   * 5.7 [Element: settings](#Element_settings)
   * 5.8 [Element: keys](#Element_keys)
   * 5.9 [Element: key](#Element_key)
+    * [Implied Keys](#implied-keys)
     * 5.9.1 [Elements: flicks, flick](#Element_flicks)
   * 5.10 [Element: import](#Element_import)
   * 5.11 [Element: displayMap](#Element_displayMap)
@@ -90,7 +92,6 @@ The LDML specification is divided into the following parts:
   * 5.13.0 [Element: layerMaps](#Element_layerMaps)
   * 5.13.1 [Element: layerMap](#Element_layerMap)
   * 5.14 [Element: row](#Element_row)
-  * 5.15 [Element: switch](#Element_switch)
   * 5.16 [Element: vkeyMaps](#Element_vkeyMaps)
   * 5.17 [Element: vkeyMap](#Element_vkeyMap)
   * 5.18 [Element: transforms](#Element_transforms)
@@ -99,10 +100,6 @@ The LDML specification is divided into the following parts:
   * 5.21 [Element: transform final](#Element_final)
   * 5.22 [Element: backspaces](#Element_backspaces)
   * 5.23 [Element: backspace](#Element_backspace)
-* 6 [Element Hierarchy - Platform File](#Element_Heirarchy_Platform_File)
-  * 6.1 [Element: platform](#Element_platform)
-  * 6.2 [Element: hardwareMap](#Element_hardwareMap)
-  * 6.3 [Element: map](#Element_hardwareMap_map)
 * 7 [Invariants](#Invariants)
 * 8 [Data Sources](#Data_Sources)
   * Table: [Key Map Data Sources](#Key_Map_Data_Sources)
@@ -191,6 +188,9 @@ Keyboard use can be challenging for individuals with various types of disabiliti
 **Base map:** A mapping from the positions to the base characters. There is only one base map per layout. The characters on this map can be output by not using any modifier keys.
 
 **Core keys:** also known as “alpha” block. The primary set of key values on a keyboard that are used for typing the target language of the keyboard. For example, the three rows of letters on a standard US QWERTY keyboard (QWERTYUIOP, ASDFGHJKL, ZXCVBNM) together with the most significant punctuation keys. Usually this equates to the minimal keyset for a language as seen on mobile phone keyboards.
+Distinguished from the **frame keys**.
+
+**Frame keys:** These are keys which do not emit characters and are outside of the area of the **core keys**. These keys include both **modifier** keys, such as Shift or Ctrl, but also include platform specific keys: Fn, IME and layout-switching keys, cursor keys, emoji keys.
 
 <!-- **Hardware map:** A mapping between  and layout positions. -->
 
@@ -405,10 +405,6 @@ Element used to keep track of the source data version.
 >
 > </small>
 
-<!-- _Attribute:_ `platform` (required)
-
-> The platform source version. Specifies what version of the platform the data is from. For example, data from Mac OS X 10.4 would be specified as `platform="10.4"`. For platforms that have unstable version numbers which change frequently (like Linux), this field is set to an integer representing the iteration of the data starting with `"1"`. This number would only increase if there were any significant changes in the keyboard data. -->
-
 _Attribute:_ `number` (required)
 
 > The data revision version. The attribute value must start with `$Revision` and end with `$`.
@@ -472,7 +468,9 @@ _Attribute:_ `layout` (optional)
 
 ### 5.5 <a name="Element_names" href="#Element_names">Element: names</a>
 
-Element used to store any names given to the layout by the platform.
+Element used to store any names given to the layout.
+
+These names are not currently localized.
 
 **Syntax**
 
@@ -492,7 +490,7 @@ Element used to store any names given to the layout by the platform.
 
 ### 5.6 <a name="Element_name" href="#Element_name">Element: name</a>
 
-A single name given to the layout by the platform.
+A single name given to the layout.
 
 **Syntax**
 
@@ -514,7 +512,7 @@ _Attribute:_ `value` (required)
 **Example**
 
 ```xml
-<keyboard locale="bg-t-k0-windows-phonetic-trad">
+<keyboard locale="bg-t-k0-phonetic-trad">
     …
     <names>
         <name value="Bulgarian (Phonetic Traditional)" />
@@ -527,7 +525,7 @@ _Attribute:_ `value` (required)
 
 ### 5.7 <a name="Element_settings" href="#Element_settings">Element: settings</a>
 
-An element used to keep track of layout specific settings. This element may or may not show up on a layout. These settings reflect the normal practice on the platform. However, an implementation using the data may customize the behavior. For example, for `transformFailure` the implementation could ignore the setting, or modify the text buffer in some other way (such as by emitting backspaces).
+An element used to keep track of layout specific settings. This element may or may not show up on a layout. These settings reflect the normal practice by the implementation. However, an implementation using the data may customize the behavior. For example, for `transformFailure` the implementation could ignore the setting, or modify the text buffer in some other way (such as by emitting backspaces).
 
 **Syntax**
 
@@ -1874,12 +1872,12 @@ There is a set of subtags that help identify the keyboards. Each of these are us
 The following are the design principles for the IDs.
 
 1. BCP47 compliant.
-   1. Eg, `en-t-k0-extended`.
+   1. Eg, `en`, `sr-Cyrl`, or `en-t-k0-extended`.
 2. Use the minimal language id based on `likelySubtag`s.
-   1. Eg, instead of `en-US-t-k0-xxx`, use `en-t-k0-xxx`. Because there is `<likelySubtag from="en" to="en_Latn_US"/>`, en-US → en.
+   1. Eg, instead of `en-US`, use `en`, and instead of `fr-Latn-FR` use `fr`. Because there is `<likelySubtag from="en" to="en_Latn_US"/>`, en-US → en.
    2. The data is in <https://github.com/unicode-org/cldr/tree/main/common/supplemental/likelySubtags.xml>
-3. The platform goes first, if it exists. If a keyboard on the platform changes over time, both are dated, eg `bg-t-k0-chromeos-2011`. When selecting, if there is no date, it means the latest one.
-4. Keyboards are only tagged that differ from the "standard for each platform". That is, for each language on a platform, there will be a keyboard with no subtags other than the platform. Subtags with a common semantics across platforms are used, such as `-extended`, `-phonetic`, `-qwerty`, `-qwertz`, `-azerty`, …
+3. Keyboard files should be platform-independent, however, a platform id is the first subtag after `-t-k0-` if present. If a keyboard on the platform changes over time, both are dated, eg `bg-t-k0-chromeos-2011`. When selecting, if there is no date, it means the latest one.
+4. Keyboards are only tagged that differ from the "standard for each language". That is, for each language on a platform, there will be a keyboard with no subtags. Subtags with common semantics across languages and platforms are used, such as `-extended`, `-phonetic`, `-qwerty`, `-qwertz`, `-azerty`, …
 5. In order to get to 8 letters, abbreviations are reused that are already in [bcp47](https://github.com/unicode-org/cldr/tree/main/common/bcp47/) -u/-t extensions and in [language-subtag-registry](https://www.iana.org/assignments/language-subtag-registry) variants, eg for Traditional use `-trad` or `-traditio` (both exist in [bcp47](https://github.com/unicode-org/cldr/tree/main/common/bcp47/)).
 6. Multiple languages cannot be indicated in the locale id, so the predominant target is used.
    1. For Finnish + Sami, use `fi-t-k0-smi` or `extended-smi`
@@ -1888,6 +1886,17 @@ The following are the design principles for the IDs.
 8. Otherwise, platform names are used as a guide.
 
 **Examples**
+
+
+```xml
+<!-- Serbian Latin -->
+<keyboard locale="sr-Latn"/>
+```
+
+```xml
+<!-- Serbian Cyrillic -->
+<keyboard locale="sr-Cyrl"/>
+```
 
 ```xml
 <!-- Pan Nigerian Keyboard-->
@@ -1909,15 +1918,7 @@ The following are the design principles for the IDs.
 </keyboard>
 ```
 
-```xml
-<!-- Serbian Latin -->
-<keyboard locale="sr-Latn"/>
-```
 
-```xml
-<!-- Serbian Cyrillic -->
-<keyboard locale="sr-Cyrl"/>
-```
 
 * * *
 
