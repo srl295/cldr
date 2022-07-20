@@ -843,7 +843,6 @@ split up their keyboard into multiple files, as the intent is for each single XM
 `<import>` can be used as a child of a number of elements.
 <!-- TODO: which ones?-->
 
-
 **Syntax**
 
 ```xml
@@ -883,6 +882,7 @@ After loading, the above example will be the equivalent of the following.
 <transforms type="simple">
     <!-- This line is before the import -->
     <transform from="` " to="`" />
+
     <!-- begin imported part-->
     <transform from="`a" to="à" />
     <transform from="`e" to="è" />
@@ -890,6 +890,7 @@ After loading, the above example will be the equivalent of the following.
     <transform from="`o" to="ò" />
     <transform from="`u" to="ù" />
     <!-- end imported part -->
+
     <!-- This line is after the import -->
     <transform from="^ " to="^" />
 </transforms>
