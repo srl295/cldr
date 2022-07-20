@@ -13,11 +13,18 @@ This DTD is a work in progress.
 
 Please see CLDR-15034 for the latest information. -->
 
-<!ELEMENT keyboard ( version?, info?, names, settings?, import*, vkeyMaps*, displayMap*, keys, layerMaps*, transforms*, reorders?, backspaces?, special* ) >
+<!ELEMENT keyboard ( locales?, version?, info?, names, settings?, vkeyMaps*, displayMap*, keys, layerMaps*, transforms*, reorders?, backspaces?, special* ) >
 <!ATTLIST keyboard locale CDATA #REQUIRED >
     <!--@MATCH:validity/locale-->
 <!ATTLIST keyboard conformsTo CDATA #REQUIRED >
     <!--@MATCH:version-->
+    <!--@METADATA-->
+
+<!ELEMENT locales (locale*) >
+
+<!ELEMENT locale EMPTY >
+<!ATTLIST locale id CDATA #REQUIRED>
+    <!--@MATCH:validity/locale-->
     <!--@METADATA-->
 
 <!ELEMENT version EMPTY >
@@ -59,14 +66,17 @@ Please see CLDR-15034 for the latest information. -->
 <!ELEMENT import EMPTY >
 <!ATTLIST import path CDATA #REQUIRED >
 
-<!ELEMENT vkeyMaps ( vkeyMap+, special* ) >
+<!ELEMENT vkeyMaps ( import | vkeyMap | special )+ >
 
 <!ELEMENT vkeyMap EMPTY >
 <!ATTLIST vkeyMap from CDATA #REQUIRED >
 <!ATTLIST vkeyMap to CDATA #REQUIRED >
     <!--@VALUE-->
 
-<!ELEMENT displayMap ( display+, special* ) >
+<!ELEMENT displayMap ( display | displayOptions | special )+ >
+
+<!ELEMENT displayOptions EMPTY>
+<!ATTLIST displayOptions baseCharacter CDATA #IMPLIED>
 
 <!ELEMENT display EMPTY >
 <!ATTLIST display to CDATA #REQUIRED >
@@ -80,8 +90,7 @@ Please see CLDR-15034 for the latest information. -->
     <!--@MATCH:regex/[A-Z][0-9][0-9]-->
 <!ATTLIST key flicks NMTOKEN #IMPLIED >
     <!--@MATCH:regex/[A-Za-z0-9]-->
-<!ATTLIST key gap CDATA #IMPLIED >
-    <!--@MATCH:range/0~999-->
+<!ATTLIST key gap (true) #IMPLIED >
     <!--@VALUE-->
 <!ATTLIST key to CDATA #IMPLIED >
     <!--@MATCH:any-->
@@ -112,13 +121,14 @@ Please see CLDR-15034 for the latest information. -->
 <!ATTLIST flick to CDATA #REQUIRED >
     <!--@VALUE-->
 
-<!ELEMENT layerMaps ( layerMap+, special* ) >
+<!ELEMENT layerMaps ( import | layerMap | special )+ >
 <!ATTLIST layerMaps form (hardware | touch) #REQUIRED >
 <!ATTLIST layerMaps minDeviceWidthMM CDATA #IMPLIED >
     <!--@MATCH:range/0~999-->
 
 <!ELEMENT layerMap ( row+, special* ) >
-<!ATTLIST layerMap id NMTOKEN #REQUIRED >
+<!ATTLIST layerMap id NMTOKEN #IMPLIED >
+<!ATTLIST layerMap modifier NMTOKEN #IMPLIED >
 
 <!ELEMENT row EMPTY >
 <!ATTLIST row keys NMTOKENS #REQUIRED >
@@ -126,7 +136,7 @@ Please see CLDR-15034 for the latest information. -->
 <!ATTLIST row stretch NMTOKENS #IMPLIED >
     <!--@VALUE-->
 
-<!ELEMENT transforms ( transform+ ) >
+<!ELEMENT transforms ( import | transform | special )+ >
 <!ATTLIST transforms type CDATA #REQUIRED >
     <!--@MATCH:literal/simple, final-->
 
@@ -140,7 +150,7 @@ Please see CLDR-15034 for the latest information. -->
 <!ATTLIST transform error (fail) #IMPLIED >
     <!--@VALUE-->
 
-<!ELEMENT reorders ( reorder+ ) >
+<!ELEMENT reorders ( import | reorder | special )+ >
 
 <!ELEMENT reorder EMPTY >
 <!ATTLIST reorder before CDATA #IMPLIED >
@@ -154,7 +164,7 @@ Please see CLDR-15034 for the latest information. -->
 <!ATTLIST reorder prebase CDATA #IMPLIED >
     <!--@VALUE-->
 
-<!ELEMENT backspaces ( backspace+ ) >
+<!ELEMENT backspaces ( import, backspace, special )+ >
 
 <!ELEMENT backspace EMPTY >
 <!ATTLIST backspace before CDATA #IMPLIED >
