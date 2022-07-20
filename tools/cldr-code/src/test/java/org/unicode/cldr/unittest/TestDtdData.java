@@ -601,7 +601,7 @@ public class TestDtdData extends TestFmwk {
                 || (elementName.equals("nameOrderLocalesDefault") && attribute.equals("order"))
                 ;
 
-        case keyboard3:
+        case keyboard:
             if   ( elementName.equals("keyboard3") && attribute.equals("locale")
                 || elementName.equals("vkeyMap") && attribute.equals("from")
                 || elementName.equals("layerMaps") && attribute.equals("form")
@@ -614,7 +614,6 @@ public class TestDtdData extends TestFmwk {
                 return true;
             }
             // fall through to old keyboard
-        case keyboard:
             return attribute.equals("_q")
                 || elementName.equals("keyboard") && attribute.equals("locale")
                 || elementName.equals("keyMap") && attribute.equals("modifiers")
@@ -641,10 +640,6 @@ public class TestDtdData extends TestFmwk {
                 || elementName.equals("display") && attribute.equals("to")
                 || elementName.equals("flicks") && attribute.equals("iso");
 
-        case platform:
-            return attribute.equals("_q")
-                || elementName.equals("platform") && attribute.equals("id")
-                || elementName.equals("map") && attribute.equals("keycode");
         case ldmlICU:
             return false;
         default:
