@@ -25,7 +25,7 @@ Please see CLDR-15034 for the latest information. -->
 <!ELEMENT locale EMPTY >
 <!ATTLIST locale id CDATA #REQUIRED>
     <!--@MATCH:validity/locale-->
-    <!--@METADATA-->
+    <!--@VALUE-->
 
 <!ELEMENT version EMPTY >
 <!ATTLIST version number CDATA #IMPLIED >
@@ -131,6 +131,7 @@ Please see CLDR-15034 for the latest information. -->
 <!ATTLIST layerMap modifier NMTOKEN #IMPLIED >
 
 <!ELEMENT row EMPTY >
+    <!--@ORDERED-->
 <!ATTLIST row keys NMTOKENS #REQUIRED >
     <!--@VALUE-->
 <!ATTLIST row stretch NMTOKENS #IMPLIED >
