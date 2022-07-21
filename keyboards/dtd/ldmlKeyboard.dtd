@@ -20,10 +20,10 @@ Please see CLDR-15034 for the latest information. -->
     <!--@MATCH:any-->
     <!--@METADATA-->
 
-<!ELEMENT locales (locale*) >
+<!ELEMENT locales ( locale* ) >
 
 <!ELEMENT locale EMPTY >
-<!ATTLIST locale id CDATA #REQUIRED>
+<!ATTLIST locale id CDATA #REQUIRED >
     <!--@MATCH:validity/bcp47-->
     <!--@VALUE-->
 
@@ -36,8 +36,8 @@ Please see CLDR-15034 for the latest information. -->
 
 <!ELEMENT info EMPTY >
 <!ATTLIST info author CDATA #IMPLIED >
-    <!--@VALUE-->
     <!--@MATCH:any-->
+    <!--@VALUE-->
 <!ATTLIST info normalization CDATA #IMPLIED >
     <!--@MATCH:literal/NFC, NFD, other-->
     <!--@VALUE-->
@@ -66,12 +66,12 @@ Please see CLDR-15034 for the latest information. -->
 <!ATTLIST settings transformPartial (hide) #IMPLIED >
     <!--@VALUE-->
 
+<!ELEMENT vkeyMaps ( import | vkeyMap | special )+ >
+
 <!ELEMENT import EMPTY >
 <!ATTLIST import path CDATA #REQUIRED >
     <!--@MATCH:any-->
     <!--@VALUE-->
-
-<!ELEMENT vkeyMaps ( import | vkeyMap | special )+ >
 
 <!ELEMENT vkeyMap EMPTY >
 <!ATTLIST vkeyMap from CDATA #REQUIRED >
@@ -83,15 +83,15 @@ Please see CLDR-15034 for the latest information. -->
 
 <!ELEMENT displayMap ( display | displayOptions | special )+ >
 
-<!ELEMENT displayOptions EMPTY>
-<!ATTLIST displayOptions baseCharacter CDATA #IMPLIED>
-    <!--@VALUE-->
-    <!--@MATCH:any-->
-
 <!ELEMENT display EMPTY >
 <!ATTLIST display to CDATA #REQUIRED >
     <!--@MATCH:any-->
 <!ATTLIST display display CDATA #REQUIRED >
+    <!--@MATCH:any-->
+    <!--@VALUE-->
+
+<!ELEMENT displayOptions EMPTY >
+<!ATTLIST displayOptions baseCharacter CDATA #IMPLIED >
     <!--@MATCH:any-->
     <!--@VALUE-->
 
@@ -127,6 +127,7 @@ Please see CLDR-15034 for the latest information. -->
 <!ELEMENT flicks ( flick+, special* ) >
 <!ATTLIST flicks id NMTOKEN #REQUIRED >
     <!--@MATCH:regex/[A-Za-z0-9-]+-->
+
 <!ELEMENT flick EMPTY >
 <!ATTLIST flick directions NMTOKENS #REQUIRED >
     <!--@MATCH:any-->
