@@ -15,16 +15,16 @@ Please see CLDR-15034 for the latest information. -->
 
 <!ELEMENT keyboard ( locales?, version?, info?, names, settings?, vkeyMaps*, displayMap*, keys, layerMaps*, transforms*, reorders?, backspaces?, special* ) >
 <!ATTLIST keyboard locale CDATA #REQUIRED >
-    <!--@MATCH:validity/locale-->
-<!ATTLIST keyboard conformsTo CDATA #REQUIRED >
-    <!--@MATCH:version-->
+    <!--@MATCH:validity/bcp47-->
+<!ATTLIST keyboard conformsTo (techpreview) #REQUIRED >
+    <!--@MATCH:any-->
     <!--@METADATA-->
 
 <!ELEMENT locales (locale*) >
 
 <!ELEMENT locale EMPTY >
 <!ATTLIST locale id CDATA #REQUIRED>
-    <!--@MATCH:validity/locale-->
+    <!--@MATCH:validity/bcp47-->
     <!--@VALUE-->
 
 <!ELEMENT version EMPTY >
@@ -37,12 +37,15 @@ Please see CLDR-15034 for the latest information. -->
 <!ELEMENT info EMPTY >
 <!ATTLIST info author CDATA #IMPLIED >
     <!--@VALUE-->
+    <!--@MATCH:any-->
 <!ATTLIST info normalization CDATA #IMPLIED >
     <!--@MATCH:literal/NFC, NFD, other-->
     <!--@VALUE-->
 <!ATTLIST info layout CDATA #IMPLIED >
+    <!--@MATCH:any-->
     <!--@VALUE-->
 <!ATTLIST info indicator CDATA #IMPLIED >
+    <!--@MATCH:any-->
     <!--@VALUE-->
 
 <!ELEMENT names ( name+, special* ) >
@@ -65,31 +68,40 @@ Please see CLDR-15034 for the latest information. -->
 
 <!ELEMENT import EMPTY >
 <!ATTLIST import path CDATA #REQUIRED >
+    <!--@MATCH:any-->
+    <!--@VALUE-->
 
 <!ELEMENT vkeyMaps ( import | vkeyMap | special )+ >
 
 <!ELEMENT vkeyMap EMPTY >
 <!ATTLIST vkeyMap from CDATA #REQUIRED >
+    <!--@MATCH:any-->
+    <!--@VALUE-->
 <!ATTLIST vkeyMap to CDATA #REQUIRED >
+    <!--@MATCH:any-->
     <!--@VALUE-->
 
 <!ELEMENT displayMap ( display | displayOptions | special )+ >
 
 <!ELEMENT displayOptions EMPTY>
 <!ATTLIST displayOptions baseCharacter CDATA #IMPLIED>
+    <!--@VALUE-->
+    <!--@MATCH:any-->
 
 <!ELEMENT display EMPTY >
 <!ATTLIST display to CDATA #REQUIRED >
+    <!--@MATCH:any-->
 <!ATTLIST display display CDATA #REQUIRED >
+    <!--@MATCH:any-->
     <!--@VALUE-->
 
 <!ELEMENT keys ( ( key | flicks )*, special* ) >
 
 <!ELEMENT key EMPTY >
 <!ATTLIST key id CDATA #REQUIRED >
-    <!--@MATCH:regex/[A-Z][0-9][0-9]-->
+    <!--@MATCH:regex/[A-Za-z0-9-]+-->
 <!ATTLIST key flicks NMTOKEN #IMPLIED >
-    <!--@MATCH:regex/[A-Za-z0-9]-->
+    <!--@MATCH:regex/[A-Za-z0-9-]+-->
 <!ATTLIST key gap (true) #IMPLIED >
     <!--@VALUE-->
 <!ATTLIST key to CDATA #IMPLIED >
@@ -104,37 +116,43 @@ Please see CLDR-15034 for the latest information. -->
 <!ATTLIST key multitap CDATA #IMPLIED >
     <!--@VALUE-->
 <!ATTLIST key switch NMTOKEN #IMPLIED >
-    <!--@MATCH:regex/[A-Z][0-9][0-9]-->
+    <!--@MATCH:regex/[A-Za-z0-9]*-->
     <!--@VALUE-->
 <!ATTLIST key transform (no) #IMPLIED >
     <!--@VALUE-->
 <!ATTLIST key width CDATA #IMPLIED >
-    <!--@MATCH:range/0~999-->
+    <!--@MATCH:range/0.01~100.0-->
     <!--@VALUE-->
 
 <!ELEMENT flicks ( flick+, special* ) >
 <!ATTLIST flicks id NMTOKEN #REQUIRED >
-    <!--@MATCH:regex/[A-Za-z0-9]-->
-
+    <!--@MATCH:regex/[A-Za-z0-9-]+-->
 <!ELEMENT flick EMPTY >
 <!ATTLIST flick directions NMTOKENS #REQUIRED >
+    <!--@MATCH:any-->
+    <!--@VALUE-->
 <!ATTLIST flick to CDATA #REQUIRED >
+    <!--@MATCH:any-->
     <!--@VALUE-->
 
 <!ELEMENT layerMaps ( import | layerMap | special )+ >
 <!ATTLIST layerMaps form (hardware | touch) #REQUIRED >
 <!ATTLIST layerMaps minDeviceWidthMM CDATA #IMPLIED >
-    <!--@MATCH:range/0~999-->
+    <!--@MATCH:range/1~999-->
 
 <!ELEMENT layerMap ( row+, special* ) >
 <!ATTLIST layerMap id NMTOKEN #IMPLIED >
+    <!--@MATCH:any-->
 <!ATTLIST layerMap modifier NMTOKEN #IMPLIED >
+    <!--@MATCH:any-->
 
 <!ELEMENT row EMPTY >
     <!--@ORDERED-->
 <!ATTLIST row keys NMTOKENS #REQUIRED >
+    <!--@MATCH:any-->
     <!--@VALUE-->
 <!ATTLIST row stretch NMTOKENS #IMPLIED >
+    <!--@MATCH:any-->
     <!--@VALUE-->
 
 <!ELEMENT transforms ( import | transform | special )+ >
