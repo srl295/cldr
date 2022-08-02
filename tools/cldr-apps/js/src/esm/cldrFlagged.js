@@ -206,6 +206,10 @@ function createGravatar16(user) {
         user.emailHash +
         "?d=identicon&r=g&s=16",
       title: "gravatar - http://www.gravatar.com",
+      loading: "lazy",
+      width: "16",
+      height: "16",
+      className: "gravatar",
     });
   } else {
     return $("<span></span>");

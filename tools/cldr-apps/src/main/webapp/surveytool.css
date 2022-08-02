@@ -125,6 +125,12 @@ div.adminUserUser i {
 	font-size: small;
 }
 
+.gravatar {
+	background-color: #00989e;
+	background-image: url('images/emoji/emoji_1f600.png');
+	background-size: contain;
+}
+
 #specialHeader {
 	display: block;
     padding: 0.25em;

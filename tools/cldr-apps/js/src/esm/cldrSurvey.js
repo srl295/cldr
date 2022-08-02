@@ -127,14 +127,19 @@ function isInputBusy() {
   return false;
 }
 
-function createGravatar(user) {
+function createGravatar(user, width) {
+  if (!width) {
+    width = 32;
+  }
   if (user.emailHash) {
     const gravatar = document.createElement("img");
     gravatar.src =
-      "https://www.gravatar.com/avatar/" +
-      user.emailHash +
-      "?d=identicon&r=g&s=32";
+      `https://www.gravatar.com/avatar/${user.emailHash}?d=identicon&r=g&s=${width}`;
     gravatar.title = "gravatar - http://www.gravatar.com";
+    gravatar.loading = "lazy";
+    gravatar.height = width;
+    gravatar.width = width;
+    gravatar.className = "gravatar";
     return gravatar;
   } else {
     return document.createTextNode("");
