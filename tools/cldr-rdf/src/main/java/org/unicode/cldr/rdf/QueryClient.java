@@ -119,6 +119,19 @@ public class QueryClient {
     }
 
     /**
+     * @param resName resource such as "wikidata-childToParent.sparql"
+     * @param server server name
+     * @return
+     * @throws IOException 
+     */
+    public ResultSet execSelectFromSparql(final String resName, final String server, int limit, long offset) throws IOException {
+        final Query q = loadSparql(resName);
+        q.setLimit(limit);
+        q.setOffset(offset);
+        return execSelect(q, server);
+    }
+
+    /**
      * A little routine to dump a ResultSet out to the command line.
      * Note that it is destructive to the ResultSet, so can't be combined with other processing.
      * @param rs

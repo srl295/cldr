@@ -109,6 +109,10 @@ public class GenerateLanguageContainment {
 
 		QueryHelper() {
 			try {
+
+				childToParent = loadQueryPairs(GenerateLanguageContainment.class, "wikidata-childToParent",
+						code -> showNameAndCode(code), code -> showNameAndCode(code));
+
 				entityToLabel = loadQueryPairsUnique(GenerateLanguageContainment.class, "wikidata-entityToLabel",
 						null, null, null);
 
@@ -127,9 +131,6 @@ public class GenerateLanguageContainment {
 
 				codeToEntity = ImmutableMultimap.copyOf(
 						Multimaps.invertFrom(Multimaps.forMap(entityToCode), LinkedHashMultimap.create()));
-
-				childToParent = loadQueryPairs(GenerateLanguageContainment.class, "wikidata-childToParent",
-						code -> showNameAndCode(code), code -> showNameAndCode(code));
 
 			} catch(Throwable t) {
 				t.printStackTrace();
@@ -601,26 +602,47 @@ public class GenerateLanguageContainment {
 	//        return parents.iterator().next();
 	//    }
 
+	/**
+	 * Load data, paginating if needed
+	 * @param class1
+	 * @param file must be an ordered query as LIMIT/OFFSET are used
+	 * @param keyMapper
+	 * @param valueMapper
+	 * @return
+	 * @throws IOException
+	 */
 	private static Multimap<String, String> loadQueryPairs(Class<?> class1, String file,
 			Function<String, String> keyMapper, Function<String, String> valueMapper) throws IOException {
 		System.out.println("QUERY: " + file);
-		ResultSet rs = queryClient.execSelectFromSparql(file, QueryClient.WIKIDATA_SPARQL_SERVER);
-		// the query must return exactly two variables.
-		List<String> resultVars = rs.getResultVars();
-		assertTwoVars(resultVars);
-		final String keyName = resultVars.get(0);
-		final String valueName = resultVars.get(1);
 
+		final int LIMIT = 1000;
+		int chunk = 0;
+		boolean hadSome = true;
+		int totalRows = 0;
 		ImmutableMultimap.Builder<String, String> _keyToValues = ImmutableMultimap.builder();
-		for (;rs.hasNext();) {
-			final QuerySolution qs = rs.next();
-			String key = QueryClient.getStringOrNull(qs, keyName);
-			String value = QueryClient.getStringOrNull(qs, valueName);
-			_keyToValues.put(key, value);
+		while (hadSome) {
+			System.out.println(" CHUNK " + chunk);
+			ResultSet rs = queryClient.execSelectFromSparql(file, QueryClient.WIKIDATA_SPARQL_SERVER, LIMIT, LIMIT*chunk);
+			// the query must return exactly two variables.
+			List<String> resultVars = rs.getResultVars();
+			assertTwoVars(resultVars);
+			final String keyName = resultVars.get(0);
+			final String valueName = resultVars.get(1);
+
+			for (;rs.hasNext();) {
+				hadSome = true;
+				final QuerySolution qs = rs.next();
+				String key = QueryClient.getStringOrNull(qs, keyName);
+				String value = QueryClient.getStringOrNull(qs, valueName);
+				_keyToValues.put(key, value);
+			}
+			totalRows = totalRows + rs.getRowNumber();
+			System.out.println(" Got " + rs.getRowNumber() + " items in this chunk");
+			chunk++;
 		}
 		ImmutableMultimap<String, String> result = _keyToValues.build();
 		showDups(file, result, keyMapper, valueMapper);
-		System.out.println("LOADED: " + file + " with rows " + rs.getRowNumber());
+		System.out.println("LOADED: " + file + " with rows " + totalRows + " and chunk " + chunk);
 		return result;
 	}
 

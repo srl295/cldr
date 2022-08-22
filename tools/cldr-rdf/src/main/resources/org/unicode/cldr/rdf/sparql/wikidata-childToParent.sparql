@@ -24,3 +24,4 @@ SELECT DISTINCT ?child ?parent WHERE {
     ?child wdt:P31 wd:Q34770.  #child is language
   }
 }
+ORDER BY ?parent ?child
