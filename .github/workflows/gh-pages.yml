@@ -8,10 +8,11 @@ on:
     tags:
       - "release-*"
     # Only run if docs change.
-    paths:
-      - "tools/scripts/tr-archive/**"
-      - "docs/**"
-      - '.github/workflows/gh-pages.yml'
+    ## TODO CLDR-15464 reenable this!!
+    # paths:
+    #   - "tools/scripts/tr-archive/**"
+    #   - "docs/**"
+    #   - '.github/workflows/gh-pages.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
