@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - main
+      - "maint/maint-*"
+    tags:
+      - "release-*"
     # Only run if docs change.
     paths:
       - "tools/scripts/tr-archive/**"
       - "docs/**"
       - '.github/workflows/gh-pages.yml'
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -52,7 +54,8 @@ jobs:
           jekyll build -s docs -d _site
       - name: Rearrange stuff
         run: 'cp -vr tools/scripts/tr-archive/dist/* ./_site/ldml/ && cp tools/scripts/tr-archive/reports-v2.css ./_site/'
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: Cecilapp/GitHub-Pages-deploy@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,5 +66,23 @@ jobs:
           # cname: domain.tld              # optional
           # jekyll: no                     # optional
           commit_message: CLDR-00000 Automated Build of Pages # optional
+      - name: Deploy to Smoketest
+        shell: bash
+        env:
+          RSA_KEY_CCC: ${{ secrets.RSA_KEY_CCC }}
+          # the SSH port
+          CCC_USER: ${{ secrets.CCC_USER }}
+          CCC_PORT: 22
+          # the SSH host
+          CCC_HOST: cldr-smoke.unicode.org
+          # the ~/.ssh/known_hosts line mentioning SMOKETEST_HOST
+          CCC_KNOWNHOSTS: ${{ secrets.CCC_KNOWNHOSTS }}
+        run: |
+          echo "::group::Publish HTML"
+          echo "${RSA_KEY_CCC}" > ${HOME}/.key && chmod go= ${HOME}/.key
+          echo "${CCC_KNOWNHOSTS}" > ${HOME}/.knownhosts && chmod go= ${HOME}/.knownhosts
+          scp -rp -o UserKnownHostsFile=${HOME}/.knownhosts -i ${HOME}/.key -P ${CCC_PORT} ./_site/ ${CCC_USER}@${CCC_HOST}:spec/${GITHUB_REF_NAME}/
+          echo "::endgroup::"
+          echo "Now go to https://cldr-smoke.unicode.org/spec/${GITHUB_REF_NAME}"
 
 # zero change
