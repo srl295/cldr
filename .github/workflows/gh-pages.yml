@@ -82,8 +82,8 @@ jobs:
           echo "::group::Publish HTML"
           echo "${RSA_KEY_CCC}" > ${HOME}/.key && chmod go= ${HOME}/.key
           echo "${CCC_KNOWNHOSTS}" > ${HOME}/.knownhosts && chmod go= ${HOME}/.knownhosts
-          scp -rp -o UserKnownHostsFile=${HOME}/.knownhosts -i ${HOME}/.key -P ${CCC_PORT} ./_site/ ${CCC_USER}@${CCC_HOST}:spec/${GITHUB_REF_NAME}/
+          scp -rp -o UserKnownHostsFile=${HOME}/.knownhosts -i ${HOME}/.key -P ${CCC_PORT} ./_site/ ${CCC_USER}@${CCC_HOST}:spec/$(basename ${GITHUB_REF_NAME})/
           echo "::endgroup::"
-          echo "Now go to https://cldr-smoke.unicode.org/spec/${GITHUB_REF_NAME}"
+          echo "Now go to https://cldr-smoke.unicode.org/spec/"$(basename ${GITHUB_REF_NAME})
 
 # zero change
