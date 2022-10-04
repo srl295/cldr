@@ -1,7 +1,6 @@
-const expect = require("chai").expect;
-const mocha = require("mocha");
+import {expect} from "chai";
 
-import * as cldrXpathUtils from "../../src/esm/cldrXpathUtils";
+import * as cldrXpathUtils from "../../src/esm/cldrXpathUtils.js";
 
 describe("cldrXpathUtils test", function () {
   describe("extraPathAllowsNullValue() test", function () {
