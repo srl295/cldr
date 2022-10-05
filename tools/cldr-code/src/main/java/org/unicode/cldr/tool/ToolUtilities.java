@@ -23,9 +23,9 @@ import org.unicode.cldr.util.FileReaders;
 public class ToolUtilities {
 
     public static void registerExtraTransliterators() {
-        // NOTE: UTIL_DATA_DIR is required here only because TransliteratorUtilities
+        // NOTE: getUtilDataDir() is required here only because TransliteratorUtilities
         // requires a file path.
-//        String tzadir = CLDRPaths.UTIL_DATA_DIR + File.separatorChar; // work around bad pattern (dir+filename)
+//        String tzadir = CLDRPaths.getUtilDataDir() + File.separatorChar; // work around bad pattern (dir+filename)
 //        // HACK around lack of Armenian, Ethiopic
 //        TransliteratorUtilities.registerTransliteratorFromFile(tzadir, "Latin-Armenian");
 //        // TransliteratorUtilities.registerTransliteratorFromFile(tzadir, "Latin-Ethiopic");

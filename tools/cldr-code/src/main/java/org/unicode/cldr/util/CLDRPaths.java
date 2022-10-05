@@ -115,9 +115,12 @@ public class CLDRPaths {
     /**
      * @deprecated Don't use this from any code that is run from the .JAR (SurveyTool, tests, etc).
      *             If it must be used, add a comment next to the usage to explain why it is needed.
+     *             Will fail if CldrUtility is run from a jar
      */
     @Deprecated
-    public static final String UTIL_DATA_DIR = FileReaders.getRelativeFileName(CldrUtility.class, "data/");
+    public static final String getUtilDataDir() {
+        return FileReaders.getRelativeFileName(CldrUtility.class, "data/");
+    }
 
     public enum DIRECTORIES {
         common_dtd, common_properties, common_uca,

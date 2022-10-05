@@ -37,8 +37,8 @@ public class ExtractIsoCurrencyData {
         } else {
             in = FileUtilities.openUTF8Reader("", inputFile);
         }
-        // NOTE: UTIL_DATA_DIR is required here because it is used as an output directory.
-        final String outputFile = CldrUtility.getProperty("output", CLDRPaths.UTIL_DATA_DIR
+        // NOTE: getUtilDataDir() is required here because it is used as an output directory.
+        final String outputFile = CldrUtility.getProperty("output", CLDRPaths.getUtilDataDir()
             + "/currencycodeslist.txt");
         PrintWriter out = FileUtilities.openUTF8Writer((File)null, outputFile);
         try {
