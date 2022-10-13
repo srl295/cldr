@@ -343,6 +343,8 @@ This mandatory attribute represents the primary locale of the keyboard using Uni
 
 The optional `<locales>` element allows specifying additional or alternate locales. Denotes intentional support for an extra language, not just that a keyboard incidentally supports a language’s orthography.
 
+> Note: the order of locales within the `<locales>` element is not significant and does not convey any priority. The primary locale for a keyboard is always the `locale=` attribute on the `<keyboard>` element.
+
 **Syntax**
 
 ```xml
@@ -364,7 +366,7 @@ The optional `<locales>` element allows specifying additional or alternate local
 
 ### <a name="Element_locale" href="#Element_locale">Element: locale</a>
 
-The optional `<locales>` element allows specifying additional or alternate locales. Denotes intentional support for an extra language, not just that a keyboard incidentally supports a language’s orthography.
+Element used to specify an additional language supported by this keyboard.
 
 **Syntax**
 
@@ -385,7 +387,7 @@ The optional `<locales>` element allows specifying additional or alternate local
 _Attribute:_ `id` (required)
 
 > The BCP47 locale ID of an additional language supported by this keyboard.
-> Do _not_ include the `-k0-` subtag for this additional language.
+> Do _not_ include the `-k0-` subtag for languages.
 
 **Example**
 
