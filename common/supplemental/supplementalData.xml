@@ -1967,6 +1967,7 @@ XXX Code for transations where no currency is involved
 		<language type="naq" scripts="Latn"/>
 		<language type="nb" scripts="Latn" territories="NO SJ"/>
 		<language type="nch" scripts="Latn"/>
+		<language type="nci" scripts="Latn" alt="secondary"/>
 		<language type="nd" scripts="Latn" territories="ZW"/>
 		<language type="ndc" scripts="Latn"/>
 		<language type="ndc" territories="MZ" alt="secondary"/>

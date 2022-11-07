@@ -37,9 +37,9 @@ For terms of use, see http://www.unicode.org/copyright.html
                 <rbnfrule value="20" radix="20">←%%numberm←­pōhual→%%lionnumber→;</rbnfrule>
                 <rbnfrule value="400" radix="400">←%%numbern←­tzontli[ ipan →%spellout-cardinal→];</rbnfrule>
                 <rbnfrule value="8000" radix="8000">←%%numbern←­xiquipilli[ ipan →%spellout-cardinal→];</rbnfrule>
-                <rbnfrule value="160000" radix="160,000">←%%numberm←­pōhual­xiquipilli[ ipan →%spellout-cardinal→];</rbnfrule>
-                <rbnfrule value="3200000" radix="3,200,000">←%%numbern←­tzon­xiquipilli[ ipan →%spellout-cardinal→];</rbnfrule>
-                <rbnfrule value="64000000" radix="64,000,000">←%%numberm←­pōhual­tzon­xiquipilli[ ipan →%spellout-cardinal→];</rbnfrule>
+                <rbnfrule value="160000" radix="160000">←%%numberm←­pōhual­xiquipilli[ ipan →%spellout-cardinal→];</rbnfrule>
+                <rbnfrule value="3200000" radix="3200000">←%%numbern←­tzon­xiquipilli[ ipan →%spellout-cardinal→];</rbnfrule>
+                <rbnfrule value="64000000" radix="64000000">←%%numberm←­pōhual­tzon­xiquipilli[ ipan →%spellout-cardinal→];</rbnfrule>
                 <rbnfrule value="1280000000">=#,##0=;</rbnfrule>
             </ruleset>
             <ruleset type="lionnumber" access="private">

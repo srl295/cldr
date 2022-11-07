@@ -558,6 +558,7 @@ nap	Neapolitan	primary	Latn	Latin
 naq	Nama	primary	Latn	Latin
 nb	Norwegian (Bokmål)	primary	Latn	Latin
 nch	Central Huasteca Nahuatl	primary	Latn	Latin
+nci	Classical Nahuatl	primary	Latn	Latin
 nd	North Ndebele	primary	Latn	Latin
 ndc	Ndau	primary	Latn	Latin
 nds	Low German	primary	Latn	Latin
