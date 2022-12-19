@@ -146,12 +146,57 @@ export default {
               // Otherwise, cause a reload, which should take the user back where they were.
               window.setTimeout(() => window.location.reload(), NORMAL_RETRY);
             }
-          } else if (data.status && data.status.isBusted) {
-            window.setTimeout(this.fetchStatus.bind(this), BUSTED_RETRY); // try in a minute
-          } else {
-            window.setTimeout(this.fetchStatus.bind(this), NORMAL_RETRY);
+            this.fetchErr = null;
+            this.fetchCount++;
+            this.statusData = data;
+            if (!data.triedToStartUp) {
+              // attempt to fetch /survey which will cause ST to startup
+              console.log("Attempting fetch of /cldr-apps/survey");
+              fetch("survey").then(
+                () => this.attemptedLoadCount++,
+                (err) => this.attemptedLoadErr
+              );
+            }
+            if (data.status && data.status.isSetup) {
+              if (this.$specialPage == "retry") {
+                // immediately head back to the main page.
+                window.location.replace("v#");
+                setTimeout(
+                  () =>
+                    notification.success({
+                      message: "Reconnected",
+                      description:
+                        "You have been reconnected to the SurveyTool.",
+                    }),
+                  4000
+                );
+                run().catch((e) => {
+                  // We can get here if run() was not able to boot the page
+                  // That's OK, it may have been a waiting page. Reload should
+                  // clear it up.
+                  console.log(
+                    `run() threw an error, so we will do a page reload. Err was: ${e}`
+                  );
+                  window.location.reload();
+                });
+              } else {
+                window.setTimeout(() => window.location.reload(), NORMAL_RETRY);
+              }
+            } else if (data.status && data.status.isBusted) {
+              window.setTimeout(this.fetchStatus.bind(this), BUSTED_RETRY); // try in a minute
+            } else {
+              window.setTimeout(this.fetchStatus.bind(this), NORMAL_RETRY);
+            }
+          },
+          (err) => {
+            console.error(err);
+            notification.error({
+              message: "Error",
+              description: `An error occurred checking on the SurveyTool: ${err} — Please reload this page.`,
+              duration: 0,
+            });
           }
-        });
+        );
     },
   },
 };

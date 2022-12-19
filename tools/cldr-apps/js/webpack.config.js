@@ -68,8 +68,9 @@ module.exports = (env, argv) => {
       new SurveyToolPlugin(),
       new webpack.ProvidePlugin({
         "$":"jquery",
+        "window.$":"jquery",
         "jQuery":"jquery",
-        "window.jQuery":"jquery"
+        "window.jQuery":"jquery",
       }),
     ]
   };
