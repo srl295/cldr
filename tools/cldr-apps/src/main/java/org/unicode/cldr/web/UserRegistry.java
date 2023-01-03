@@ -11,7 +11,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.json.bind.annotation.JsonbProperty;
 
@@ -30,9 +38,13 @@ import org.unicode.cldr.util.LocaleSet;
 import org.unicode.cldr.util.Organization;
 import org.unicode.cldr.util.SpecialLocales;
 import org.unicode.cldr.util.VoteResolver;
-import org.unicode.cldr.util.VoterInfoList;
 import org.unicode.cldr.util.VoteResolver.Level;
 import org.unicode.cldr.util.VoteResolver.VoterInfo;
+import org.unicode.cldr.util.VoterInfoList;
+import org.unicode.cldr.web.UserRegistry.InfoType;
+import org.unicode.cldr.web.UserRegistry.LogoutException;
+import org.unicode.cldr.web.UserRegistry.ModifyDenial;
+import org.unicode.cldr.web.UserRegistry.UserChangedListener;
 
 import com.ibm.icu.dev.util.ElapsedTimer;
 
@@ -42,7 +54,7 @@ import com.ibm.icu.dev.util.ElapsedTimer;
  *
  * @see UserRegistry.User
  **/
-public class UserRegistry {
+public abstract class UserRegistry {
     public static final String ADMIN_EMAIL = "admin@";
 
     /**
@@ -164,7 +176,7 @@ public class UserRegistry {
     public static final String SQL_removeIntLoc = "DELETE FROM " + CLDR_INTEREST + " WHERE uid=?";
     public static final String SQL_updateIntLoc = "INSERT INTO " + CLDR_INTEREST + " (uid,forum) VALUES(?,?)";
 
-    private UserSettingsData userSettings = null;
+    protected UserSettingsData userSettings = null;
 
     /**
      * This nested class is the representation of an individual user. It may not
@@ -589,117 +601,11 @@ public class UserRegistry {
         return o;
     }
 
-    /**
-     * Called by SM to create the reg
-     */
-    public static UserRegistry createRegistry(SurveyMain theSm) throws SQLException {
-        sm = theSm;
-        UserRegistry reg = new UserRegistry();
-        reg.setupDB();
-        if (NORMALIZE_USER_TABLE_ORGS) {
-            reg.normalizeUserTableOrgs();
-        }
-        return reg;
-    }
-
-    /**
-     * internal - called to setup db
-     */
-    private void setupDB() throws SQLException {
-        // must be set up first.
-        userSettings = UserSettingsData.getInstance(sm);
-
-        String sql = null;
-        Connection conn = DBUtils.getInstance().getDBConnection();
-        try {
-            synchronized (conn) {
-                boolean hadUserTable = DBUtils.hasTable(CLDR_USERS);
-                if (!hadUserTable) {
-                    createUserTable(conn);
-                    conn.commit();
-                } else if (!DBUtils.db_Derby) {
-                    /* update table to DATETIME instead of TIMESTAMP */
-                    Statement s = conn.createStatement();
-                    sql = "alter table cldr_users change lastlogin lastlogin DATETIME";
-                    s.execute(sql);
-                    s.close();
-                    conn.commit();
-                }
-
-                //create review and post table
-                sql = "(see ReviewHide.java)";
-                ReviewHide.createTable(conn);
-                boolean hadInterestTable = DBUtils.hasTable(CLDR_INTEREST);
-                if (!hadInterestTable) {
-                    Statement s = conn.createStatement();
-
-                    sql = ("create table " + CLDR_INTEREST + " (uid INT NOT NULL , " + "forum  varchar(256) not null " + ")");
-                    s.execute(sql);
-                    sql = "CREATE  INDEX " + CLDR_INTEREST + "_id_loc ON " + CLDR_INTEREST + " (uid) ";
-                    s.execute(sql);
-                    sql = "CREATE  INDEX " + CLDR_INTEREST + "_id_for ON " + CLDR_INTEREST + " (forum) ";
-                    s.execute(sql);
-                    SurveyLog.debug("DB: created " + CLDR_INTEREST);
-                    sql = null;
-                    s.close();
-                    conn.commit();
-                }
-
-                myinit(); // initialize the prepared statements
-
-                if (!hadInterestTable) {
-                    setupIntLocs(); // set up user -> interest table mapping
-                }
-
-            }
-        } catch (SQLException se) {
-            se.printStackTrace();
-            System.err.println("SQL err: " + DBUtils.unchainSqlException(se));
-            System.err.println("Last SQL run: " + sql);
-            throw se;
-        } finally {
-            DBUtils.close(conn);
-        }
-    }
-
-    /**
-     * @param conn
-     * @throws SQLException
-     */
-    private void createUserTable(Connection conn) throws SQLException {
-        String sql;
-        Statement s = conn.createStatement();
-
-        sql = ("create table " + CLDR_USERS + "(id INT NOT NULL " + DBUtils.DB_SQL_IDENTITY + ", " + "userlevel int not null, "
-            + "name " + DBUtils.DB_SQL_UNICODE + " not null, " + "email varchar(128) not null UNIQUE, "
-            + "org varchar(256) not null, " + "password varchar(100) not null, " + "audit varchar(1024) , "
-            + "locales varchar(1024) , " +
-            // "prefs varchar(1024) , " + /* deprecated Dec 2010. Not used
-            // anywhere */
-            "intlocs varchar(1024) , " + // added apr 2006: ALTER table
-            // CLDR_USERS ADD COLUMN intlocs
-            // VARCHAR(1024)
-            "lastlogin " + DBUtils.DB_SQL_TIMESTAMP0 + // added may 2006:
-            // alter table
-            // CLDR_USERS ADD
-            // COLUMN lastlogin
-            // TIMESTAMP
-            (!DBUtils.db_Mysql ? ",primary key(id)" : "") + ")");
-        s.execute(sql);
-        sql = ("INSERT INTO " + CLDR_USERS + "(userlevel,name,org,email,password) " + "VALUES(" + ADMIN + "," + "'admin',"
-            + "'SurveyTool'," + "'" + ADMIN_EMAIL + "'," + "'" + SurveyMain.vap + "')");
-        s.execute(sql);
-        SurveyLog.debug("DB: added user Admin");
-        s.close();
-    }
 
     /**
      * ID# of the user
      */
     static final int ADMIN_ID = 1;
-
-    private void myinit() throws SQLException {
-    }
 
     /**
      * info = name/email/org immutable info, keep it in a separate list for
@@ -951,7 +857,7 @@ public class UserRegistry {
         return u;
     }
 
-    static SurveyMain sm = null; // static for static checking of defaultContent
+    protected static SurveyMain sm = null; // static for static checking of defaultContent
 
     /**
      * Public for tests
@@ -976,86 +882,6 @@ public class UserRegistry {
         final String ORDER = " ORDER BY id ";
         Statement s = conn.createStatement();
         return s.executeQuery("SELECT id,userlevel,name,email,org,locales,intlocs, password FROM " + CLDR_USERS + ORDER);
-    }
-
-    private void setupIntLocs() throws SQLException {
-        Connection conn = DBUtils.getInstance().getDBConnection();
-        PreparedStatement removeIntLoc = null;
-        PreparedStatement updateIntLoc = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            removeIntLoc = conn.prepareStatement(SQL_removeIntLoc);
-            updateIntLoc = conn.prepareStatement(SQL_updateIntLoc);
-            ps = list(null, conn);
-            rs = ps.executeQuery();
-            ElapsedTimer et = new ElapsedTimer();
-            int count = 0;
-            while (rs.next()) {
-                int user = rs.getInt(1);
-                updateIntLocs(user, false, conn, removeIntLoc, updateIntLoc);
-                count++;
-            }
-            conn.commit();
-            SurveyLog.debug("update:" + count + " user's locales updated " + et);
-        } finally {
-            DBUtils.close(removeIntLoc, updateIntLoc, conn, ps, rs);
-        }
-    }
-
-    /**
-     * assumes caller has a lock on conn
-     */
-    private String updateIntLocs(int user, Connection conn) throws SQLException {
-        PreparedStatement removeIntLoc = null;
-        PreparedStatement updateIntLoc = null;
-        try {
-            removeIntLoc = conn.prepareStatement(SQL_removeIntLoc);
-            updateIntLoc = conn.prepareStatement(SQL_updateIntLoc);
-            return updateIntLocs(user, true, conn, removeIntLoc, updateIntLoc);
-        } finally {
-            DBUtils.close(removeIntLoc, updateIntLoc);
-        }
-    }
-
-    /**
-     * assumes caller has a lock on conn
-     */
-    private String updateIntLocs(int id, boolean doCommit, Connection conn, PreparedStatement removeIntLoc, PreparedStatement updateIntLoc)
-        throws SQLException {
-
-        User user = getInfo(id);
-        if (user == null) {
-            return "";
-        }
-        logger.finer("uil: remove for user " + id);
-        removeIntLoc.setInt(1, id);
-        removeIntLoc.executeUpdate();
-
-        LocaleSet intLocSet = user.getInterestLocales();
-        logger.finer("uil: intlocs " + id + " = " + intLocSet.toString());
-        if (!intLocSet.isAllLocales() && !intLocSet.isEmpty()) {
-            /*
-             * Simplify locales. For example simplify "pt_PT" to "pt" with loc.getLanguage().
-             * Avoid adding duplicates to the table. For example, if the same user has both
-             * "pt" and "pt_PT", only add one row, for "pt".
-             */
-            Set<String> languageSet = new TreeSet<>();
-            for (CLDRLocale loc : intLocSet.getSet()) {
-                languageSet.add(loc.getLanguage());
-            }
-            for (String lang : languageSet) {
-                logger.finer("uil: intlocs " + id + " + " + lang);
-                updateIntLoc.setInt(1, id);
-                updateIntLoc.setString(2, lang);
-                updateIntLoc.executeUpdate();
-            }
-        }
-
-        if (doCommit) {
-            conn.commit();
-        }
-        return "";
     }
 
     String setUserLevel(User me, User them, int newLevel) {
@@ -2084,7 +1910,7 @@ public class UserRegistry {
         return levels;
     }
 
-    private static final boolean NORMALIZE_USER_TABLE_ORGS = true;
+    protected static final boolean NORMALIZE_USER_TABLE_ORGS = true;
 
     /**
      * Make sure each Organization in the user table has the normalized form of its name.
@@ -2094,7 +1920,7 @@ public class UserRegistry {
      * Organization.longnow has names "The Long Now Foundation", "Long Now", "PanLex", and
      * "Utilka Foundation"; its normalized name is "longnow".
      */
-    private void normalizeUserTableOrgs() {
+    protected void normalizeUserTableOrgs() {
         ResultSet rs = null;
         PreparedStatement ps = null;
         Connection conn = null;

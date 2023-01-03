@@ -3285,7 +3285,7 @@ public class SurveyMain extends HttpServlet implements CLDRProgressIndicator, Ex
             try {
                 progress.update("Setup  " + UserRegistry.CLDR_USERS); // restore
                 progress.update("Create UserRegistry  " + UserRegistry.CLDR_USERS); // restore
-                reg = UserRegistry.createRegistry(this);
+                reg = DBUserRegistry.createRegistry(this);
             } catch (SQLException e) {
                 busted("On UserRegistry startup", e);
                 return;
