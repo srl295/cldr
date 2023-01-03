@@ -196,6 +196,48 @@ public class DBUserRegistry extends UserRegistry {
         }
     }
 
+    @Override
+    String setUserLevel(User me, User them, int newLevel) {
+        if (!canSetUserLevel(me, them, newLevel)) {
+            return ("[Permission Denied]");
+        }
+        String orgConstraint;
+        String msg = "";
+        if (me.userlevel == ADMIN) {
+            orgConstraint = ""; // no constraint
+        } else {
+            orgConstraint = " AND org='" + me.org + "' ";
+        }
+        Connection conn = null;
+        try {
+            conn = DBUtils.getInstance().getDBConnection();
+            Statement s = conn.createStatement();
+            String theSql = "UPDATE " + CLDR_USERS + " SET userlevel=" + newLevel + " WHERE id=" + them.id + " AND email='"
+                + them.email + "' " + orgConstraint;
+            logger.info("Attempt user update by " + me.email + ": " + theSql);
+            int n = s.executeUpdate(theSql);
+            conn.commit();
+            userModified(them.id);
+            if (n == 0) {
+                msg = msg + " [Error: no users were updated!] ";
+                logger.severe("Error: 0 records updated.");
+            } else if (n != 1) {
+                msg = msg + " [Error in updating users!] ";
+                logger.severe("Error: " + n + " records updated!");
+            } else {
+                msg = msg + " [user level set]";
+                msg = msg + updateIntLocs(them.id, conn);
+            }
+        } catch (SQLException se) {
+            msg = msg + " exception: " + DBUtils.unchainSqlException(se);
+        } catch (Throwable t) {
+            msg = msg + " exception: " + t;
+        } finally {
+            DBUtils.closeDBConnection(conn);
+        }
+        return msg;
+    }
+
     /**
      * assumes caller has a lock on conn
      */
@@ -234,5 +276,124 @@ public class DBUserRegistry extends UserRegistry {
             conn.commit();
         }
         return "";
+    }
+
+    @Override
+    public String setLocales(CookieSession session, User user, String newLocales, boolean intLocs) {
+        int theirId = user.id;
+        String theirEmail = user.email;
+
+        // make sure other user is at or below userlevel
+        if (!intLocs && !session.user.isAdminFor(getInfo(theirId))) {
+            return ("[Permission Denied]");
+        }
+        String msg = "";
+        if (!intLocs) {
+            final LocaleNormalizer locNorm = new LocaleNormalizer();
+            LocaleSet orgLocaleSet = user.canVoteInNonOrgLocales() ? null : user.getOrganization().getCoveredLocales();
+            newLocales = locNorm.normalizeForSubset(newLocales, orgLocaleSet);
+            if (locNorm.hasMessage()) {
+                msg = locNorm.getMessageHtml() + "<br />";
+            }
+        } else {
+            newLocales = LocaleNormalizer.normalizeQuietly(newLocales);
+        }
+        String orgConstraint;
+        if (session.user.userlevel == ADMIN) {
+            orgConstraint = ""; // no constraint
+        } else {
+            orgConstraint = " AND org='" + session.user.org + "' ";
+        }
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DBUtils.getInstance().getDBConnection();
+            String theSql = "UPDATE " + CLDR_USERS + " SET " + (intLocs ? "intlocs" : "locales") + "=? WHERE id=" + theirId
+                + " AND email='" + theirEmail + "' " + orgConstraint;
+            ps = conn.prepareStatement(theSql);
+            logger.info("Attempt user locales update by " + session.user.email + ": " + theSql + " - " + newLocales);
+            ps.setString(1, newLocales);
+            int n = ps.executeUpdate();
+            conn.commit();
+            userModified(theirId);
+            if (n == 0) {
+                msg += " [Error: no users were updated!] ";
+                logger.severe("Error: 0 records updated.");
+            } else if (n != 1) {
+                msg += " [Error in updating users!] ";
+                logger.severe("Error: " + n + " records updated!");
+            } else {
+                msg += " [locales set]" + updateIntLocs(theirId, conn);
+            }
+        } catch (SQLException se) {
+            msg = msg + " exception: " + DBUtils.unchainSqlException(se);
+        } catch (Throwable t) {
+            msg = msg + " exception: " + t;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                logger.log(java.util.logging.Level.SEVERE,
+                    "UserRegistry: SQL error trying to close. " + DBUtils.unchainSqlException(se), se);
+            }
+        }
+        return msg;
+    }
+
+    @Override
+    public User newUser(WebContext ctx, User u) {
+        final boolean hushUserMessages = CLDRConfig.getInstance().getEnvironment() == Environment.UNITTEST;
+        u.email = normalizeEmail(u.email);
+        // prepare quotes
+        u.email = u.email.replace('\'', '_').toLowerCase();
+        u.org = u.org.replace('\'', '_');
+        u.name = u.name.replace('\'', '_');
+        u.locales = (u.locales == null) ? "" : u.locales.replace('\'', '_');
+        u.locales = LocaleNormalizer.normalizeQuietly(u.locales);
+
+        Connection conn = null;
+        PreparedStatement insertStmt = null;
+        try {
+            conn = DBUtils.getInstance().getDBConnection();
+            insertStmt = conn.prepareStatement(SQL_insertStmt);
+            insertStmt.setInt(1, u.userlevel);
+            DBUtils.setStringUTF8(insertStmt, 2, u.name);
+            insertStmt.setString(3, u.org);
+            insertStmt.setString(4, u.email);
+            insertStmt.setString(5, u.getPassword());
+            insertStmt.setString(6, u.locales);
+            if (!insertStmt.execute()) {
+                if (!hushUserMessages) logger.info("Added.");
+                conn.commit();
+                if (ctx != null)
+                    ctx.println("<p>Added user.<p>");
+                User newu = get(u.getPassword(), u.email, FOR_ADDING); // throw away
+                // old user
+                updateIntLocs(newu.id, conn);
+                notify(newu);
+                return newu;
+            } else {
+                if (ctx != null)
+                    ctx.println("Couldn't add user.");
+                conn.commit();
+                return null;
+            }
+        } catch (SQLException se) {
+            SurveyLog.logException(logger, se, "Adding User");
+            logger.severe("UR: Adding " + u + ": exception: " + DBUtils.unchainSqlException(se));
+        } catch (Throwable t) {
+            SurveyLog.logException(logger, t, "Adding User");
+            logger.severe("UR: Adding  " + u + ": exception: " + t);
+        } finally {
+            userModified(); // new user
+            DBUtils.close(insertStmt, conn);
+        }
+
+        return null;
     }
 }
