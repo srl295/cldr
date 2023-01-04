@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
+<!-- Copyright © 1991-2022 Unicode, Inc.
+For terms of use, see http://www.unicode.org/copyright.html
+SPDX-License-Identifier: Unicode-DFS-2016
+CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
+-->
+<ldml>
+	<identity>
+		<version number="$Revision$"/>
+		<language type="vmw"/>
+	</identity>
+	<localeDisplayNames>
+		<languages>
+			<language type="ak" draft="provisional">Ikan</language>
+			<language type="am" draft="provisional">Imhari</language>
+			<language type="ar" draft="provisional">Iarabu</language>
+			<language type="be" draft="provisional">Ibelausi</language>
+			<language type="bg" draft="provisional">Ibulgaria</language>
+			<language type="bn" draft="provisional">Ibangla</language>
+			<language type="cs" draft="provisional">Icheki</language>
+			<language type="de" draft="provisional">Ijerimani</language>
+			<language type="el" draft="provisional">Igiriki</language>
+			<language type="en" draft="provisional">Ingilishi</language>
+			<language type="es" draft="provisional">Ihispaniola</language>
+			<language type="fa" draft="provisional">Iajemi</language>
+			<language type="fr" draft="provisional">Ifaransa</language>
+			<language type="ha" draft="provisional">Ihausa</language>
+			<language type="hi" draft="provisional">Ihindi</language>
+			<language type="hu" draft="provisional">Ihungari</language>
+			<language type="ig" draft="provisional">Igbo</language>
+			<language type="it" draft="provisional">Italiano</language>
+			<language type="ja" draft="provisional">Ijapani</language>
+			<language type="jv" draft="provisional">Ijava</language>
+			<language type="km" draft="provisional">Ikambodia</language>
+			<language type="ko" draft="provisional">Ikorea</language>
+			<language type="mgh" draft="provisional">Makua</language>
+			<language type="ms" draft="provisional">Imalesia</language>
+			<language type="my" draft="provisional">Iburma</language>
+			<language type="ne" draft="provisional">Inepali</language>
+			<language type="nl" draft="provisional">Iholanzi</language>
+			<language type="pa" draft="provisional">Ipunjabi</language>
+			<language type="pl" draft="provisional">Ipolandi</language>
+			<language type="pt" draft="provisional">Nreno</language>
+			<language type="ro" draft="provisional">Iromania</language>
+			<language type="ru" draft="provisional">Irisi</language>
+			<language type="rw" draft="provisional">Inyaranda</language>
+			<language type="so" draft="provisional">Isomali</language>
+			<language type="sv" draft="provisional">Iswidi</language>
+			<language type="ta" draft="provisional">Itamil</language>
+			<language type="th" draft="provisional">Itailandi</language>
+			<language type="tr" draft="provisional">Ituruki</language>
+			<language type="uk" draft="provisional">Iukran</language>
+			<language type="ur" draft="provisional">Ihurdu</language>
+			<language type="vi" draft="provisional">Ivyetinamu</language>
+			<language type="yo" draft="provisional">Iyoruba</language>
+			<language type="zh" draft="provisional">Ichina</language>
+			<language type="zu" draft="provisional">Izulu</language>
+		</languages>
+		<territories>
+			<territory type="AD" draft="provisional">Uandora</territory>
+			<territory type="AF" draft="provisional">Ufugustani</territory>
+			<territory type="AL" draft="provisional">Ualbania</territory>
+			<territory type="AS" draft="provisional">Usamoa ya Marekani</territory>
+			<territory type="AZ" draft="provisional">Uazabajani</territory>
+			<territory type="BI" draft="provisional">Urundi</territory>
+			<territory type="BJ" draft="provisional">Ubelin</territory>
+			<territory type="CA" draft="provisional">Ukanada</territory>
+			<territory type="CG" draft="provisional">Ukongo</territory>
+			<territory type="CH" draft="provisional">Uswisi</territory>
+			<territory type="CI" draft="provisional">Ukodiva</territory>
+			<territory type="CL" draft="provisional">Uchile</territory>
+			<territory type="CN" draft="provisional">Uchina</territory>
+			<territory type="CO" draft="provisional">Ukolombia</territory>
+			<territory type="CU" draft="provisional">Ukuba</territory>
+			<territory type="CY" draft="provisional">Ukuprosi</territory>
+			<territory type="CZ" draft="provisional">Ucheki</territory>
+			<territory type="DJ" draft="provisional">Ujibuti</territory>
+			<territory type="DK" draft="provisional">Udenimaka</territory>
+			<territory type="DM" draft="provisional">Udominika</territory>
+			<territory type="DZ" draft="provisional">Alujeria</territory>
+			<territory type="EG" draft="provisional">Umisiri</territory>
+			<territory type="ER" draft="provisional">Uriterea</territory>
+			<territory type="ES" draft="provisional">Uhispania</territory>
+			<territory type="ET" draft="provisional">Uhabeshi</territory>
+			<territory type="FI" draft="provisional">Ufini</territory>
+			<territory type="FJ" draft="provisional">Ufiji</territory>
+			<territory type="FR" draft="provisional">Ufaransa</territory>
+			<territory type="GA" draft="provisional">Ugaboni</territory>
+			<territory type="GD" draft="provisional">Ugrenada</territory>
+			<territory type="GE" draft="provisional">Ujojia</territory>
+			<territory type="GF" draft="provisional">Ufaransa yo Gwaya</territory>
+			<territory type="GH" draft="provisional">Ugana</territory>
+			<territory type="GI" draft="provisional">Ujibralta</territory>
+			<territory type="GL" draft="provisional">Ugrinlandi</territory>
+			<territory type="GM" draft="provisional">Ugambia</territory>
+			<territory type="GN" draft="provisional">Ugine</territory>
+			<territory type="GP" draft="provisional">Ugwadelupe</territory>
+			<territory type="GT" draft="provisional">Ugwatemala</territory>
+			<territory type="GU" draft="provisional">Ugwam</territory>
+			<territory type="GW" draft="provisional">Uginebisau</territory>
+			<territory type="GY" draft="provisional">Uguyana</territory>
+			<territory type="HN" draft="provisional">Uhondurasi</territory>
+			<territory type="HR" draft="provisional">Ukorasia</territory>
+			<territory type="HT" draft="provisional">Uhaiti</territory>
+			<territory type="HU" draft="provisional">Uhungaria</territory>
+			<territory type="ID" draft="provisional">Undonesia</territory>
+			<territory type="IE" draft="provisional">Uayalandi</territory>
+			<territory type="IL" draft="provisional">Uisraeli</territory>
+			<territory type="IN" draft="provisional">Uhindini</territory>
+			<territory type="IQ" draft="provisional">Wiraki</territory>
+			<territory type="IT" draft="provisional">Italia</territory>
+			<territory type="JM" draft="provisional">Ujamaika</territory>
+			<territory type="JO" draft="provisional">Uyordani</territory>
+			<territory type="JP" draft="provisional">Ujapani</territory>
+			<territory type="KE" draft="provisional">Ukenya</territory>
+			<territory type="KH" draft="provisional">Ukambodia</territory>
+			<territory type="KM" draft="provisional">Ukomoro</territory>
+			<territory type="KN" draft="provisional">Usantakitzi na Nevis</territory>
+			<territory type="KP" draft="provisional">Ukorea Kaskazini</territory>
+			<territory type="KR" draft="provisional">Ukorea Kusini</territory>
+			<territory type="KZ" draft="provisional">Ukazakistani</territory>
+			<territory type="LB" draft="provisional">Ulebanoni</territory>
+			<territory type="LC" draft="provisional">Usantalusia</territory>
+			<territory type="LI" draft="provisional">Ushenteni</territory>
+			<territory type="LK" draft="provisional">Usirilanka</territory>
+			<territory type="LR" draft="provisional">Uliberia</territory>
+			<territory type="LS" draft="provisional">Ulesoto</territory>
+			<territory type="LT" draft="provisional">Utwania</territory>
+			<territory type="LU" draft="provisional">Usembaji</territory>
+			<territory type="LV" draft="provisional">Ulativia</territory>
+			<territory type="LY" draft="provisional">Ulibya</territory>
+			<territory type="ME" draft="provisional">Umantegro</territory>
+			<territory type="MG" draft="provisional">Ubukini</territory>
+			<territory type="MW" draft="provisional">Umalawi</territory>
+			<territory type="MZ" draft="provisional">Umozambiki</territory>
+			<territory type="NE" draft="provisional">Unijeri</territory>
+			<territory type="NG" draft="provisional">Unijeria</territory>
+			<territory type="NO" draft="provisional">Unorwe</territory>
+			<territory type="OM" draft="provisional">Uomani</territory>
+			<territory type="PA" draft="provisional">Upanama</territory>
+			<territory type="PE" draft="provisional">Uperuu</territory>
+			<territory type="PF" draft="provisional">Ufaransa yo Potina</territory>
+			<territory type="PG" draft="provisional">Upapua</territory>
+			<territory type="PH" draft="provisional">Ufilipino</territory>
+			<territory type="PK" draft="provisional">Upakistani</territory>
+			<territory type="PL" draft="provisional">Upolandi</territory>
+			<territory type="PM" draft="provisional">Usantapieri na Mikeloni</territory>
+			<territory type="PN" draft="provisional">Upitkairni</territory>
+			<territory type="PR" draft="provisional">Upwetoriko</territory>
+			<territory type="PY" draft="provisional">Paragwai</territory>
+			<territory type="QA" draft="provisional">Ukatari</territory>
+			<territory type="RE" draft="provisional">Uriyunioni</territory>
+			<territory type="RO" draft="provisional">Uromania</territory>
+			<territory type="RW" draft="provisional">Urwanda</territory>
+			<territory type="SA" draft="provisional">Usaudi</territory>
+			<territory type="SC" draft="provisional">Ushelisheli</territory>
+			<territory type="SD" draft="provisional">Usudani</territory>
+			<territory type="SE" draft="provisional">Uswidi</territory>
+			<territory type="SG" draft="provisional">Usingapoo</territory>
+			<territory type="SH" draft="provisional">Usantahelena</territory>
+			<territory type="SI" draft="provisional">Uslovenia</territory>
+			<territory type="SK" draft="provisional">Uslovakia</territory>
+			<territory type="SM" draft="provisional">Usamarino</territory>
+			<territory type="SN" draft="provisional">Usenegali</territory>
+			<territory type="SO" draft="provisional">Usomalia</territory>
+			<territory type="SR" draft="provisional">Usurinamu</territory>
+			<territory type="ST" draft="provisional">Usao Tome na Principe</territory>
+			<territory type="SV" draft="provisional">Usalavado</territory>
+			<territory type="SY" draft="provisional">Usiria</territory>
+			<territory type="SZ" draft="provisional">Uswazi</territory>
+			<territory type="TD" draft="provisional">Uchadi</territory>
+			<territory type="TG" draft="provisional">Utogo</territory>
+			<territory type="TH" draft="provisional">Utailandi</territory>
+			<territory type="TJ" draft="provisional">Ujikistani</territory>
+			<territory type="TK" draft="provisional">Utokelau</territory>
+			<territory type="TL" draft="provisional">Utimo Mashariki</territory>
+			<territory type="TM" draft="provisional">Uturukimenistani</territory>
+			<territory type="TN" draft="provisional">Utunisia</territory>
+			<territory type="TO" draft="provisional">Utonga</territory>
+			<territory type="TR" draft="provisional">Utuki</territory>
+			<territory type="TT" draft="provisional">Utrinidad na Tobago</territory>
+			<territory type="TV" draft="provisional">Utuvalu</territory>
+			<territory type="TZ" draft="provisional">Utanzania</territory>
+			<territory type="US" draft="provisional">Umarekani</territory>
+			<territory type="VA" draft="provisional">Uvatikani</territory>
+			<territory type="VC" draft="provisional">Usantavisenti na Grenadini</territory>
+			<territory type="VE" draft="provisional">Uvenezuela</territory>
+			<territory type="VN" draft="provisional">Uvietinamu</territory>
+			<territory type="VU" draft="provisional">Uvanuatu</territory>
+			<territory type="WF" draft="provisional">Uwalis na Futuna</territory>
+			<territory type="WS" draft="provisional">Usamoa</territory>
+			<territory type="YE" draft="provisional">Uyemeni</territory>
+			<territory type="ZA" draft="provisional">Afrika du Sulu</territory>
+			<territory type="ZM" draft="provisional">Uzambia</territory>
+			<territory type="ZW" draft="provisional">Uzimbabwe</territory>
+		</territories>
+	</localeDisplayNames>
+	<characters>
+		<exemplarCharacters draft="provisional">[a b c d e f g h i j k l m n o p r s t u v w y z]</exemplarCharacters>
+		<exemplarCharacters type="auxiliary" draft="provisional">[q x]</exemplarCharacters>
+		<exemplarCharacters type="index" draft="provisional">[A B C D E F G H I J K L M N O P R S T U V W Y Z]</exemplarCharacters>
+		<exemplarCharacters type="numbers" draft="provisional">[\- ‑ , . % ‰ + 0 1 2 3 4 5 6 7 8 9]</exemplarCharacters>
+	</characters>
+	<dates>
+		<calendars>
+			<calendar type="generic">
+				<dateFormats>
+					<dateFormatLength type="full">
+						<dateFormat>
+							<pattern draft="provisional">EEEE, d MMMM y G</pattern>
+							<datetimeSkeleton draft="provisional">GyMMMMEEEEd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="long">
+						<dateFormat>
+							<pattern draft="provisional">d MMMM y G</pattern>
+							<datetimeSkeleton draft="provisional">GyMMMMd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="medium">
+						<dateFormat>
+							<pattern draft="provisional">d MMM y G</pattern>
+							<datetimeSkeleton draft="provisional">GyMMMd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="short">
+						<dateFormat>
+							<pattern draft="provisional">dd/MM/y GGGGG</pattern>
+							<datetimeSkeleton draft="provisional">GGGGGyMMdd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+				</dateFormats>
+				<dateTimeFormats>
+					<availableFormats>
+						<dateFormatItem id="d" draft="provisional">d</dateFormatItem>
+						<dateFormatItem id="Ed" draft="provisional">E d</dateFormatItem>
+						<dateFormatItem id="hm" draft="provisional">h:mm a</dateFormatItem>
+						<dateFormatItem id="Hm" draft="provisional">HH:mm</dateFormatItem>
+						<dateFormatItem id="hms" draft="provisional">h:mm:ss a</dateFormatItem>
+						<dateFormatItem id="Hms" draft="provisional">HH:mm:ss</dateFormatItem>
+						<dateFormatItem id="M" draft="provisional">L</dateFormatItem>
+						<dateFormatItem id="Md" draft="provisional">d/M</dateFormatItem>
+						<dateFormatItem id="MEd" draft="provisional">E, M/d</dateFormatItem>
+						<dateFormatItem id="MMM" draft="provisional">LLL</dateFormatItem>
+						<dateFormatItem id="MMMd" draft="provisional">MMM d</dateFormatItem>
+						<dateFormatItem id="MMMEd" draft="provisional">E, MMM d</dateFormatItem>
+						<dateFormatItem id="ms" draft="provisional">m:ss</dateFormatItem>
+						<dateFormatItem id="y" draft="provisional">y</dateFormatItem>
+						<dateFormatItem id="yM" draft="provisional">M/y</dateFormatItem>
+						<dateFormatItem id="yMd" draft="provisional">d/M/y</dateFormatItem>
+						<dateFormatItem id="yMEd" draft="provisional">E, M/d/y</dateFormatItem>
+						<dateFormatItem id="yMMM" draft="provisional">MMM y</dateFormatItem>
+						<dateFormatItem id="yMMMd" draft="provisional">MMM d, y</dateFormatItem>
+						<dateFormatItem id="yMMMEd" draft="provisional">E, MMM d, y</dateFormatItem>
+						<dateFormatItem id="yQQQ" draft="provisional">QQQ y</dateFormatItem>
+						<dateFormatItem id="yQQQQ" draft="provisional">QQQQ y</dateFormatItem>
+					</availableFormats>
+				</dateTimeFormats>
+			</calendar>
+			<calendar type="gregorian">
+				<months>
+					<monthContext type="format">
+						<monthWidth type="abbreviated">
+							<month type="1" draft="provisional">Kwa</month>
+							<month type="2" draft="provisional">Una</month>
+							<month type="3" draft="provisional">Rar</month>
+							<month type="4" draft="provisional">Che</month>
+							<month type="5" draft="provisional">Tha</month>
+							<month type="6" draft="provisional">Moc</month>
+							<month type="7" draft="provisional">Sab</month>
+							<month type="8" draft="provisional">Nan</month>
+							<month type="9" draft="provisional">Tis</month>
+							<month type="10" draft="provisional">Kum</month>
+							<month type="11" draft="provisional">Moj</month>
+							<month type="12" draft="provisional">Yel</month>
+						</monthWidth>
+						<monthWidth type="wide">
+							<month type="1" draft="provisional">Mweri wo kwanza</month>
+							<month type="2" draft="provisional">Mweri wo unayeli</month>
+							<month type="3" draft="provisional">Mweri wo uneraru</month>
+							<month type="4" draft="provisional">Mweri wo unecheshe</month>
+							<month type="5" draft="provisional">Mweri wo unethanu</month>
+							<month type="6" draft="provisional">Mweri wo thanu na mocha</month>
+							<month type="7" draft="provisional">Mweri wo saba</month>
+							<month type="8" draft="provisional">Mweri wo nane</month>
+							<month type="9" draft="provisional">Mweri wo tisa</month>
+							<month type="10" draft="provisional">Mweri wo kumi</month>
+							<month type="11" draft="provisional">Mweri wo kumi na moja</month>
+							<month type="12" draft="provisional">Mweri wo kumi na yel’li</month>
+						</monthWidth>
+					</monthContext>
+					<monthContext type="stand-alone">
+						<monthWidth type="narrow">
+							<month type="1" draft="provisional">K</month>
+							<month type="2" draft="provisional">U</month>
+							<month type="3" draft="provisional">R</month>
+							<month type="4" draft="provisional">C</month>
+							<month type="5" draft="provisional">T</month>
+							<month type="6" draft="provisional">M</month>
+							<month type="7" draft="provisional">S</month>
+							<month type="8" draft="provisional">N</month>
+							<month type="9" draft="provisional">T</month>
+							<month type="10" draft="provisional">K</month>
+							<month type="11" draft="provisional">M</month>
+							<month type="12" draft="provisional">Y</month>
+						</monthWidth>
+					</monthContext>
+				</months>
+				<days>
+					<dayContext type="format">
+						<dayWidth type="abbreviated">
+							<day type="sun" draft="provisional">Sab</day>
+							<day type="mon" draft="provisional">Jtt</day>
+							<day type="tue" draft="provisional">Jnn</day>
+							<day type="wed" draft="provisional">Jtn</day>
+							<day type="thu" draft="provisional">Ara</day>
+							<day type="fri" draft="provisional">Iju</day>
+							<day type="sat" draft="provisional">Jmo</day>
+						</dayWidth>
+						<dayWidth type="wide">
+							<day type="sun" draft="provisional">Sabato</day>
+							<day type="mon" draft="provisional">Jumatatu</day>
+							<day type="tue" draft="provisional">Jumanne</day>
+							<day type="wed" draft="provisional">Jumatano</day>
+							<day type="thu" draft="provisional">Arahamisi</day>
+							<day type="fri" draft="provisional">Ijumaa</day>
+							<day type="sat" draft="provisional">Jumamosi</day>
+						</dayWidth>
+					</dayContext>
+					<dayContext type="stand-alone">
+						<dayWidth type="narrow">
+							<day type="sun" draft="provisional">S</day>
+							<day type="mon" draft="provisional">J</day>
+							<day type="tue" draft="provisional">J</day>
+							<day type="wed" draft="provisional">J</day>
+							<day type="thu" draft="provisional">A</day>
+							<day type="fri" draft="provisional">I</day>
+							<day type="sat" draft="provisional">J</day>
+						</dayWidth>
+					</dayContext>
+				</days>
+				<dayPeriods>
+					<dayPeriodContext type="format">
+						<dayPeriodWidth type="abbreviated">
+							<dayPeriod type="am" draft="provisional">wichishu</dayPeriod>
+							<dayPeriod type="pm" draft="provisional">mchochil’l</dayPeriod>
+						</dayPeriodWidth>
+						<dayPeriodWidth type="wide">
+							<dayPeriod type="am" draft="provisional">wichishu</dayPeriod>
+							<dayPeriod type="pm" draft="provisional">mchochil’l</dayPeriod>
+						</dayPeriodWidth>
+					</dayPeriodContext>
+				</dayPeriods>
+				<eras>
+					<eraNames>
+						<era type="0" draft="provisional">Hinapiya yesu</era>
+						<era type="1" draft="provisional">Yopia yesu</era>
+					</eraNames>
+					<eraAbbr>
+						<era type="0" draft="provisional">HY</era>
+						<era type="1" draft="provisional">YY</era>
+					</eraAbbr>
+				</eras>
+				<dateFormats>
+					<dateFormatLength type="full">
+						<dateFormat>
+							<pattern draft="provisional">EEEE, d MMMM y</pattern>
+							<datetimeSkeleton draft="provisional">yMMMMEEEEd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="long">
+						<dateFormat>
+							<pattern draft="provisional">d MMMM y</pattern>
+							<datetimeSkeleton draft="provisional">yMMMMd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="medium">
+						<dateFormat>
+							<pattern draft="provisional">d MMM y</pattern>
+							<datetimeSkeleton draft="provisional">yMMMd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="short">
+						<dateFormat>
+							<pattern draft="provisional">dd/MM/y</pattern>
+							<datetimeSkeleton draft="provisional">yMMdd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+				</dateFormats>
+				<timeFormats>
+					<timeFormatLength type="full">
+						<timeFormat>
+							<pattern draft="provisional">HH:mm:ss zzzz</pattern>
+							<datetimeSkeleton draft="provisional">HHmmsszzzz</datetimeSkeleton>
+						</timeFormat>
+					</timeFormatLength>
+					<timeFormatLength type="long">
+						<timeFormat>
+							<pattern draft="provisional">HH:mm:ss z</pattern>
+							<datetimeSkeleton draft="provisional">HHmmssz</datetimeSkeleton>
+						</timeFormat>
+					</timeFormatLength>
+					<timeFormatLength type="medium">
+						<timeFormat>
+							<pattern draft="provisional">HH:mm:ss</pattern>
+							<datetimeSkeleton draft="provisional">HHmmss</datetimeSkeleton>
+						</timeFormat>
+					</timeFormatLength>
+					<timeFormatLength type="short">
+						<timeFormat>
+							<pattern draft="provisional">HH:mm</pattern>
+							<datetimeSkeleton draft="provisional">HHmm</datetimeSkeleton>
+						</timeFormat>
+					</timeFormatLength>
+				</timeFormats>
+				<dateTimeFormats>
+					<availableFormats>
+						<dateFormatItem id="d" draft="provisional">d</dateFormatItem>
+						<dateFormatItem id="Ed" draft="provisional">E d</dateFormatItem>
+						<dateFormatItem id="hm" draft="provisional">h:mm a</dateFormatItem>
+						<dateFormatItem id="Hm" draft="provisional">HH:mm</dateFormatItem>
+						<dateFormatItem id="hms" draft="provisional">h:mm:ss a</dateFormatItem>
+						<dateFormatItem id="Hms" draft="provisional">HH:mm:ss</dateFormatItem>
+						<dateFormatItem id="M" draft="provisional">L</dateFormatItem>
+						<dateFormatItem id="Md" draft="provisional">d/M</dateFormatItem>
+						<dateFormatItem id="MEd" draft="provisional">E, M/d</dateFormatItem>
+						<dateFormatItem id="MMM" draft="provisional">LLL</dateFormatItem>
+						<dateFormatItem id="MMMd" draft="provisional">MMM d</dateFormatItem>
+						<dateFormatItem id="MMMEd" draft="provisional">E, MMM d</dateFormatItem>
+						<dateFormatItem id="ms" draft="provisional">m:ss</dateFormatItem>
+						<dateFormatItem id="y" draft="provisional">y</dateFormatItem>
+						<dateFormatItem id="yM" draft="provisional">M/y</dateFormatItem>
+						<dateFormatItem id="yMd" draft="provisional">d/M/y</dateFormatItem>
+						<dateFormatItem id="yMEd" draft="provisional">E, M/d/y</dateFormatItem>
+						<dateFormatItem id="yMMM" draft="provisional">MMM y</dateFormatItem>
+						<dateFormatItem id="yMMMd" draft="provisional">MMM d, y</dateFormatItem>
+						<dateFormatItem id="yMMMEd" draft="provisional">E, MMM d, y</dateFormatItem>
+						<dateFormatItem id="yQQQ" draft="provisional">QQQ y</dateFormatItem>
+						<dateFormatItem id="yQQQQ" draft="provisional">QQQQ y</dateFormatItem>
+					</availableFormats>
+				</dateTimeFormats>
+			</calendar>
+		</calendars>
+		<fields>
+			<field type="era">
+				<displayName draft="provisional">kal’lai</displayName>
+			</field>
+			<field type="year">
+				<displayName draft="provisional">yaka</displayName>
+			</field>
+			<field type="month">
+				<displayName draft="provisional">mweri</displayName>
+			</field>
+			<field type="week">
+				<displayName draft="provisional">iwiki mocha</displayName>
+			</field>
+			<field type="day">
+				<displayName draft="provisional">nihuku</displayName>
+				<relative type="-1" draft="provisional">n’chana</relative>
+				<relative type="0" draft="provisional">lel’lo</relative>
+				<relative type="1" draft="provisional">me’llo</relative>
+			</field>
+			<field type="weekday">
+				<displayName draft="provisional">nihuku no mwisho wa wiki</displayName>
+			</field>
+			<field type="hour">
+				<displayName draft="provisional">isaa</displayName>
+			</field>
+			<field type="minute">
+				<displayName draft="provisional">idakika</displayName>
+			</field>
+			<field type="second">
+				<displayName draft="provisional">isekunde</displayName>
+			</field>
+		</fields>
+	</dates>
+	<numbers>
+		<symbols numberSystem="latn">
+			<decimal>,</decimal>
+			<group>.</group>
+		</symbols>
+		<currencyFormats numberSystem="latn">
+			<currencyFormatLength type="short">
+				<currencyFormat type="standard">
+					<pattern type="1000" count="other">¤ 0K</pattern>
+					<pattern type="10000" count="other">¤ 00K</pattern>
+					<pattern type="100000" count="other">¤ 000K</pattern>
+					<pattern type="1000000" count="other">¤ 0M</pattern>
+					<pattern type="10000000" count="other">¤ 00M</pattern>
+					<pattern type="100000000" count="other">¤ 000M</pattern>
+					<pattern type="1000000000" count="other">¤ 0G</pattern>
+					<pattern type="10000000000" count="other">¤ 00G</pattern>
+					<pattern type="100000000000" count="other">¤ 000G</pattern>
+					<pattern type="1000000000000" count="other">¤ 0T</pattern>
+					<pattern type="10000000000000" count="other">¤ 00T</pattern>
+					<pattern type="100000000000000" count="other">¤ 000T</pattern>
+				</currencyFormat>
+			</currencyFormatLength>
+		</currencyFormats>
+		<currencies>
+			<currency type="MZN">
+				<symbol>MTn</symbol>
+			</currency>
+		</currencies>
+	</numbers>
+	<posix>
+		<messages>
+			<yesstr draft="provisional">eyo:e</yesstr>
+			<nostr draft="provisional">akin’tuna:a</nostr>
+		</messages>
+	</posix>
+</ldml>
