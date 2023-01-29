@@ -2366,7 +2366,7 @@ public class CLDRModify {
                 final Set<String> vPaths = new HashSet<>();
                 final Set<String> bPaths = new HashSet<>();
                 vxmlFile.getPaths("", null, vPaths);
-                baselineFileUnresolved.getPaths("", null, vPaths);
+                baselineFileUnresolved.getPaths("", null, bPaths);
                 vPaths.removeAll(bPaths);
                 for(final String dPath : vPaths) {
                     // System.out.println(">!> " + dPath);
