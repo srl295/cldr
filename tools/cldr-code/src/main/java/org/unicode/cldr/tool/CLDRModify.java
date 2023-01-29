@@ -2194,8 +2194,7 @@ public class CLDRModify {
             // Also ldml.dtd is required -- and should already have been created by ST when generating vxml
             final private String vxmlDir = "../vetdata-2023-01-23-plain-dropfalse/vxml/";
             final private File[] list = new File[]{
-                new File(vxmlDir + "common/main/"),
-                new File(vxmlDir + "common/annotations/")
+                new File(vxmlDir + "common/" + new File(options[SOURCEDIR].value).getName())
             };
             private Factory vxmlFactory = null;
             private CLDRFile vxmlFile = null;
@@ -2357,6 +2356,23 @@ public class CLDRModify {
                     }
                 }
                 return false;
+            }
+
+            @Override
+            public
+            void handleEnd() {
+                // look for paths in vxmlFile that aren't in baselineFileUnresolved
+                // TODO: another optimal way?
+                final Set<String> vPaths = new HashSet<>();
+                final Set<String> bPaths = new HashSet<>();
+                vxmlFile.getPaths("", null, vPaths);
+                baselineFileUnresolved.getPaths("", null, vPaths);
+                vPaths.removeAll(bPaths);
+                for(final String dPath : vPaths) {
+                    // System.out.println(">!> " + dPath);
+                    final String fPath = vxmlFile.getFullXPath(dPath);
+                    add(fPath, vxmlFile.getWinningValue(fPath), "in vxmlFile, missing from baseline");
+                }
             }
         });
     }
