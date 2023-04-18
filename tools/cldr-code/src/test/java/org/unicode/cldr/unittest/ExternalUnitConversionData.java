@@ -1,17 +1,15 @@
 package org.unicode.cldr.unittest;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.unicode.cldr.util.Rational;
 import org.unicode.cldr.util.UnitConverter.ConversionInfo;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 
 final class ExternalUnitConversionData {
     static final Pattern footnotes = Pattern.compile(" \\d+$");
