@@ -10,7 +10,7 @@ For terms of use, see http://www.unicode.org/copyright.html
     <version number="$Revision$"/>
     <unitIdComponents>
     	<unitIdComponent type="prefix" values="arc british dessert fluid light nautical xxx x curr"/>
-		<unitIdComponent type="suffix" values="force imperial luminosity mass metric person radius scandinavian troy unit us"/>
+		<unitIdComponent type="suffix" values="force imperial luminosity mass metric person radius scandinavian troy unit it us"/>
 		<unitIdComponent type="power" values="square cubic pow2 pow3 pow4 pow5 pow6 pow7 pow8 pow9 pow10 pow11 pow12 pow13 pow14 pow15"/>
 		<unitIdComponent type="and" values="and"/>
 		<unitIdComponent type="per" values="per"/>
@@ -162,6 +162,8 @@ For terms of use, see http://www.unicode.org/copyright.html
         <convertUnit source='yard' baseUnit='meter' factor='ft_to_m*3' systems="ussystem uksystem"/>
         <convertUnit source='meter' baseUnit='meter' systems="metric si"/>
         <convertUnit source='fathom' baseUnit='meter' factor='ft_to_m * 6' systems="ussystem uksystem"/>
+        <convertUnit source='rod' baseUnit='meter' factor='ft_to_m*16.5' systems="ussystem uksystem"/>
+        <convertUnit source='chain' baseUnit='meter' factor='ft_to_m*66' systems="ussystem uksystem"/>
         <convertUnit source='furlong' baseUnit='meter' factor='ft_to_m*660' systems="ussystem uksystem"/>
         <convertUnit source='mile' baseUnit='meter' factor='ft_to_m*5280' systems="ussystem uksystem"/>
         <convertUnit source='nautical-mile' baseUnit='meter' factor='1852' systems="ussystem uksystem"/>
@@ -195,6 +197,7 @@ For terms of use, see http://www.unicode.org/copyright.html
         <convertUnit source='ampere' baseUnit='ampere' systems="metric si"/>
         
         <!-- temperature -->
+        <convertUnit source='rankine' baseUnit='kelvin' factor='5/9' systems="ussystem uksystem"/>
         <convertUnit source='fahrenheit' baseUnit='kelvin' factor='5/9' offset='2298.35/9' systems="ussystem uksystem"/>
         <convertUnit source='kelvin' baseUnit='kelvin' systems="metric si"/>
         <convertUnit source='celsius' baseUnit='kelvin' offset='273.15' systems="metric"/>
@@ -249,7 +252,9 @@ For terms of use, see http://www.unicode.org/copyright.html
         <convertUnit source='dalton' baseUnit='kilogram-square-meter-per-square-second' factor='1.49241808560E-10'/>
         <convertUnit source='joule' baseUnit='kilogram-square-meter-per-square-second' systems="metric si"/>
         <convertUnit source='calorie' baseUnit='kilogram-square-meter-per-square-second' factor='4.184'/> <!-- th -->
+        <convertUnit source='calorie-it' baseUnit='kilogram-square-meter-per-square-second' factor='4.1868'/> <!-- th -->
         <convertUnit source='british-thermal-unit' baseUnit='kilogram-square-meter-per-square-second' factor='4.184*2267.96185/9' systems="ussystem uksystem"/> <!-- th -->
+        <convertUnit source='british-thermal-unit-it' baseUnit='kilogram-square-meter-per-square-second' factor='4.1868*2267.96185/9' systems="ussystem uksystem"/> <!-- th -->
         <convertUnit source='foodcalorie' baseUnit='kilogram-square-meter-per-square-second' factor='4184' systems="ussystem uksystem"/> <!-- th -->
         <convertUnit source='therm-us' baseUnit='kilogram-square-meter-per-square-second' factor='105480400' systems="ussystem"/>
 
@@ -263,6 +268,9 @@ For terms of use, see http://www.unicode.org/copyright.html
         
         <!-- electric-resistance -->
         <convertUnit source='ohm' baseUnit='kilogram-square-meter-per-cubic-second-square-ampere' systems="metric si"/>
+        
+        <!-- electric-charge -->
+        <convertUnit source='coulomb' baseUnit='second-ampere' systems="metric si"/>
         
         <!-- speed -->
         <convertUnit source='knot' baseUnit='meter-per-second' factor='1852/3600' systems="ussystem uksystem"/>
