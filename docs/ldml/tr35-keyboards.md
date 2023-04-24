@@ -92,15 +92,14 @@ The LDML specification is divided into the following parts:
   * [Element: row](#Element_row)
   * [Element: vkeys](#Element_vkeys)
   * [Element: vkey](#Element_vkey)
-  * [Element: variables](#element-variables)
   * [Element: variables](#Element_variables)
   * [Element: variable](#Element_variable)
   * [Element: transforms](#Element_transforms)
     * [Markers](#markers)
   * [Element: transformGroup](#Element_transformGroup)
-    * [Form 1: `transformGroup`: import-only](#form-1-transformgroup-import-only)
-    * [Form 2: `transformGroup`: transform](#form-2-transformgroup-transform)
-    * [Form 3: `transformGroup`: reorder](#form-3-transformgroup-reorder)
+    * [Example: `transformGroup` with only `import` elements](#example-transformgroup-with-only-import-elements)
+    * [Example: `transformGroup` with `transform` elements](#example-transformgroup-with-transform-elements)
+    * [Example: `transformGroup` with `reorder` elements](#example-transformgroup-with-reorder-elements)
   * [Element: transform](#Element_transform)
     * [Regex-like Syntax](#regex-like-syntax)
     * [Additional Features](#additional-features)
@@ -1381,25 +1380,141 @@ This is a container for variables to be used with transforms.
 _Attribute:_ `id` (required)
 
 > Specifies the identifier (name) of this variable.
+> All ids must be unique across all types of variables
 
 _Attribute:_ `value` (required)
 
+<!-- TODO linkify-->
+> Value is a single string which is used by the [transform](#element-transform) elements for string matching and substitution.
+> The `value` attribute is always a set of strings separated by whitespace.
+> All spacing marks must always be escaped in sets for clarity, as whitespace is used to separate tokens in sets {{ link }}. {{link to Unicode whitespace docs…}}
+> Strings may contain whitespaces. However, for clarity, it is recommended to escape spacing marks, even in strings.
 > This attribute may be escaped with `\u` notation, see [Escaping](#Escaping).
-> Variables may refer to other variables if they have been previously defined, using `${variable}` syntax.
+> Variables may refer to other variables if they have been previously defined, using `${variable}` syntax. This may be used to combine sets.
+> [Markers](#markers) may be included with the `\m{…}` notation.
+
+{scratchpad}
+… if you have `<transform … to="${upper}" />` that is an error, because `upper` contains whitespace  and is thus a set.
 
 **Example**
 
 ```xml
-<variable id="cluster_hi" value="हि" /> <!-- a string -->
-<variable id="upper" value="A B CC D E FF" /> <!-- space separated set -->
-<variable id="lower" value="a b c  d e  f" /> <!-- space separated set -->
-<variable id="upper_or_lower" value="${upper} ${lower}"  /> <!-- Combine two sets -->
-<variable id="consonants" value="[कसतनमह]"/> <!-- range -->
-<variable id="zwnj" value="\u{200C}"/> <!-- single codepoint -->
-<variable id="grave" value="\m{grave}"/> <!-- refer to a mark -->
-<variable id="zwnj_grave" value="${zwnj} ${grave}"  /> <!-- Combine two variables -->
+<string id="cluster_hi" value="हि" /> <!-- a string -->
+<set id="upper" value="A B CC D E FF" /> <!-- space separated set of strings -->
+<set id="lower" value="a b c  d e  f" /> <!-- space separated set of strings -->
+<set id="upper_or_lower" value="$[upper] $[lower]"  /> <!-- Concatenate two sets -->
+`from="($[upper_or_lower])" to="$[1:lower_or_upper]"`
+<!-- Assumed set:  whitespaces - just a set of valid whitespace codepoints -->
+`from="($[upper_or_lower])(?:$[whitespaces])($[lower_or_upper])" to="$[1:lower_or_upper]$[2:upper_or_lower]"`
+<!-- Example transform below: Uहिa => uA-->
+`from="($[upper_or_lower])${cluster_hi}($[lower_or_upper])" to="$[1:lower_or_upper]$[2:upper_or_lower]"`
+`from="($[upper_or_lower])$[whitespace]($[lower_or_upper])" to="$[1:lower_or_upper]$[2:upper_or_lower]"`
+`from="${zwnj}" to="-"`
+`from="${grave}" to="${zwnj}"`
+`<display to="${cluster_hi}">
+<unicodeSet id="consonants" value="[कसतनमह]" /> <!-- unicode set range -->
+<unicodeSet id="range" value="[a-z D E F G \u200A]" /> <!-- unicode set range -->
+<unicodeSet id="newrange" value="[$[range]-[G]]" /> <!-- unicode set range -->
+
+unicodeSet - $[]
+set - $[]
+string - ${}
+
+<transform from="(a|b|c)" to="$[1:A|B|C]" />  <!-- Error: must be done with sets -->
+<transform from="($[a|b|c])" to="$[1:A|B|C]" />  <!-- Error: must be done with sets -->
+<transform from="($[set]|a|b|c)" to="$[1:set|A|B|C]" />  <!-- Error: must be done with set (comprised of 'set' and the other entries) -->
+
+($[range]) -- > $[1:xxx]  <!-- Error:  cannot map from a unicodeSet -->
+from="${zwnj}$[range]($[set])"
+
+// https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%5B%3AKhmr%3A%5D%26%5B%3AMn%3A%5D%5D&abb=on&g=&i=
+[[:Khmr:]&[:Mn:]] =>
+<set id="KhmrMn" value="\u17B4\ u17B5 \u17D3 \u17CB \u17CC \u17CD \u17CE \u17CF ... \u17D1\ u17DD \u17C6 \u17C9 \u17CA \u17B7-\u17BD \u17D2]">
+[\u17B4\u17B5\u17B7-\u17BD\u17C6\u17C9-\u17D3\u17DD]
+
+<!-- All these are broken: -->
+<set id="consonants" range="[[…]&[कसतनमह]]"/> <!-- unicode set range , compiled down to character class-->
+<set id="range" range="[a-z D E F G \u200A]" /> <!-- unicode set range... -->
+
+<set id="range" value="[a-z] D E F G \u200A" /> <!-- unicode set range -->
+<set id="complex_range" value="[a-z][0-9] A B C"> <!-- ...but then... does that allow a0, b1, etc but not a, 0 \? -->
+ ([a-z][0-9]|A|B|C) ==>  a0 a1 a2 .... z9  <!-- So, within variables:  no [range] x [range] allowed, to avoid complexity -->
+<string id="alnum" value="[a-z][0-9]" />
+
+
+<set id="alphas" value="a b c"/>
+<set id="num" values="1 2 3" />
+<transfrom from="$[alphas]$[num]" to=…/> <!-- matches a1, a2, b3 b1, b2 b3 -->
+
+<set id="TheWorld" value="[\u{0020}-\u{10FFFF}]" />  <!-- so... probably limit max range size to... say... 256 codepoints? -->
+
+<set value="[a-z]" />
+<set value="A B C ... Z X Y" />
+<set value="[A-W] Z X Y" />
+
+[$[TheWorld]&[A-Z]] => [A-Z]
+
+[$[Khmr]&$[Mn]] => KhmrMn above
+
+<transform from="($[Latin])($[Khmer])" to="$1$[2:xxx]" />
+
+${TheWorld} or $[TheWorld] ~--> (?:\u{0020})
+<!-- so maybe we DO allow... -->
+
+…
+    `[abc]` `[^abc]` `[a-z]` `[ॲ ऄ-आ इ-ऋ]` `[\u093F-\u0944 \u0962 \u0963]`
+
+    Defined in [UTS #35 Part One](tr35.md#Unicode_Sets) with some restrictions:
+    - Properties are not supported (`:` syntax)
+    - Strings are not supported (`{abc}` syntax)
+…
+
+<unicodeset id="TheWorld" value="[...]"/> > <!-- but not <set id="TheWorld" (same as above)> -->
+<!-- range does not allow use in mapping ops, while set does. May not be used as an output, either -->
+<!-- only usable in from-attributes, useful for simpler regex there -->
+<!-- UnicodeSet notation, minus properties -->
+<!-- must start and end with square bracket -->
+<unicodeset id="foo" value="[$[TheWorld]&[A-Z]]" /> <!-- include another range -->
+<unicodeset id="bar" value="[${zwnj} D E F]" /> <!-- include another string and range -->
+
+
+<transform from="$[TheWorld]" /> <!-- delete the world-->
+
+<set id="lower" value="[a-z]">
+
+<string id="zwnj" value="\u{200C}"/> <!-- single codepoint -->
+<string id="grave" value="\m{grave}"/> <!-- refer to a marker -->
+<string id="zwnj_grave" value="${zwnj}${grave}"  /> <!-- Combine two variables -->
+<string id="zwnj_sp_grave" value="${zwnj}\u{0020}${grave}"  /> <!-- Combine two variables -->
+<string id="zwnj_grave_set" value="${zwnj} ${grave}"  /> <!-- Combine two variables as a set -->
+<string id="zwnj_grave_set2" value="$[zwnj]$[grave]"  /> <!-- Combine two variables as a set -->
+<string id="upper_or_lower_crud" value="$[upper]$[lower]"  /> <!-- Concatenate two sets but with FFa in the middle ?! (linter error?) -->
+
+
 
 ```
+
+Use cases:
+`<string>`:
+  * `<key to="${v}" />`
+  * `<display to="${v}" />`
+  * `<transform from="${v}" />`
+  * `<transform to="${v}" />`
+`<set>`:
+  * `<transform from="$[v]" />` -- any one of these, implemented as a non-capturing group
+  * `<transform from="($[v])" />` -- a capture group
+  * `<transform to="$[1:v]" />` -- a replacement from a matching capture group
+`<range>`:
+  * `<transform from="$<range>" />` -- a unicode set range
+
+```xml
+<transform from="($[upper])" to=… >  <!-- matches a set -->
+<transform from="($[zwnj]$[grave])" to=… >  <!-- Forbidden (whether defined as strings or sets) -->
+<!-- below: the nail in the coffin to convince Marc about the two different notations -->
+<transform from="(${zwnj}${grave})"  to…  >  <!-- matches a single string: "\u{200C}\u{grave}" -->
+<transform from="(${zwnj})" to=… >  <!-- matches a single string -->
+```
+
 
 See the `from=` and `to=` sections of [`transforms`](#Element_transforms) for details.
 
@@ -1605,7 +1720,7 @@ _Attribute:_ `from` (required)
 
 - **Fixed character classes and escapes**
 
-    `\s \S \t \r \n \f \v \\ \$`
+    `\s \S \t \r \n \f \v \\ \$ \d \w \D \W` … TODO: check these
 
     The value of these classes do not change with Unicode versions.
 
@@ -1613,13 +1728,12 @@ _Attribute:_ `from` (required)
 
     `\\` and `\$` evaluate to `\` and `$`, respectively.
 
-- **Ranges and UnicodeSets**
+- **Character classes**
 
-    `[abc]` `[^abc]` `[a-z]` `[ॲ ऄ-आ इ-ऋ]` `[\u093F-\u0944 \u0962 \u0963]`
+    `[abc]` `[^def]`
 
-    Defined in [UTS #35 Part One](tr35.md#Unicode_Sets) with some restrictions:
-    - Properties are not supported (`:` syntax)
-    - Strings are not supported (`{abc}` syntax)
+    - supported
+    - no Unicode properties such as `\p{…}`
 
 - **Bounded quantifier**
 
@@ -1638,7 +1752,7 @@ _Attribute:_ `from` (required)
 
     These refer to groups captured as a set, and can be referenced with the `$1` through `$9` operators in the `to=` pattern. May not be nested.
 
-- **Nested non-capture groups**
+- **Nested capture groups**
 
     `(?:thismatches) (?:[abc]([def]))|(?:[ghi])`
 
@@ -1683,13 +1797,13 @@ The following are additions to standard Regex syntax.
     Matches any single marker.
     Also see [Markers](#markers).
 
-- **Variables**
+- **String Variables**
 
     `${zwnj}`
 
     In this usage, the variable with `id="zwnj"` will be substituted in at this point in the expression. The variable can contain a range, a character, or any other portion of a pattern. If `zwnj` is a simple string, the pattern will match that string at this point.
 
-- **Set variables**
+- **Set and UnicodeSet variables**
 
     `$[upper]`
 
@@ -1698,10 +1812,15 @@ The following are additions to standard Regex syntax.
     Given the variable `upper` defined below, the expression `$[upper]` will match as if it were written `(?:A|B|CC|D|E|FF)`. Note that leading, trailing, and excess whitespace are ignored.
 
     ```xml
-    <variable id="upper" value=" A B CC  D E  FF " />
+    <set id="upper" value=" A B CC  D E  FF " />
     ```
 
-    This expression in a `from=` may be used to **Insert a mapped variable**, see below under [Replacement syntax](#replacement-syntax).
+    TODO: (sets only!) This expression in a `from=` may be used to **Insert a mapped variable**, see below under [Replacement syntax](#replacement-syntax).
+
+    TODO: reword
+    - Ranges and sets as variables (see [variables](#Element_variables)) are supported in the `from=` side, so:
+        `<transform from="$[matras]" to="…" />` <!-- where matras is a <set or a <unicodeSet -->
+
 
 #### Disallowed Regex Features
 
@@ -1714,8 +1833,12 @@ The following are additions to standard Regex syntax.
     Tooling may choose to suggest an expansion of properties, such as `\p{Mn}` to all non spacing marks for a certain Unicode version.  As well, a set of variables could be constructed in an `import`-able file matching particularly useful Unicode properties.
 
     ```xml
-    <variable id="Mn" value="[\u034F\u0591-\u05AF\u05BD\u05C4\u05C5\…]" /> <!-- 1,985 code points -->
+    <unicodeSet id="Mn" value="[\u034F\u0591-\u05AF\u05BD\u05C4\u05C5\…]" /> <!-- 1,985 code points -->
     ```
+
+- **Ranges**
+
+    To use a range, use a `<unicodeset>` or `<set>` variable.
 
 - **Backreferences**
 
@@ -2086,8 +2209,6 @@ Keyboarding applications typically work, but are not required to, in one of two 
 
 > text editing happens when a user moves the cursor into some previously entered text which may have been entered by someone else. As such, there is no way to know in which order things were typed, but a user will still want appropriate behaviour when they press backspace. This may involve deleting more than one character or replacing a sequence of characters with a different sequence.
 
-In the text entry mode, there is no need for any special description of backspace behaviour. A keyboarding application will typically keep a history of previous output states and just revert to the previous state when backspace is hit.
-
 In text editing mode, different keyboard layouts may behave differently in the same textual context. The backspace transform allows the keyboard layout to specify the effect of pressing backspace in a particular textual context. This is done by specifying a set of backspace rules that match a string before the cursor and replace it with another string. The rules are expressed within a `transforms type="backspace"` element.
 
 
@@ -2101,7 +2222,7 @@ In text editing mode, different keyboard layouts may behave differently in the s
 
 **Example**
 
-For example, consider deleting a Devanagari ksha:
+For example, consider deleting a Devanagari ksha क्श:
 
 While this character is made up of three codepoints, the following rule causes all three to be deleted by a single press of the backspace.
 
@@ -2162,7 +2283,9 @@ The above example is simplified, and doesn't fully handle the interaction betwee
 
 The first three transforms above delete various ligatures with a single keypress. The other transforms handle prebase characters. There are two in this Burmese keyboard. The transforms delete the characters preceding the prebase character up to base which gets replaced with the prebase filler string, which represents a null base. Finally the prebase filler string + prebase is deleted as a unit.
 
-If no specified transform among all `transformGroup`s under the `<transforms type="backspace">` element matches, a default will be used instead — an implied final transform that simply deletes the most recent codepoint. This implied transform can be represented as follows, using `.`.  See the documentation for *Match a single Unicode codepoint* under [transform syntax](#regex-like-syntax), above.
+If no specified transform among all `transformGroup`s under the `<transforms type="backspace">` element matches, a default will be used instead — an implied final transform that simply deletes the codepoint at the end of the  context {{todo: link}}. This implied transform is effectively similar to the following code sample, even though the `*` operator is not actually allowed in `from=`.  See the documentation for *Match a single Unicode codepoint* under [transform syntax](#regex-like-syntax) and [markers](#markers), above.
+
+It is important that implementations do not by default delete more than one non-marker codepoint at a time, except in the case of emoji clusters. Note that implementations will vary in the emoji handling due to the iterative nature of successive Unicode releases…  {{ todo: Link and example unicodeset }}. See [UTS#51](https://www.unicode.org/reports/tr51/#Emoji_Modifiers_in_Text)
 
 ```xml
 <transforms type="backspace">
@@ -2170,7 +2293,8 @@ If no specified transform among all `transformGroup`s under the `<transforms typ
 
     <!-- Final implicit backspace transform: Delete the final codepoint. -->
     <transformGroup>
-        <transform from="." />
+        <!-- (:?\m{*})*  - matches any number of contiguous markers -->
+        <transform from="(:?\m{*})*.(:?\m{*})*" /> <!-- deletes any number of markers directly on either side of the final pre-caret codepoint -->
     </transformGroup>
 </transforms>
 ```
