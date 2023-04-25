@@ -20,6 +20,7 @@
         </a-button>
         <span class="i-am-info-panel">Info Panel</span>
         <a-button
+          v-if="($locale.value) && ($xpath.value)"
           shape="circle"
           class="cldr-nav-btn"
           title="Explain"

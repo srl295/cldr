@@ -26,17 +26,16 @@
             <span class="reason" v-if="showReason">{{
               getReason(reason, attribute)
             }}</span>
-            <!-- show the Go button, only if we have locale AND xpath. Show always, so we can navigate   -->
+            <!-- show the Go button, only if we have locale AND xpath. Hide if we're already there.  -->
             <a-button
               size="small"
               shape="round"
-              v-if="locale && xpath"
+              v-if="(locale && xpath) && ((locale != $locale.value)||(xpath != $xpath.value))"
               @click="go(locale, xpath)"
               >Jump</a-button
             >
           </p>
           <!-- only show on change -->
-          <!-- <b v-if="locale" v-bind:title="Locale ID">{{ locale }}</b> -->
           <p v-if="newXpath" class="xpath">
             {{ xpathFull }}
           </p>
