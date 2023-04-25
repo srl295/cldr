@@ -4,6 +4,7 @@ import { notification } from "ant-design-vue";
 import { specialToComponent } from "./specialToComponentMap";
 import { getCldrOpts } from "./getCldrOpts";
 import { setupComponents } from "./setupComponents";
+import * as cldrRef from "./esm/cldrRef.mjs";
 
 /**
  * The App created and mounted most recently. For .unmount …
@@ -41,6 +42,8 @@ function createCldrApp(component, specialPage, extraProps) {
   // These are available on all components.
   app.config.globalProperties.$cldrOpts = getCldrOpts();
   app.config.globalProperties.$specialPage = specialPage || null;
+  app.config.globalProperties.$locale = cldrRef.locale;
+  app.config.globalProperties.$xpath = cldrRef.xpath;
 
   // Setup err handling
   app.config.errorHandler = (err, vm, info) => {
