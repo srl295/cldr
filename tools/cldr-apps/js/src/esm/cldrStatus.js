@@ -2,7 +2,6 @@
  * cldrStatus: encapsulate data defining the current status of SurveyTool.
  */
 import * as cldrGui from "./cldrGui.js";
-import * as cldrRef from "./cldrRef.mjs";
 
 /**
  * Target for status change events
@@ -126,7 +125,7 @@ function setCurrentId(id) {
     id = id.toString();
     currentId = idIsAllowed(id) ? id : "";
   }
-  cldrRef.xpath.value = currentId;
+  statusTarget.dispatchEvent(new Event("id"));
 }
 
 function idIsAllowed(id) {
@@ -190,7 +189,7 @@ function getCurrentLocale() {
 
 function setCurrentLocale(loc) {
   currentLocale = loc;
-  cldrRef.locale.value = loc;
+  statusTarget.dispatchEvent(new Event("locale"));
 }
 
 /**

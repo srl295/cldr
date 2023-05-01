@@ -1,24 +1,26 @@
-import * as cldrEvent from "./esm/cldrEvent.js";
 import * as cldrLoad from "./esm/cldrLoad.js";
 import * as cldrStatus from "./esm/cldrStatus.js";
-import * as cldrSurvey from "./esm/cldrSurvey.js";
+import { ref } from "vue";
 
+// Refs
+// set up event listeners for any refs we want to be reactive
+const locale = ref(null);
+cldrStatus.on("locale", () => (locale.value = cldrStatus.getCurrentLocale()));
+
+const id = ref(null);
+cldrStatus.on("id", () => (id.value = cldrStatus.getCurrentId()));
+
+/**
+ *
+ * @returns values for $cldrOpts
+ */
 function getCldrOpts() {
-  const locale = cldrStatus.getCurrentLocale();
-  const locmap = cldrLoad.getTheLocaleMap();
-  const localeDir = cldrLoad.getLocaleDir(locale);
   return {
-    // modules
-    cldrLoad,
-    cldrEvent, // Vue could call into these, if need be
-    cldrStatus,
-    cldrSurvey,
-
-    // additional variables
-    locale,
-    locmap,
-    localeDir,
+    locmap: cldrLoad.getTheLocaleMap(),
+    localeDir: cldrLoad.getLocaleDir(locale),
     sessionId: cldrStatus.getSessionId(),
+    locale,
+    id,
   };
 }
 

@@ -30,7 +30,12 @@
             <a-button
               size="small"
               shape="round"
-              v-if="(locale && xpath) && ((locale != $locale.value)||(xpath != $xpath.value))"
+              v-if="
+                locale &&
+                xpath &&
+                (locale != $cldrOpts.locale.value ||
+                  xpath != $cldrOpts.id.value)
+              "
               @click="go(locale, xpath)"
               >Jump</a-button
             >
