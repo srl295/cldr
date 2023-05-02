@@ -25,6 +25,8 @@ import org.unicode.cldr.tool.PathInfo;
 import org.unicode.cldr.util.CLDRFile.DraftStatus;
 import org.unicode.cldr.util.LocaleInheritanceInfo.Reason;
 
+import com.ibm.icu.util.Output;
+
 /**
  * This contains additional tests in JUnit.
  *
@@ -222,9 +224,7 @@ public class TestCLDRFile {
                             new LocaleInheritanceInfo(null, p, Reason.codeFallback)),
                     pwf,
                     "For " + locale + ":" + p);
-            assertTrue(
-                    pwf.get(pwf.size() - 1).getReason().isTerminal(),
-                    "Last Reason should be terminal");
+                    validatePathsWhereFound(pwf, f, p);
         }
         {
             String locale = "en_CA";
@@ -240,9 +240,7 @@ public class TestCLDRFile {
                             new LocaleInheritanceInfo(null, p, Reason.codeFallback)),
                     pwf,
                     "For " + locale + ":" + p);
-            assertTrue(
-                    pwf.get(pwf.size() - 1).getReason().isTerminal(),
-                    "Last Reason should be terminal");
+                    validatePathsWhereFound(pwf, f, p);
         }
         {
             String locale = "root";
@@ -265,9 +263,7 @@ public class TestCLDRFile {
                             new LocaleInheritanceInfo(null, p, Reason.codeFallback)),
                     pwf,
                     "For " + locale + ":" + p);
-            assertTrue(
-                    pwf.get(pwf.size() - 1).getReason().isTerminal(),
-                    "Last Reason should be terminal");
+                    validatePathsWhereFound(pwf, f, p);
         }
         {
             // Note: Uses the special test data in
@@ -291,9 +287,7 @@ public class TestCLDRFile {
                             new LocaleInheritanceInfo(null, pother, Reason.codeFallback)),
                     pwf,
                     "For (TESTDATA) " + locale + ":" + p);
-            assertTrue(
-                    pwf.get(pwf.size() - 1).getReason().isTerminal(),
-                    "Last Reason should be terminal");
+                    validatePathsWhereFound(pwf, f, p);
         }
         {
             String locale = "hy";
@@ -318,12 +312,7 @@ public class TestCLDRFile {
                             new LocaleInheritanceInfo(null, p, Reason.codeFallback)),
                     pwf,
                     "For (TESTDATA) " + locale + ":" + p);
-            assertTrue(
-                    pwf.get(pwf.size() - 1).getReason().isTerminal(),
-                    "Last Reason should be terminal");
-
-            // new LocaleInheritanceInfo(
-
+                    validatePathsWhereFound(pwf, f, p);
         }
         {
             // assert that throws with a non-resolved
@@ -334,5 +323,55 @@ public class TestCLDRFile {
                                     .getCLDRFile("en", false)
                                     .getPathsWhereFound(GERMAN_IN_SWITZERLAND));
         }
+    }
+
+    void validatePathsWhereFound(List<LocaleInheritanceInfo> pwf, CLDRFile f, String path) {
+        final String locale = f.getLocaleID();
+        String where = locale+":"+path;
+        assertTrue(
+                pwf.get(pwf.size() - 1).getReason().isTerminal(),
+                "Last Reason should be terminal for "+where);
+            assertTrue(pwf.stream().anyMatch(p -> p.getReason().isTerminal()), "Some of the reasons should be terminal for " + where);
+
+        // compare to bailey
+        Output<String> bLocale = new Output<>();
+        Output<String> bPath = new Output<>();
+        final String bValue = f.getBaileyValue(path, bPath, bLocale);
+        assertAll(
+                () -> assertNotNull(bValue, "B value for " + where),
+                () -> assertNotNull(bLocale, "B locale for " + where),
+                () -> assertNotNull(bPath, "B path for " + where));
+        System.out.println(String.format("%s:%s = %s", bLocale, bPath, bValue));
+        // Dig for first terminal
+        int i = 0;
+        // skip any non-terminals
+        System.out.println("---");
+        pwf.forEach(p -> System.out.println(p.toString()));
+        while (i<pwf.size()) {
+                if (pwf.get(i).getReason().isTerminal()) {
+                        break;
+                }
+                i++;
+        }
+        System.out.println("first terminal i=" + i);
+        i++; // skip terminal
+        System.out.println("next i=" + i);
+        // skip next non-terminals
+        while (i<pwf.size()) {
+                if (pwf.get(i).getReason().isTerminal()) {
+                        break;
+                }
+                i++;
+        }
+        System.out.println("second terminal i=" + i);
+        // assertTrue(i < pwf.size(), /* () -> */ String.format(
+        //         "For %s: i=%d looking for nonterminal in %d item(s)",
+        //         where,i,pwf.size()
+        // ));
+        // LocaleInheritanceInfo bailey = pwf.get(i);
+        // assertAll(
+        //         () -> assertEquals(bLocale, bailey.getLocale(), "B locale for " + where),
+        //         () -> assertEquals(bPath, bailey.getPath(), "B path for " + where));
+
     }
 }

@@ -23,7 +23,7 @@ public final class LocaleInheritanceInfo {
          * value.
          */
         constructed("Constructed value", false),
-        none("The value was not found in this locale.", true),
+        none("The value was not found in this locale.", false),
         inheritanceMarker("Found: Inheritance marker", false),
         removedAttribute("Removed attribute: ${attribute}", false),
         changedAttribute("Changed attribute: ${attribute}", false),
