@@ -6,7 +6,17 @@ import * as cldrGui from "./cldrGui.js";
 /**
  * Target for status change events
  */
-const statusTarget = new EventTarget();
+
+class Thingy {
+
+};
+
+const statusTarget = new Thingy();
+
+
+function getStatusTarget() {
+  return statusTarget;
+}
 
 /**
  * Re-export addEventListener as 'on'
@@ -15,7 +25,14 @@ const statusTarget = new EventTarget();
  * - sessionId:  session ID changed
  * - surveyUser: survey user changed
  */
-const on = statusTarget.addEventListener.bind(statusTarget);
+function on(type, callback) {
+  // getStatusTarget().addEventListener(type, callback);
+}
+
+function event(type) {
+  // const
+  // return getStatusTarget().dispatchEvent(type);
+}
 
 function updateAll(status) {
   if (status.contextPath) {
@@ -125,7 +142,7 @@ function setCurrentId(id) {
     id = id.toString();
     currentId = idIsAllowed(id) ? id : "";
   }
-  statusTarget.dispatchEvent(new Event("id"));
+  getStatusTarget().dispatchEvent(new Event("id"));
 }
 
 function idIsAllowed(id) {
@@ -189,7 +206,7 @@ function getCurrentLocale() {
 
 function setCurrentLocale(loc) {
   currentLocale = loc;
-  statusTarget.dispatchEvent(new Event("locale"));
+  getStatusTarget().dispatchEvent(new Event("locale"));
 }
 
 /**
@@ -282,7 +299,7 @@ function getSessionId() {
 function setSessionId(i) {
   if (i !== sessionId) {
     sessionId = i;
-    statusTarget.dispatchEvent(new Event("sessionId"));
+    getStatusTarget().dispatchEvent(new Event("sessionId"));
   }
 }
 
@@ -312,7 +329,7 @@ function setSurveyUser(u) {
   if (surveyUser !== u) {
     surveyUser = u;
     cldrGui.updateWithStatus();
-    statusTarget.dispatchEvent(new Event("surveyUser"));
+    getStatusTarget().dispatchEvent(new Event("surveyUser"));
   }
 }
 

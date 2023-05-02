@@ -20,7 +20,7 @@
         </a-button>
         <span class="i-am-info-panel">Info Panel</span>
         <a-button
-          v-if="$cldrOpts.locale.value && $cldrOpts.id.value"
+          v-if="locale.value && id.value"
           shape="circle"
           class="cldr-nav-btn"
           title="Explain"
@@ -37,6 +37,7 @@
 <script>
 import { ref } from "vue";
 import * as cldrInfo from "../esm/cldrInfo.js";
+import * as cldrRefs from "../cldrRefs.mjs";
 import * as cldrStatus from "../esm/cldrStatus.js";
 import InheritanceExplainer from "./InheritanceExplainer.vue";
 
@@ -45,6 +46,8 @@ export default {
     let inheritanceExplainer = ref(null);
     return {
       inheritanceExplainer,
+      locale: cldrRefs.locale,
+      id: cldrRefs.id,
     };
   },
   components: {

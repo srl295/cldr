@@ -33,8 +33,8 @@
               v-if="
                 locale &&
                 xpath &&
-                (locale != $cldrOpts.locale.value ||
-                  xpath != $cldrOpts.id.value)
+                (locale != cldrRefs.locale.value ||
+                  xpath != cldrRefs.id.value)
               "
               @click="go(locale, xpath)"
               >Jump</a-button
@@ -53,6 +53,7 @@
 <script>
 import * as cldrInheritance from "../esm/cldrInheritance.mjs";
 import * as cldrText from "../esm/cldrText.js";
+import * as cldrRefs from "../cldrRefs.mjs";
 import { ref } from "vue";
 import { notification } from "ant-design-vue";
 export default {
