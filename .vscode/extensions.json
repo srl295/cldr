@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "vue.volar",
+        "redhat.vscode-xml",
+        "redhat.java",
+        "atlassian.atlascode",
+        "vscjava.vscode-java-pack"
+    ]
+}
