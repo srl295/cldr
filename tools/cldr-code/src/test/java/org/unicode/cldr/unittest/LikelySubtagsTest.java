@@ -328,7 +328,9 @@ public class LikelySubtagsTest extends TestFmwk {
                 Level covLevel = ccl.getEffectiveCoverageLevel(language);
                 if (covLevel == null || !covLevel.isAtLeast(Level.BASIC)) {
                     // https://unicode-org.atlassian.net/browse/CLDR-15663
-                    if(logKnownIssue("CLDR-15663", "English translation should not be required for sub-basic language name")) {
+                    if (logKnownIssue(
+                            "CLDR-15663",
+                            "English translation should not be required for sub-basic language name")) {
                         continue; // skip error
                     }
                 }
