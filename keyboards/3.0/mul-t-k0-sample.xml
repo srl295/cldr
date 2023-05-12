@@ -5,12 +5,22 @@
     This is a sample data file.
     This file is subject to change.
     Please see https://cldr.unicode.org/index/keyboard-workgroup for the latest information.
+
+	Also NOTE: this is really a test keyboard, though based on azerty
 -->
-<keyboard locale="fr-t-k0-azerty" conformsTo="techpreview">
+<keyboard locale="mul-t-k0-sample" conformsTo="techpreview">
+	<locales>
+		<locale id="fr" /> <!-- example of including French -->
+		<locale id="br" /> <!-- example of including Breton -->
+	</locales>
+	<!-- 'conformsTo' gives CLDR spec conformance. Distinguishes from prior
+		keyboard formats -->
+	<!-- 'version' element is now optional -->
+	<version number="1.0.0" />
 	<info author="Team Keyboard" normalization="NFC" layout="AZERTY" indicator="FR" />
 	<names>
-		<name value="French" />
-		<name value="French AZERTY" />
+		<name value="Sample French Test" />
+		<name value="Sample French Test AZERTY" />
 	</names>
 	<settings fallback="omit" />
 
@@ -54,6 +64,13 @@
 		<key id="symbol" switch="symbol" />
 		<key id="base" switch="base" />
 
+		<!--
+			TODO: need discussion
+		<key id="bksp" gap="true" />
+		<key id="extra" gap="true" />
+		<key id="enter" to="\u{000A}" />
+		-->
+
 		<!-- extra keys -->
 		<key id="u-grave" to="ü" />
 		<key id="e-grave" to="é" /> <!-- 2 -->
@@ -84,14 +101,16 @@
 			<flick directions="e" to="\uFFF0" />
 		</flicks>
 
+		<!-- TODO: all additional maps, hardware and touch -->
 	</keys>
 
 	<layers form="iso">
+		<!-- in DTD: required if conformsTo ≥ 41 -->
 		<layer modifier="none">
 			<row
-				keys="amp a-grave e-acute e-grave e-carat open-paren d-macron underscore open-gu close-gu apos d-caret" />
-			<row keys="a z e r t y u i o p minus plus" />
-			<row keys="q s d f g h j k l m slash asterisk" />
+				keys="super-2 amp e-grave double-quote apos open-paren hyphen e-acute underscore c-cedilla a-acute close-paren equal" />
+			<row keys="a z e r t y u i o p caret dollar" />
+			<row keys="q s d f g h j k l m u-grave asterisk" />
 			<row keys="open-angle w x c v b n comma semi-colon colon bang" />
 			<row keys="space" />
 		</layer>
