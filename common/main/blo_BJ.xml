@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
-	<version number="$Revision$”/>
 	<identity>
+		<version number="$Revision$”/>
 		<language type="blo"/>
 		<territory type="BJ"/>
 	</identity>
