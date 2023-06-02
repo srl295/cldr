@@ -1404,6 +1404,8 @@ not be patched by hand, as any changes made in that fashion may be lost.
 		<!--{ Northern Khmer; ?; ? } => { Northern Khmer; Thai; Thailand }-->
 		<likelySubtag from="kxp" to="kxp_Arab_PK"/>
 		<!--{ Wadiyara Koli; ?; ? } => { Wadiyara Koli; Arabic; Pakistan }-->
+		<likelySubtag from="kxv" to="kxv_Latn_IN"/>
+		<!--{ Kuvi; ?; ? } => { Kuvi; Latin; India }-->
 		<likelySubtag from="kxw" to="kxw_Latn_ZZ"/>
 		<!--{ Konai; ?; ? } => { Konai; Latin; Unknown Region }-->
 		<likelySubtag from="kxz" to="kxz_Latn_ZZ"/>
