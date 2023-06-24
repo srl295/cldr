@@ -14,6 +14,8 @@ import * as cldrStatus from "./cldrStatus.mjs";
 import * as cldrSurvey from "./cldrSurvey.mjs";
 import * as cldrText from "./cldrText.mjs";
 
+import "jquery-ui/ui/core.js";
+
 /**
  * "_thePages": menu data -- mostly (or exclusively?) for the left sidebar
  *

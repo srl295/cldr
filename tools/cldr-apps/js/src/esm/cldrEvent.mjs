@@ -3,6 +3,8 @@
  * (this is mostly derived from old redesign.js and should be divided
  * into smaller more specific modules)
  */
+import "jquery-ui/ui/core.js";
+
 import * as cldrForum from "./cldrForum.mjs";
 import * as cldrGui from "./cldrGui.mjs";
 import * as cldrLoad from "./cldrLoad.mjs";

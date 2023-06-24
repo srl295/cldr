@@ -37,6 +37,9 @@ import * as cldrVueMap from "./cldrVueMap.mjs";
 
 import { h } from "vue";
 
+import "jquery-ui/ui/core.js";
+import "jquery-ui/ui/widgets/tooltip.js";
+
 const CLDR_LOAD_DEBUG = false;
 
 let locmap = new LocaleMap(null); // a localemap that always returns the code

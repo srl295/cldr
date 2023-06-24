@@ -23,6 +23,8 @@ import * as cldrText from "./cldrText.mjs";
 import * as cldrVote from "./cldrVote.mjs";
 import * as cldrXPathUtils from "./cldrXpathUtils.mjs";
 
+import "jquery-ui/ui/core.js";
+
 const HEADER_ID_PREFIX = "header_";
 const ROW_ID_PREFIX = "row_"; // formerly "r@"
 

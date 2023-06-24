@@ -13,7 +13,9 @@ import * as cldrSurvey from "./cldrSurvey.mjs";
 import * as cldrTable from "./cldrTable.mjs";
 import * as cldrText from "./cldrText.mjs";
 
-const CLDR_VOTE_DEBUG = true;
+import "jquery-ui/ui/core.js";
+
+const CLDR_VOTE_DEBUG = false;
 
 /**
  * The special "vote level" selected by the user, or zero for default.

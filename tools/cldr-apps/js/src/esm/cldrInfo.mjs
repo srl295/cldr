@@ -20,6 +20,8 @@ import InfoPanel from "../views/InfoPanel.vue";
 import InfoSelectedItem from "../views/InfoSelectedItem.vue";
 import InfoRegionalVariants from "../views/InfoRegionalVariants.vue";
 
+import "jquery-ui/ui/core.js";
+
 let containerId = null;
 let neighborId = null;
 let buttonClass = null;
