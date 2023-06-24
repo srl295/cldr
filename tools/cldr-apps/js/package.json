@@ -45,14 +45,17 @@
     "@datadog/browser-rum": "^5.4.0",
     "ant-design-vue": "^3.2.16",
     "browser-fs-access": "^0.34.1",
-    "marked": "^4.3.0",
+    "@fontsource/noto-sans": "^5.0.3",
+    "@fontsource/noto-sans-symbols": "^5.0.3",
+    "@fontsource/open-sans": "^5.0.3",
     "autosize": "^4.0.2",
     "bootstrap": "^3.4.1",
     "bootswatch": "^5.0.1",
-    "jquery-ui": "^1.12.1",
     "jquery": "^3.5.1",
     "swagger-client": "^3.18.5",
     "vue": "^3.2.47",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz",
+    "jquery-ui": "^1.12.1",
+    "marked": "^4.3.0"
   }
 }

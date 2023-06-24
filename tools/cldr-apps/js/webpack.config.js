@@ -47,6 +47,10 @@ module.exports = (env, argv) => {
           use: ["style-loader", "css-loader"],
         },
         {
+          test: /.(jpg|jpeg|png|mp3|svg)$/,
+          use: ['file-loader'],
+        },
+          {
           test: /\.vue$/,
           loader: "vue-loader",
         },

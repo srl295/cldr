@@ -9,6 +9,12 @@ import "../../../cldr-code/src/main/resources/org/unicode/cldr/tool/reports.css"
 // example: import 'someModule/dist/someModule.css'
 import "ant-design-vue/dist/antd.min.css";
 import "bootswatch/dist/spacelab/bootstrap.min.css";
+import "@fontsource/noto-sans/400.css";
+import "@fontsource/noto-sans/700.css";
+import "@fontsource/noto-sans/400-italic.css";
+import "@fontsource/noto-sans/700-italic.css";
+import "@fontsource/noto-sans-symbols/400.css";
+import "@fontsource/noto-sans-symbols/700.css";
 
 import * as cldrGui from "./esm/cldrGui.mjs";
 import * as cldrVue from "./esm/cldrVue.mjs";
