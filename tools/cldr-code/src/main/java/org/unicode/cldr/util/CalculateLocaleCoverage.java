@@ -24,10 +24,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import org.unicode.cldr.test.CheckCLDR.CheckStatus;
 import org.unicode.cldr.tool.LikelySubtags;
 import org.unicode.cldr.tool.ShowLocaleCoverage.StatusCounter;
 import org.unicode.cldr.util.CLDRFile.DraftStatus;
 import org.unicode.cldr.util.CoreCoverageInfo.CoreItems;
+import org.unicode.cldr.util.VettingViewer.DefaultErrorStatus;
+import org.unicode.cldr.util.VettingViewer.ErrorChecker;
 import org.unicode.cldr.util.VettingViewer.MissingStatus;
 
 public class CalculateLocaleCoverage {
@@ -45,6 +48,7 @@ public class CalculateLocaleCoverage {
         public boolean icu = false;
         public int sumFound;
         public int sumUnconfirmed;
+        public int errors;
         /** in order of the Level enum */
         public double proportions[] = new double[Level.values().length];
 
@@ -128,8 +132,11 @@ public class CalculateLocaleCoverage {
     private final SupplementalDataInfo SUPPLEMENTAL_DATA_INFO =
             CLDRConfig.getInstance().getSupplementalDataInfo();
 
+    private ErrorChecker errorChecker;
+
     public CalculateLocaleCoverage(Factory f) {
         this.factory = f;
+        this.errorChecker = new DefaultErrorStatus(f);
         COMMON_LOCALES = factory.getAvailableLanguages();
     }
 
@@ -138,7 +145,6 @@ public class CalculateLocaleCoverage {
     }
 
     public static Collection<CoverageResult> getCoverage(Factory f, final String only) {
-
         CalculateLocaleCoverage c = new CalculateLocaleCoverage(f);
         c.calculateCoverage(only);
         return c.data.values();
@@ -204,8 +210,6 @@ public class CalculateLocaleCoverage {
         targetLevel.put(Level.BASIC, 16 / 100d);
         targetLevel.put(Level.MODERATE, 33 / 100d);
         targetLevel.put(Level.MODERN, 100 / 100d);
-
-        Multimap<String, String> pathToLocale = TreeMultimap.create();
 
         Counter<Level> computedLevels = new Counter<>();
         Counter<Level> computedSublocaleLevels = new Counter<>();
@@ -308,6 +312,24 @@ public class CalculateLocaleCoverage {
                                     missing,
                                     cldrLocaleLevelGoal);
                     data.put(CLDRLocale.getInstance(locale), cr);
+                }
+
+                // get err counts
+                {
+                    logger.info("Begin Calc Errs: " + locale);
+                    ElapsedTimer ete = new ElapsedTimer("  End Calc Errs: " + locale + " in {0}");
+
+                    errorChecker.initErrorStatus(file);
+                    cr.errors = 0;
+                    for (final String xpath : pathSource) {
+                        List<CheckStatus> l =
+                                errorChecker.getErrorCheckStatus(xpath, file.getStringValue(xpath));
+                        if (!CheckStatus.hasError(l)) {
+                            cr.errors++; // one per path?
+                        }
+                    }
+
+                    logger.info(ete.toString());
                 }
 
                 Collection<String> sublocales = languageToRegion.asMap().get(language);

@@ -188,6 +188,9 @@ async function getCoverageStatusXlsx() {
       title: "icu",
     },
     {
+      title: "errors",
+    },
+    {
       title: "missing",
     },
     {
@@ -217,6 +220,7 @@ async function getCoverageStatusXlsx() {
         cldrLocaleLevelGoal,
         found,
         icu,
+        errors,
         missing,
         proportions,
         shownMissingPaths,
@@ -236,6 +240,7 @@ async function getCoverageStatusXlsx() {
         // add the levels
         ...levelNames.map((level) => proportions[level]),
         !!icu ? "y" : "",
+        errors || 0,
         missing || 0,
         (shownMissingPaths || []).join(","),
         found || 0,

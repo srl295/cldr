@@ -188,7 +188,7 @@ public class VettingViewer<T> {
                 EnumSet<Subtype> outputSubtypes);
     }
 
-    private static class DefaultErrorStatus implements ErrorChecker {
+    static class DefaultErrorStatus implements ErrorChecker {
 
         private CheckCLDR checkCldr;
         private HashMap<String, String> options = new HashMap<>();
@@ -196,7 +196,7 @@ public class VettingViewer<T> {
         private CLDRFile cldrFile;
         private final Factory factory;
 
-        private DefaultErrorStatus(Factory cldrFactory) {
+        DefaultErrorStatus(Factory cldrFactory) {
             this.factory = cldrFactory;
         }
 
