@@ -251,8 +251,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="😣" type="tts" draft="unconfirmed">udem akayay</annotation>
 		<annotation cp="😞" draft="unconfirmed">udem isremgen</annotation>
 		<annotation cp="😞" type="tts" draft="unconfirmed">udem isremgen</annotation>
-		<annotation cp="😓" draft="unconfirmed">udem iḥznen, yettcercur d tidi</annotation>
-		<annotation cp="😓" type="tts" draft="unconfirmed">udem iḥznen, yettcercur d tidi</annotation>
+		<annotation cp="😓" draft="unconfirmed">udem iḥznen | yettcercur d tidi</annotation>
+		<annotation cp="😓" type="tts" draft="unconfirmed">udem iḥznen</annotation>
 		<annotation cp="😩" draft="unconfirmed">udem yesxenfren</annotation>
 		<annotation cp="😩" type="tts" draft="unconfirmed">udem yesxenfren</annotation>
 		<annotation cp="😫">udem yeɛyan</annotation>

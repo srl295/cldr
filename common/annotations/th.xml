@@ -811,9 +811,9 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🤥" type="tts">ขี้โกหก</annotation>
 		<annotation cp="🫨">ช็อค | ใบหน้า | ใบหน้าสั่น | แผ่นดินไหว | สั่น | สั่นสะเทือน</annotation>
 		<annotation cp="🫨" type="tts">ใบหน้าสั่น</annotation>
-		<annotation cp="🙂‍↔">ไม่, สั่น | ส่ายหน้า | ส่ายหัว</annotation>
+		<annotation cp="🙂‍↔">ไม่ | สั่น | ส่ายหน้า | ส่ายหัว</annotation>
 		<annotation cp="🙂‍↔" type="tts">ส่ายหน้า</annotation>
-		<annotation cp="🙂‍↕">ผงกหัว | พยักหน้า | เห็นด้วย, ใช่</annotation>
+		<annotation cp="🙂‍↕">ใช่ | ผงกหัว | พยักหน้า | เห็นด้วย</annotation>
 		<annotation cp="🙂‍↕" type="tts">พยักหน้า</annotation>
 		<annotation cp="😌">โล่งใจ | หน้า</annotation>
 		<annotation cp="😌" type="tts">โล่งใจ</annotation>
@@ -1431,7 +1431,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🎅" type="tts">ซานต้า</annotation>
 		<annotation cp="🤶">คริสต์มาส | นางซานต้า | นางแซนต้า | แม่</annotation>
 		<annotation cp="🤶" type="tts">นางซานต้า</annotation>
-		<annotation cp="🧑‍🎄">ซานต้า, คริสต์มาส | ซานตาคลอส</annotation>
+		<annotation cp="🧑‍🎄">คริสต์มาส | ซานต้า | ซานตาคลอส</annotation>
 		<annotation cp="🧑‍🎄" type="tts">ซานตาคลอส</annotation>
 		<annotation cp="🦸">เก่ง | จอมพลัง | ซุปเปอร์ฮีโร่ | ฮีโร่</annotation>
 		<annotation cp="🦸" type="tts">ซุปเปอร์ฮีโร่</annotation>
@@ -1877,7 +1877,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🐦‍⬛" type="tts">นกสีดำ</annotation>
 		<annotation cp="🪿">ก้าบ | ทึ่ม | นก | สัตว์ปีก | ห่าน</annotation>
 		<annotation cp="🪿" type="tts">ห่าน</annotation>
-		<annotation cp="🐦‍🔥">เทพนิยาย, ไฟ, เกิดใหม่, กลับชาติ | นกฟินิกซ์</annotation>
+		<annotation cp="🐦‍🔥">กลับชาติ | เกิดใหม่ | เทพนิยาย | นกฟินิกซ์ | ไฟ</annotation>
 		<annotation cp="🐦‍🔥" type="tts">นกฟินิกซ์</annotation>
 		<annotation cp="🐸">กบ | หน้า</annotation>
 		<annotation cp="🐸" type="tts">กบ</annotation>
@@ -2019,7 +2019,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🍊" type="tts">ส้ม</annotation>
 		<annotation cp="🍋">ผลไม้ | เลมอน</annotation>
 		<annotation cp="🍋" type="tts">เลมอน</annotation>
-		<annotation cp="🍋‍🟩">มะนาว | ส้ม, ผลไม้, เขตร้อน</annotation>
+		<annotation cp="🍋‍🟩">เขตร้อน | ผลไม้ | มะนาว | ส้ม</annotation>
 		<annotation cp="🍋‍🟩" type="tts">มะนาว</annotation>
 		<annotation cp="🍌">กล้วย | ผลไม้</annotation>
 		<annotation cp="🍌" type="tts">กล้วย</annotation>
@@ -2083,7 +2083,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🫚" type="tts">ขิง</annotation>
 		<annotation cp="🫛">ถั่ว | ถั่วแระญี่ปุ่น | ผัก | ฝัก | ฝักถั่ว | พืชถั่ว | เมล็ดถั่ว</annotation>
 		<annotation cp="🫛" type="tts">ฝักถั่ว</annotation>
-		<annotation cp="🍄‍🟫">เห็ดสีน้ำตาล | อาหาร, เชื้อรา, ธรรมชาติ, ผัก</annotation>
+		<annotation cp="🍄‍🟫">เชื้อรา | ธรรมชาติ | ผัก | เห็ดสีน้ำตาล | อาหาร</annotation>
 		<annotation cp="🍄‍🟫" type="tts">เห็ดสีน้ำตาล</annotation>
 		<annotation cp="🍞">ก้อนขนมปัง | ขนมปัง</annotation>
 		<annotation cp="🍞" type="tts">ขนมปัง</annotation>
@@ -3301,7 +3301,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🦯" type="tts">ไม้เท้านำทาง</annotation>
 		<annotation cp="🔗">ลิงก์ | สัญลักษณ์การลิงก์</annotation>
 		<annotation cp="🔗" type="tts">สัญลักษณ์การลิงก์</annotation>
-		<annotation cp="⛓‍💥">โซ่ขาด | แตก, หัก, ตรวน, กุญแจมือ, อิสรภาพ</annotation>
+		<annotation cp="⛓‍💥">กุญแจมือ | โซ่ขาด | ตรวน | แตก | หัก | อิสรภาพ</annotation>
 		<annotation cp="⛓‍💥" type="tts">โซ่ขาด</annotation>
 		<annotation cp="⛓">โซ่</annotation>
 		<annotation cp="⛓" type="tts">โซ่</annotation>

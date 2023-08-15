@@ -811,9 +811,9 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🤥" type="tts">lygari</annotation>
 		<annotation cp="🫨">andlit | hristingur | jarðskjálfti | sjokk | skjálfandi andlit | skjálfti</annotation>
 		<annotation cp="🫨" type="tts">skjálfandi andlit</annotation>
-		<annotation cp="🙂‍↔">hristir höfuðið lárétt | nei, hrista höfuð</annotation>
+		<annotation cp="🙂‍↔">hrista höfuð | hristir höfuðið lárétt | nei</annotation>
 		<annotation cp="🙂‍↔" type="tts">hristir höfuðið lárétt</annotation>
-		<annotation cp="🙂‍↕">hristir höfuðið lóðrétt | kinka kolli, já</annotation>
+		<annotation cp="🙂‍↕">hristir höfuðið lóðrétt | já | kinka kolli</annotation>
 		<annotation cp="🙂‍↕" type="tts">hristir höfuðið lóðrétt</annotation>
 		<annotation cp="😌">andlit | andlit sem er létt | léttir</annotation>
 		<annotation cp="😌" type="tts">andlit sem er létt</annotation>
@@ -1431,7 +1431,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🎅" type="tts">jólasveinn</annotation>
 		<annotation cp="🤶">amma | jól | jólamamma | mamma</annotation>
 		<annotation cp="🤶" type="tts">jólamamma</annotation>
-		<annotation cp="🧑‍🎄">frú sveinki | Sveinki, jól</annotation>
+		<annotation cp="🧑‍🎄">frú sveinki | jól | Sveinki</annotation>
 		<annotation cp="🧑‍🎄" type="tts">frú sveinki</annotation>
 		<annotation cp="🦸">góð | hetja | kvenhetja | ofurhetja | ofurkraftur</annotation>
 		<annotation cp="🦸" type="tts">ofurhetja</annotation>
@@ -1877,7 +1877,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🐦‍⬛" type="tts">svartur fugl</annotation>
 		<annotation cp="🪿">gæs | gás | heiðagæs | steggur</annotation>
 		<annotation cp="🪿" type="tts">gæs</annotation>
-		<annotation cp="🐦‍🔥">fantasía, eldfugl, endurfæðing, endurholdgun | fönix</annotation>
+		<annotation cp="🐦‍🔥">eldfugl | endurfæðing | endurholdgun | fantasía | fönix</annotation>
 		<annotation cp="🐦‍🔥" type="tts">fönix</annotation>
 		<annotation cp="🐸">andlit | froskur</annotation>
 		<annotation cp="🐸" type="tts">froskur</annotation>
@@ -2019,7 +2019,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🍊" type="tts">mandarína</annotation>
 		<annotation cp="🍋">ávöxtur | sítróna | sítrusávöxtur</annotation>
 		<annotation cp="🍋" type="tts">sítróna</annotation>
-		<annotation cp="🍋‍🟩">límóna | sítrus, ávöxtur, súraldin, hitabeltis</annotation>
+		<annotation cp="🍋‍🟩">ávöxtur | hitabeltis | límóna | sítrus | súraldin</annotation>
 		<annotation cp="🍋‍🟩" type="tts">límóna</annotation>
 		<annotation cp="🍌">ávöxtur | banani</annotation>
 		<annotation cp="🍌" type="tts">banani</annotation>
@@ -2083,7 +2083,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🫚" type="tts">engiferrót</annotation>
 		<annotation cp="🫛">baun | baunabelgur | baunir | belgjurt | belgur | edamame | grænmeti</annotation>
 		<annotation cp="🫛" type="tts">baunabelgur</annotation>
-		<annotation cp="🍄‍🟫">brúnn sveppur | matur, náttúra, grænmeti</annotation>
+		<annotation cp="🍄‍🟫">brúnn sveppur | grænmeti | matur | náttúra</annotation>
 		<annotation cp="🍄‍🟫" type="tts">brúnn sveppur</annotation>
 		<annotation cp="🍞">brauð | brauðhleifur</annotation>
 		<annotation cp="🍞" type="tts">brauð</annotation>
@@ -3301,7 +3301,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🦯" type="tts">blindrastafur</annotation>
 		<annotation cp="🔗">tenglamerki | tenglar | tveir hlekkir</annotation>
 		<annotation cp="🔗" type="tts">tenglamerki</annotation>
-		<annotation cp="⛓‍💥">slíta, brjóta, keðja, hlekkir, fjötrar, frelsi | slitin keðja</annotation>
+		<annotation cp="⛓‍💥">brjóta | fjötrar | frelsi | hlekkir | keðja | slíta | slitin keðja</annotation>
 		<annotation cp="⛓‍💥" type="tts">slitin keðja</annotation>
 		<annotation cp="⛓">keðja</annotation>
 		<annotation cp="⛓" type="tts">keðja</annotation>
@@ -3411,8 +3411,8 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🪪" type="tts">persónuskilríki</annotation>
 		<annotation cp="🏧">banki | hraðbanki</annotation>
 		<annotation cp="🏧" type="tts">hraðbanki</annotation>
-		<annotation cp="🚮">merki, rusl í ruslatunnu | rusl | ruslafata</annotation>
-		<annotation cp="🚮" type="tts">merki, rusl í ruslatunnu</annotation>
+		<annotation cp="🚮">merki | rusl | rusl í ruslatunnu | ruslafata</annotation>
+		<annotation cp="🚮" type="tts">merki</annotation>
 		<annotation cp="🚰">drykkjarvatn | vatn</annotation>
 		<annotation cp="🚰" type="tts">drykkjarvatn</annotation>
 		<annotation cp="♿">aðgengi | fatlaðir | hjólastólaaðgengi | hjólastóll</annotation>
@@ -3729,12 +3729,12 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🆙" type="tts">UP!</annotation>
 		<annotation cp="🆚">gegn | skilti | versus | versus-skilti | VS</annotation>
 		<annotation cp="🆚" type="tts">VS</annotation>
-		<annotation cp="🈁">hér | japanska | katakana | katakana koko, kassi</annotation>
-		<annotation cp="🈁" type="tts">katakana koko, kassi</annotation>
-		<annotation cp="🈂">japanska | katakana | katakana sa, kassi | þjónustugjald</annotation>
-		<annotation cp="🈂" type="tts">katakana sa, kassi</annotation>
-		<annotation cp="🈷">japanska | mánaðarleg upphæð | mánaðarleg upphæð, kassi | myndletur</annotation>
-		<annotation cp="🈷" type="tts">mánaðarleg upphæð, kassi</annotation>
+		<annotation cp="🈁">hér | japanska | kassi | katakana | katakana koko</annotation>
+		<annotation cp="🈁" type="tts">katakana koko</annotation>
+		<annotation cp="🈂">japanska | kassi | katakana | katakana sa | þjónustugjald</annotation>
+		<annotation cp="🈂" type="tts">katakana sa</annotation>
+		<annotation cp="🈷">japanska | kassi | mánaðarleg upphæð | myndletur</annotation>
+		<annotation cp="🈷" type="tts">mánaðarleg upphæð</annotation>
 		<annotation cp="🈶">„Ekki ókeypis“ á japönsku | ekki ókeypis | japanska | myndletur</annotation>
 		<annotation cp="🈶" type="tts">„Ekki ókeypis“ á japönsku</annotation>
 		<annotation cp="🈯">„Frátekið“ á japönsku | frátekið | japanska | myndletur</annotation>

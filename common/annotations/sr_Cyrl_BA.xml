@@ -1069,7 +1069,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🫷" type="tts">рука гура улијево</annotation>
 		<annotation cp="🫸">↑↑↑</annotation>
 		<annotation cp="🫸" type="tts">↑↑↑</annotation>
-		<annotation cp="👌">знак руком „у реду“ | рукa | у рeду</annotation>
+		<annotation cp="👌">↑↑↑</annotation>
 		<annotation cp="👌" type="tts">↑↑↑</annotation>
 		<annotation cp="🤌">↑↑↑</annotation>
 		<annotation cp="🤌" type="tts">↑↑↑</annotation>
@@ -3707,7 +3707,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🆒" type="tts">↑↑↑</annotation>
 		<annotation cp="🆓">↑↑↑</annotation>
 		<annotation cp="🆓" type="tts">↑↑↑</annotation>
-		<annotation cp="ℹ">i | извор информација | информације</annotation>
+		<annotation cp="ℹ">↑↑↑</annotation>
 		<annotation cp="ℹ" type="tts">↑↑↑</annotation>
 		<annotation cp="🆔">↑↑↑</annotation>
 		<annotation cp="🆔" type="tts">↑↑↑</annotation>

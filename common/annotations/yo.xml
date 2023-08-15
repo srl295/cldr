@@ -415,7 +415,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="∥" type="tts">ìlà ọgbọọgba lẹ́gbẹ̀ẹ́ ara</annotation>
 		<annotation cp="∧">ac | àti pàápàá | ti èrò ní ìbámu pẹ̀lú ìlànà àti | wẹ́ẹ̀jì</annotation>
 		<annotation cp="∧" type="tts">ti èrò ní ìbámu pẹ̀lú ìlànà àti</annotation>
-		<annotation cp="∩">nipa | orita,enta | oritameta</annotation>
+		<annotation cp="∩">enta | nipa | orita | oritameta</annotation>
 		<annotation cp="∩" type="tts">oritameta</annotation>
 		<annotation cp="∪">apapo | isopo | nipa } isopo</annotation>
 		<annotation cp="∪" type="tts">isopo</annotation>
@@ -801,9 +801,9 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🤥" type="tts">Oju Irọ</annotation>
 		<annotation cp="🫨">eru | gbigbọ̀n | gbọ̀n | iji | ojú | ojú gbígbọ̀n</annotation>
 		<annotation cp="🫨" type="tts">ojú gbígbọ̀n</annotation>
-		<annotation cp="🙂‍↔">orí mímì látọ̀tún-sósì | rárá, gbọn orí</annotation>
+		<annotation cp="🙂‍↔">gbọn orí | orí mímì látọ̀tún-sósì | rárá</annotation>
 		<annotation cp="🙂‍↔" type="tts">orí mímì látọ̀tún-sósì</annotation>
-		<annotation cp="🙂‍↕">fi orí dáhùn, bẹ́ẹ̀ni | orí mímì látòkè-sílẹ̀</annotation>
+		<annotation cp="🙂‍↕">bẹ́ẹ̀ni | fi orí dáhùn | orí mímì látòkè-sílẹ̀</annotation>
 		<annotation cp="🙂‍↕" type="tts">orí mímì látòkè-sílẹ̀</annotation>
 		<annotation cp="😌">ìtura | ojú | Oju Itura</annotation>
 		<annotation cp="😌" type="tts">Oju Itura</annotation>
@@ -1867,7 +1867,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🐦‍⬛" type="tts">ẹyẹ dúdú</annotation>
 		<annotation cp="🪿">adie | atioro | eye | lekeleke | tòlotòló</annotation>
 		<annotation cp="🪿" type="tts">tòlotòló</annotation>
-		<annotation cp="🐦‍🔥">àlá àìlèṣẹ, ẹyẹ oníná, àtúnbí, àtúnwáyé | ẹyẹ ìtàn àìlèkú</annotation>
+		<annotation cp="🐦‍🔥">àlá àìlèṣẹ | àtúnbí | àtúnwáyé | ẹyẹ ìtàn àìlèkú | ẹyẹ oníná</annotation>
 		<annotation cp="🐦‍🔥" type="tts">ẹyẹ ìtàn àìlèkú</annotation>
 		<annotation cp="🐸">ojú | Oju Ọpọlọ | ọpọlọ</annotation>
 		<annotation cp="🐸" type="tts">Oju Ọpọlọ</annotation>
@@ -2009,7 +2009,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🍊" type="tts">Tanjarini</annotation>
 		<annotation cp="🍋">èso | Orombo-wẹwẹ Chiffon | ọsàn</annotation>
 		<annotation cp="🍋" type="tts">Orombo-wẹwẹ Chiffon</annotation>
-		<annotation cp="🍋‍🟩">àwọn èso ọsàn, èso, agbègbè mímóoru | ọsàn wẹ́wẹ́</annotation>
+		<annotation cp="🍋‍🟩">agbègbè mímóoru | àwọn èso ọsàn | èso | ọsàn wẹ́wẹ́</annotation>
 		<annotation cp="🍋‍🟩" type="tts">ọsàn wẹ́wẹ́</annotation>
 		<annotation cp="🍌">Èso | Ọ̀gẹ̀dẹ̀</annotation>
 		<annotation cp="🍌" type="tts">Ọ̀gẹ̀dẹ̀</annotation>
@@ -2073,7 +2073,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🫚" type="tts">jínjà</annotation>
 		<annotation cp="🫛">ea | eap | efo | ewa</annotation>
 		<annotation cp="🫛" type="tts">eap</annotation>
-		<annotation cp="🍄‍🟫">olú aláwọ̀ pupa rẹ́súrẹ́sú | oúnjẹ, olú híhù, ìṣẹ̀dá, ewébẹ̀</annotation>
+		<annotation cp="🍄‍🟫">ewébẹ̀ | ìṣẹ̀dá | olú aláwọ̀ pupa rẹ́súrẹ́sú | olú híhù | oúnjẹ</annotation>
 		<annotation cp="🍄‍🟫" type="tts">olú aláwọ̀ pupa rẹ́súrẹ́sú</annotation>
 		<annotation cp="🍞">Búrẹ́dì | búrẹ́dì gígé</annotation>
 		<annotation cp="🍞" type="tts">Búrẹ́dì</annotation>
@@ -3291,7 +3291,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🦯" type="tts">egba funfun</annotation>
 		<annotation cp="🔗">ìtọ́kasí</annotation>
 		<annotation cp="🔗" type="tts">ìtọ́kasí</annotation>
-		<annotation cp="⛓‍💥">ìdè tó ti já | já, ń já, ìdè, àwọn ìdè ọwọ́ tàbí ẹsẹ̀, òmìnira</annotation>
+		<annotation cp="⛓‍💥">àwọn ìdè ọwọ́ tàbí ẹsẹ̀ | ìdè | ìdè tó ti já | já | ń já | òmìnira</annotation>
 		<annotation cp="⛓‍💥" type="tts">ìdè tó ti já</annotation>
 		<annotation cp="⛓">àwọn ṣe̩kẹ́ṣẹkẹ̀ | ṣe̩kẹ́ṣẹkẹ̀</annotation>
 		<annotation cp="⛓" type="tts">àwọn ṣe̩kẹ́ṣẹkẹ̀</annotation>

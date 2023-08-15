@@ -811,9 +811,9 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🤥" type="tts">uso unaodanganya</annotation>
 		<annotation cp="🫨">kutikisika | mtetemeko | shindo | tetema | uso | uso unaotikisika</annotation>
 		<annotation cp="🫨" type="tts">uso unaotikisika</annotation>
-		<annotation cp="🙂‍↔" draft="contributed">hapana, tikisa | kutikisa kichwa kimlalo</annotation>
+		<annotation cp="🙂‍↔" draft="contributed">hapana | kutikisa kichwa kimlalo | tikisa</annotation>
 		<annotation cp="🙂‍↔" type="tts" draft="contributed">kutikisa kichwa kimlalo</annotation>
-		<annotation cp="🙂‍↕" draft="contributed">kuitika, ndiyo | kutikisa kichwa juu chini</annotation>
+		<annotation cp="🙂‍↕" draft="contributed">kuitika | kutikisa kichwa juu chini | ndiyo</annotation>
 		<annotation cp="🙂‍↕" type="tts" draft="contributed">kutikisa kichwa juu chini</annotation>
 		<annotation cp="😌">farijika | uso | uso uliofarijika</annotation>
 		<annotation cp="😌" type="tts">uso uliofarijika</annotation>
@@ -1431,7 +1431,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🎅" type="tts">baba krismasi</annotation>
 		<annotation cp="🤶">bibi | mkongwe | nyanya</annotation>
 		<annotation cp="🤶" type="tts">mkongwe</annotation>
-		<annotation cp="🧑‍🎄">kichimbakazi yeyote | kichimbakazi, krismasi</annotation>
+		<annotation cp="🧑‍🎄">kichimbakazi | kichimbakazi yeyote | krismasi</annotation>
 		<annotation cp="🧑‍🎄" type="tts">kichimbakazi yeyote</annotation>
 		<annotation cp="🦸">mzuri | nguvu zisizo za kawaida | shujaa | shujaa wa kike</annotation>
 		<annotation cp="🦸" type="tts">shujaa</annotation>
@@ -1877,7 +1877,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🐦‍⬛" type="tts" draft="contributed">ndege mweusi</annotation>
 		<annotation cp="🪿">bata | bata bukini | honi | ndege | puuzi</annotation>
 		<annotation cp="🪿" type="tts">bata bukini</annotation>
-		<annotation cp="🐦‍🔥" draft="contributed">finiksi | njozi, ndege aliyejichoma, kufufuka, kuzaliwa upya</annotation>
+		<annotation cp="🐦‍🔥" draft="contributed">finiksi | kufufuka | kuzaliwa upya | ndege aliyejichoma | njozi</annotation>
 		<annotation cp="🐦‍🔥" type="tts" draft="contributed">finiksi</annotation>
 		<annotation cp="🐸">chura | uso | uso wa chura</annotation>
 		<annotation cp="🐸" type="tts">uso wa chura</annotation>
@@ -2019,7 +2019,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🍊" type="tts">chenza</annotation>
 		<annotation cp="🍋">limau | mmea | tunda</annotation>
 		<annotation cp="🍋" type="tts">limau</annotation>
-		<annotation cp="🍋‍🟩" draft="contributed">limau | ndimu, tunda, kitropiki</annotation>
+		<annotation cp="🍋‍🟩" draft="contributed">kitropiki | limau | ndimu | tunda</annotation>
 		<annotation cp="🍋‍🟩" type="tts" draft="contributed">ndimu</annotation>
 		<annotation cp="🍌">mmea | ndizi | tunda</annotation>
 		<annotation cp="🍌" type="tts">ndizi</annotation>
@@ -2083,7 +2083,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🫚" type="tts">tangawizi</annotation>
 		<annotation cp="🫛">ganda | ganda la njegere | kunde | maharage | mboga | njegere</annotation>
 		<annotation cp="🫛" type="tts">ganda la njegere</annotation>
-		<annotation cp="🍄‍🟫" draft="contributed">chakula, ukungu, mboga, asili | uyoga kahawia</annotation>
+		<annotation cp="🍄‍🟫" draft="contributed">asili | chakula | mboga | ukungu | uyoga kahawia</annotation>
 		<annotation cp="🍄‍🟫" type="tts" draft="contributed">uyoga kahawia</annotation>
 		<annotation cp="🍞">mkate</annotation>
 		<annotation cp="🍞" type="tts">mkate</annotation>
@@ -3301,7 +3301,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🦯" type="tts">mkongojo wa vipofu</annotation>
 		<annotation cp="🔗">pete | pete ya mnyororo</annotation>
 		<annotation cp="🔗" type="tts">pete ya mnyororo</annotation>
-		<annotation cp="⛓‍💥" draft="contributed">kata, katika, myororo, pingu, uhuru | mnyororo uliokatika</annotation>
+		<annotation cp="⛓‍💥" draft="contributed">kata | katika | mnyororo uliokatika | myororo | pingu | uhuru</annotation>
 		<annotation cp="⛓‍💥" type="tts" draft="contributed">myororo uliokatika</annotation>
 		<annotation cp="⛓">minyororo | mnyororo</annotation>
 		<annotation cp="⛓" type="tts">minyororo</annotation>

@@ -718,8 +718,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="😄" type="tts">visage avec large sourire et yeux rieurs</annotation>
 		<annotation cp="😁">grand sourire | large sourire | œil | sourire | visage | visage radieux et yeux rieurs</annotation>
 		<annotation cp="😁" type="tts">visage radieux et yeux rieurs</annotation>
-		<annotation cp="😆">bouche ouverte | rire | satisfait | sourire | visage | visage avec large sourire, les yeux fermés</annotation>
-		<annotation cp="😆" type="tts">visage avec large sourire, les yeux fermés</annotation>
+		<annotation cp="😆">bouche ouverte | les yeux fermés | rire | satisfait | sourire | visage | visage avec large sourire</annotation>
+		<annotation cp="😆" type="tts">visage avec large sourire</annotation>
 		<annotation cp="😅">froide | sourire | sueur | visage | visage en sueur avec large sourire | visage souriant avec une goutte de sueur</annotation>
 		<annotation cp="😅" type="tts">↑↑↑</annotation>
 		<annotation cp="🤣">rire | rire à se rouler par terre | se rouler par terre | visage</annotation>
@@ -1436,7 +1436,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🦸" type="tts">superhéros</annotation>
 		<annotation cp="🦸‍♂">super-héros</annotation>
 		<annotation cp="🦸‍♂" type="tts">super-héros</annotation>
-		<annotation cp="🦸‍♀">bien, femme, héroïne, héros, super pouvoir | super-héroïne</annotation>
+		<annotation cp="🦸‍♀">bien | femme | héroïne | héros | super pouvoir | super-héroïne</annotation>
 		<annotation cp="🦸‍♀" type="tts">↑↑↑</annotation>
 		<annotation cp="🦹">↑↑↑</annotation>
 		<annotation cp="🦹" type="tts">↑↑↑</annotation>
@@ -2406,7 +2406,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🎡" type="tts">↑↑↑</annotation>
 		<annotation cp="🎢">montagnes | parc d’attractions | russes</annotation>
 		<annotation cp="🎢" type="tts">↑↑↑</annotation>
-		<annotation cp="💈">barbier | coiffure | enseigne | enseigne de barbier</annotation>
+		<annotation cp="💈">↑↑↑</annotation>
 		<annotation cp="💈" type="tts">↑↑↑</annotation>
 		<annotation cp="🎪">↑↑↑</annotation>
 		<annotation cp="🎪" type="tts">↑↑↑</annotation>
@@ -2468,7 +2468,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🚛" type="tts">camion semi-remorque</annotation>
 		<annotation cp="🚜">↑↑↑</annotation>
 		<annotation cp="🚜" type="tts">↑↑↑</annotation>
-		<annotation cp="🏎">course | voiture | voiture de course</annotation>
+		<annotation cp="🏎">↑↑↑</annotation>
 		<annotation cp="🏎" type="tts">↑↑↑</annotation>
 		<annotation cp="🏍">↑↑↑</annotation>
 		<annotation cp="🏍" type="tts">↑↑↑</annotation>
@@ -3222,7 +3222,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="📇" type="tts">fiche</annotation>
 		<annotation cp="📈">croissance | graphique | graphique en hausse | hausse | tendance</annotation>
 		<annotation cp="📈" type="tts">↑↑↑</annotation>
-		<annotation cp="📉">baisse | graphique | graphique en baisse | tendance</annotation>
+		<annotation cp="📉">↑↑↑</annotation>
 		<annotation cp="📉" type="tts">↑↑↑</annotation>
 		<annotation cp="📊">barres | graphique | graphiques à barres</annotation>
 		<annotation cp="📊" type="tts">↑↑↑</annotation>
@@ -3288,7 +3288,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🔧" type="tts">↑↑↑</annotation>
 		<annotation cp="🪛">↑↑↑</annotation>
 		<annotation cp="🪛" type="tts">↑↑↑</annotation>
-		<annotation cp="🔩">écrou | outil | vis | vis et écrou</annotation>
+		<annotation cp="🔩">↑↑↑</annotation>
 		<annotation cp="🔩" type="tts">↑↑↑</annotation>
 		<annotation cp="⚙">engrenage | outil</annotation>
 		<annotation cp="⚙" type="tts">engrenage</annotation>
@@ -3436,8 +3436,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🛅" type="tts">consigne à bagages</annotation>
 		<annotation cp="⚠">avertissement</annotation>
 		<annotation cp="⚠" type="tts">avertissement</annotation>
-		<annotation cp="🚸">attention, enfants | circulation | enfant | passage d’enfants | piétons</annotation>
-		<annotation cp="🚸" type="tts">attention, enfants</annotation>
+		<annotation cp="🚸">attention | circulation | enfant | enfants | passage d’enfants | piétons</annotation>
+		<annotation cp="🚸" type="tts">attention</annotation>
 		<annotation cp="⛔">↑↑↑</annotation>
 		<annotation cp="⛔" type="tts">↑↑↑</annotation>
 		<annotation cp="🚫">interdit</annotation>

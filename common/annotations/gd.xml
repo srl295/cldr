@@ -1085,16 +1085,16 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🤘" type="tts">samhla nan adharc</annotation>
 		<annotation cp="🤙">fòn | làmh | làmh a’ comharradh “Cuir fòn thugam”</annotation>
 		<annotation cp="🤙" type="tts">làmh a’ comharradh “Cuir fòn thugam”</annotation>
-		<annotation cp="👈">colgag | corrag | druim na làimhe | druim na làimhe, colgag a’ tomhadh clì | làmh | meur | tomhadh</annotation>
-		<annotation cp="👈" type="tts">druim na làimhe, colgag a’ tomhadh clì</annotation>
-		<annotation cp="👉">colgag | corrag | druim na làimhe | druim na làimhe, colgag a’ tomhadh deas | làmh | meur | tomhadh</annotation>
-		<annotation cp="👉" type="tts">druim na làimhe, colgag a’ tomhadh deas</annotation>
-		<annotation cp="👆">colgag | corrag | druim na làimhe | druim na làimhe, colgag a’ tomhadh suas | làmh | meur | suas | tomhadh</annotation>
-		<annotation cp="👆" type="tts">druim na làimhe, colgag a’ tomhadh suas</annotation>
+		<annotation cp="👈">colgag | colgag a’ tomhadh clì | corrag | druim na làimhe | làmh | meur | tomhadh</annotation>
+		<annotation cp="👈" type="tts">druim na làimhe</annotation>
+		<annotation cp="👉">colgag | colgag a’ tomhadh deas | corrag | druim na làimhe | làmh | meur | tomhadh</annotation>
+		<annotation cp="👉" type="tts">druim na làimhe</annotation>
+		<annotation cp="👆">colgag | colgag a’ tomhadh suas | corrag | druim na làimhe | làmh | meur | suas | tomhadh</annotation>
+		<annotation cp="👆" type="tts">druim na làimhe</annotation>
 		<annotation cp="🖕">corrag | Fionnlagh Fada / Màiri Fhada | làmh | meur</annotation>
 		<annotation cp="🖕" type="tts">Fionnlagh Fada / Màiri Fhada</annotation>
-		<annotation cp="👇">colgag | corrag | druim na làimhe | druim na làimhe, colgag a’ tomhadh sìos | làmh | meur | sìos | tomhadh</annotation>
-		<annotation cp="👇" type="tts">druim na làimhe, colgag a’ tomhadh sìos</annotation>
+		<annotation cp="👇">colgag | colgag a’ tomhadh sìos | corrag | druim na làimhe | làmh | meur | sìos | tomhadh</annotation>
+		<annotation cp="👇" type="tts">druim na làimhe</annotation>
 		<annotation cp="☝">colgag | colgag a’ tomhadh suas | corrag | làmh | meur | suas | tomhadh</annotation>
 		<annotation cp="☝" type="tts">colgag a’ tomhadh suas</annotation>
 		<annotation cp="🫵">colgag a’ tomhadh ort | thusa | tomh | tomhadh</annotation>
@@ -1223,12 +1223,12 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🙆‍♂" type="tts">duine ag aontachadh ri rud</annotation>
 		<annotation cp="🙆‍♀">aontachadh | boireannach | boireannach ag aontachadh ri rud | gluasad | làmh | tè</annotation>
 		<annotation cp="🙆‍♀" type="tts">boireannach ag aontachadh ri rud</annotation>
-		<annotation cp="💁">bas | cobhair | fiosrachadh | làmh | neach le làmh sìnte a-mach, bas air uachdar | neach le làmh sìnte, bas air uachdar | sìnte | taic | uachdar</annotation>
-		<annotation cp="💁" type="tts">neach le làmh sìnte, bas air uachdar</annotation>
-		<annotation cp="💁‍♂">bas | cobhair | duine | duine le làmh sìnte a-mach, bas air uachdar | duine le làmh sìnte, bas air uachdar | fear | fiosrachadh | fireannach | làmh | sìnte | taic | uachdar</annotation>
-		<annotation cp="💁‍♂" type="tts">duine le làmh sìnte, bas air uachdar</annotation>
-		<annotation cp="💁‍♀">bas | boireannach | boireannach le làmh sìnte a-mach, bas air uachdar | cobhair | fiosrachadh | làmh | sìnte | taic | tè | tè le làmh sìnte a-mach, bas air uachdar | uachdar</annotation>
-		<annotation cp="💁‍♀" type="tts">tè le làmh sìnte a-mach, bas air uachdar</annotation>
+		<annotation cp="💁">bas | bas air uachdar | cobhair | fiosrachadh | làmh | neach le làmh sìnte | neach le làmh sìnte a-mach | sìnte | taic | uachdar</annotation>
+		<annotation cp="💁" type="tts">neach le làmh sìnte</annotation>
+		<annotation cp="💁‍♂">bas | bas air uachdar | cobhair | duine | duine le làmh sìnte | duine le làmh sìnte a-mach | fear | fiosrachadh | fireannach | làmh | sìnte | taic | uachdar</annotation>
+		<annotation cp="💁‍♂" type="tts">duine le làmh sìnte</annotation>
+		<annotation cp="💁‍♀">bas | bas air uachdar | boireannach | boireannach le làmh sìnte a-mach | cobhair | fiosrachadh | làmh | sìnte | taic | tè | tè le làmh sìnte a-mach | uachdar</annotation>
+		<annotation cp="💁‍♀" type="tts">tè le làmh sìnte a-mach</annotation>
 		<annotation cp="🙋">gluasad | làmh | neach a’ togail a làmh | tog | togail | toiliche</annotation>
 		<annotation cp="🙋" type="tts">neach a’ togail a làmh</annotation>
 		<annotation cp="🙋‍♂">duine | duine a’ togail a làmh | fear | fireannach | gluasad | làmh | tog | togail | toiliche</annotation>
@@ -3841,8 +3841,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🏳" type="tts">bratach gheal</annotation>
 		<annotation cp="🏳‍🌈">bogha-froise | bratach bogha-froise</annotation>
 		<annotation cp="🏳‍🌈" type="tts">bratach bogha-froise</annotation>
-		<annotation cp="🏳‍⚧">bratach | bratach ghorm, phinc is gheal | geal | gorm | pinc | soilleir-ghorm | tar-ghnèitheach</annotation>
-		<annotation cp="🏳‍⚧" type="tts">bratach ghorm, phinc is gheal</annotation>
+		<annotation cp="🏳‍⚧">bratach | bratach ghorm | geal | gorm | phinc is gheal | pinc | soilleir-ghorm | tar-ghnèitheach</annotation>
+		<annotation cp="🏳‍⚧" type="tts">bratach ghorm</annotation>
 		<annotation cp="🏴‍☠">bratach spùinneadair | creach | Jolly Roger | spùinn | spùinneadair | ulaidh</annotation>
 		<annotation cp="🏴‍☠" type="tts">bratach spùinneadair</annotation>
 		<annotation cp="¢">cent | seant</annotation>

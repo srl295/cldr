@@ -2266,8 +2266,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧊" type="tts">↑↑↑</annotation>
 		<annotation cp="🥢">hashi | palillos chinos</annotation>
 		<annotation cp="🥢" type="tts">palillos chinos</annotation>
-		<annotation cp="🍽">cocinando | cuchillo | plato | tenedor | tenedor, cuchillo y plato</annotation>
-		<annotation cp="🍽" type="tts">tenedor, cuchillo y plato</annotation>
+		<annotation cp="🍽">cocinando | cuchillo | cuchillo y plato | plato | tenedor</annotation>
+		<annotation cp="🍽" type="tts">tenedor</annotation>
 		<annotation cp="🍴">cocinando | cubiertos | cuchillo | cuchillo y tenedor | tenedor</annotation>
 		<annotation cp="🍴" type="tts">↑↑↑</annotation>
 		<annotation cp="🥄">↑↑↑</annotation>

@@ -2019,7 +2019,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🍊" type="tts">mandarin</annotation>
 		<annotation cp="🍋">frukt | sitron | sitrus</annotation>
 		<annotation cp="🍋" type="tts">sitron</annotation>
-		<annotation cp="🍋‍🟩">lime | sitrus, frukt | tropisk</annotation>
+		<annotation cp="🍋‍🟩">frukt | lime | sitrus | tropisk</annotation>
 		<annotation cp="🍋‍🟩" type="tts">lime</annotation>
 		<annotation cp="🍌">banan | frukt</annotation>
 		<annotation cp="🍌" type="tts">banan</annotation>
@@ -2083,7 +2083,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="🫚" type="tts">ingefærrot</annotation>
 		<annotation cp="🫛">belg | bønner | ertebelg | erter | grønnsak</annotation>
 		<annotation cp="🫛" type="tts">ertebelg</annotation>
-		<annotation cp="🍄‍🟫">brun sopp | mat, sopp, matsopp, natur</annotation>
+		<annotation cp="🍄‍🟫">brun sopp | mat | matsopp | natur | sopp</annotation>
 		<annotation cp="🍄‍🟫" type="tts">brun sopp</annotation>
 		<annotation cp="🍞">brød | loff</annotation>
 		<annotation cp="🍞" type="tts">brød</annotation>
@@ -3807,10 +3807,10 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<annotation cp="◾" type="tts">lite/mellomstort svart kvadrat</annotation>
 		<annotation cp="◽">firkant | geometrisk | kvadrat | lite/mellomstort hvitt kvadrat</annotation>
 		<annotation cp="◽" type="tts">lite/mellomstort hvitt kvadrat</annotation>
-		<annotation cp="▪">firkant | geometrisk | kvadrat | lite, svart kvadrat</annotation>
-		<annotation cp="▪" type="tts">lite, svart kvadrat</annotation>
-		<annotation cp="▫">firkant | geometrisk | kvadrat | lite, hvitt kvadrat</annotation>
-		<annotation cp="▫" type="tts">lite, hvitt kvadrat</annotation>
+		<annotation cp="▪">firkant | geometrisk | kvadrat | lite | svart kvadrat</annotation>
+		<annotation cp="▪" type="tts">lite</annotation>
+		<annotation cp="▫">firkant | geometrisk | hvitt kvadrat | kvadrat | lite</annotation>
+		<annotation cp="▫" type="tts">lite</annotation>
 		<annotation cp="🔶">geometrisk | oransje | ruter | stort oransje rutersymbol</annotation>
 		<annotation cp="🔶" type="tts">stort oransje rutersymbol</annotation>
 		<annotation cp="🔷">blå | geometrisk | ruter | stort blått rutersymbol</annotation>
