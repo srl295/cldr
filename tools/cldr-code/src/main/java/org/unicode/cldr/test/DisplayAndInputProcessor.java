@@ -610,6 +610,10 @@ public class DisplayAndInputProcessor {
 
     private String processAnnotations(String path, String value) {
         if (AnnotationUtil.pathIsAnnotation(path)) {
+            if (!path.contains("🧑‍🧒")) {
+                // if not a 'family' sequence
+                value = value.replaceAll(",","|");
+            }
             if (path.contains(Emoji.TYPE_TTS)) {
                 // The row has something like "🦓 -name" in the first column. Cf. namePath,
                 // getNamePaths.
@@ -634,7 +638,7 @@ public class DisplayAndInputProcessor {
         if (result.remove(LocaleNames.UND)) { // put und at the front
             if (result.isEmpty()) {
                 return LocaleNames.UND;
-            } else {
+        } else {
                 return LocaleNames.UND + " " + JOIN_SPACE.join(result);
             }
         }
