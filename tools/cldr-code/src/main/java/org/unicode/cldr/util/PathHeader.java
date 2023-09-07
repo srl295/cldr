@@ -778,10 +778,10 @@ public class PathHeader implements Comparable<PathHeader> {
                     }
                     return result;
                 } catch (Exception e) {
-                    throw new IllegalArgumentException(
+                    System.err.println(
                             "Probably mismatch in Page/Section enum, or too few capturing groups in regex for "
-                                    + path,
-                            e);
+                                    + path);
+                    return new PathHeader(SectionId.Misc, PageId.Unknown, "unknown mess", 0, "x", 0, new SubstringOrder("x"), SurveyToolStatus.HIDE, path);
                 }
             }
         }
