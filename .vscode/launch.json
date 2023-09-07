@@ -28,7 +28,9 @@
             "request": "attach",
             "name": "Attach cldr-apps by Process ID",
             "processId": "${command:PickJavaProcess}",
-            "projectName": "cldr-apps"
+            "projectName": "cldr-apps",
+            "port": 7777,
+            "hostName": "localhost"
         },
         {
             "type": "java",
