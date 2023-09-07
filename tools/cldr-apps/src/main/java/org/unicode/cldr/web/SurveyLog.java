@@ -8,6 +8,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CldrUtility;
+import org.unicode.cldr.util.StackTracker;
 
 /**
  * @author srl
@@ -78,6 +79,8 @@ public class SurveyLog {
 
     private static File gBaseDir = null;
 
+    private static String oldBaseDirLoc = null;
+
     /**
      * Set the logging to happen inside the ST dir
      *
@@ -85,8 +88,13 @@ public class SurveyLog {
      */
     public static void setDir(File homeFile) {
         if (gBaseDir != null) {
-            throw new InternalError("Error: setDir() was already called once.");
+            if (gBaseDir.equals(homeFile)) {
+                System.err.println("Warning: setDir() called twice but ignoring");
+                return;
+            }
+            throw new InternalError("Error: setDir() was already called once from " + oldBaseDirLoc);
         }
+        oldBaseDirLoc = StackTracker.currentStack();
         gBaseDir = homeFile;
     }
 

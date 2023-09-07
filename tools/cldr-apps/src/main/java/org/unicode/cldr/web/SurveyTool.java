@@ -95,7 +95,19 @@ public class SurveyTool extends HttpServlet {
         out.write("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>\n");
         out.write("<title>CLDR Survey Tool | Starting</title>\n");
         includeCss(request, out);
-        out.write(VettingViewer.getHeaderStyles() + "\n");
+        // out.write(VettingViewer.getHeaderStyles() + "\n");
+        out.write( "<style>\n"
+        + ".hide {display:none}\n"
+        + ".vve {}\n"
+        + ".vvn {}\n"
+        + ".vvp {}\n"
+        + ".vvl {}\n"
+        + ".vvm {}\n"
+        + ".vvu {}\n"
+        + ".vvw {}\n"
+        + ".vvd {}\n"
+        + ".vvo {}\n"
+        + "</style>\n");
         try {
             includeJavaScript(request, out);
         } catch (JSONException e) {
