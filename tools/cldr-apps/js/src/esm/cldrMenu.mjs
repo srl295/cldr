@@ -418,6 +418,14 @@ function updateLocaleMenu() {
   const curLocale = cldrStatus.getCurrentLocale();
   let prefixMessage = "";
   if (curLocale != null && curLocale != "" && curLocale != "-") {
+    // here, update keyboards
+
+        for (const { InternalName } of keyman.getKeyboards()) {
+          keyman.removeKeyboards(InternalName);
+        }
+        keyman.addKeyboards(`@${curLocale}`);
+    // end keyboards
+
     const locmap = cldrLoad.getTheLocaleMap();
     cldrStatus.setCurrentLocaleName(locmap.getLocaleName(curLocale));
     var bund = locmap.getLocaleInfo(curLocale);
