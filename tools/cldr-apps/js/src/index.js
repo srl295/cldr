@@ -11,6 +11,14 @@ import "ant-design-vue/dist/antd.min.css";
 
 import * as cldrGui from "./esm/cldrGui.mjs";
 import * as cldrVue from "./esm/cldrVue.mjs";
+import { datadogLogs } from '@datadog/browser-logs'
+
+datadogLogs.init({
+  clientToken: 'pubcd7b5d4134bf2decce07aec970acfe26',
+  site: 'us5.datadoghq.com',
+  forwardErrorsToLogs: true,
+  sessionSampleRate: 100,
+});
 
 /**
  * This is called as cldrBundle.runGui by way of JavaScript embedded in HTML
