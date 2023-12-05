@@ -28,6 +28,12 @@ datadogRum.init({
     trackResources: true,
     trackLongTasks: true,
     defaultPrivacyLevel: 'allow',
+    allowedTracingUrls: [
+      {
+        match: /https:\/\/.*\.unicode\.org/,
+        propagatorTypes: ["tracecontext"]
+      },
+    ],
 });
 
 
