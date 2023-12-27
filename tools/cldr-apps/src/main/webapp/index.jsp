@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/2001/REC-xhtml11-20010531/DTD/xhtml11-flat.dtd">
 <%@page import="org.unicode.cldr.test.HelpMessages"%>
 <%@ page contentType="text/html; charset=UTF-8" import="org.unicode.cldr.web.*" %>
-<%@ page import="javax.servlet.http.Cookie" %>
+<%@ page import="jakarta.servlet.http.Cookie" %>
 <html>
 	<head>
 <meta name="google-site-verification" content="srvwuSyUz9Z1IqUdRzS9fKqc928itVA9OeLxh60vnDM" />

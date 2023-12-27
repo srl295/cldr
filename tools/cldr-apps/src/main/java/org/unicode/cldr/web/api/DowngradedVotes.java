@@ -3,10 +3,10 @@ package org.unicode.cldr.web.api;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -22,14 +22,6 @@ import org.unicode.cldr.web.*;
 @Tag(name = "Downgraded votes", description = "APIs for Survey Tool downgraded votes")
 public class DowngradedVotes {
     private static final Logger logger = SurveyLog.forClass(DowngradedVotes.class);
-
-    /**
-     * The submitter column must be included even though it isn't used explicitly, since it is a
-     * primary key, and the query must select all primary keys in order to call
-     * ResultSet.deleteRow() successfully
-     */
-    private static final String SELECT_SQL =
-            "SELECT locale,xpath,value,vote_type,submitter FROM " + DBUtils.Table.VOTE_VALUE;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -164,6 +156,14 @@ public class DowngradedVotes {
      * @param catMap the category map, or null for deletion
      */
     private static void loopThroughAllVotes(Map<VoteType, Integer> catMap) {
+        /**
+         * The submitter column must be included even though it isn't used explicitly, since it is a
+         * primary key, and the query must select all primary keys in order to call
+         * ResultSet.deleteRow() successfully
+         */
+        // note: DBUtils should not be invoked at static init time
+        final String SELECT_SQL =
+                "SELECT locale,xpath,value,vote_type,submitter FROM " + DBUtils.Table.VOTE_VALUE;
         Connection conn;
         PreparedStatement ps = null;
         ResultSet rs = null;

@@ -15,7 +15,7 @@ import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONString;
@@ -77,7 +77,7 @@ public class CLDRConfigImpl extends CLDRConfig implements JSONString {
     /**
      * Notify CLDRConfig that cldrHome is available. This also has the effect of initializing
      * CLDRConfigImpl. Not called within the test environment such as TestAll Called by {@link
-     * SurveyMain#init(javax.servlet.ServletConfig)}
+     * SurveyMain#init(jakarta.servlet.ServletConfig)}
      *
      * @param newHome the path to the CLDR Home, usually a subdirectory of the well known servlet
      *     location.

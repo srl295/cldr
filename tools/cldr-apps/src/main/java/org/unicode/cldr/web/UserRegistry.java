@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import javax.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.json.JSONException;
