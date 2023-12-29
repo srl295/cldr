@@ -145,6 +145,16 @@ org.unicode.cldr.util.CLDRConfigImpl.cldrHome=/Users/srl295/src/cldr-st/config
 
 You will also want to make sure this directory exists and is writeable. You can move the existing `cldr.properties` and other files to that directory.
 
+### VisualVM
+
+for VisualVM, add the following to `bootstrap.properties`, thanks to [this comment](https://github.com/oracle/visualvm/issues/209#issuecomment-743275447)
+
+```properties
+org.osgi.framework.bootdelegation=org.graalvm.*
+```
+
+Then attach to the `EnvCheck` process.
+
 ### Licenses
 
 See the main [README.md](../../README.md).
