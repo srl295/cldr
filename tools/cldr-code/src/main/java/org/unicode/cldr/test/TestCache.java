@@ -2,11 +2,14 @@ package org.unicode.cldr.test;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ImmutableList;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.unicode.cldr.test.CheckCLDR.CheckStatus;
 import org.unicode.cldr.test.CheckCLDR.Options;
@@ -60,12 +63,21 @@ public class TestCache implements XMLSource.Listener {
              */
             result.clear();
             Pair<String, String> key = new Pair<>(path, value);
-            List<CheckStatus> cachedResult = pathCache.get(key);
+            List<CheckStatus> cachedResult =
+                    pathCache.computeIfAbsent(
+                            key,
+                            (Pair<String, String> k) -> {
+                                List<CheckStatus> l = new ArrayList<CheckStatus>();
+                                cc.check(
+                                        k.getFirst(),
+                                        file.getFullXPath(k.getFirst()),
+                                        k.getSecond(),
+                                        options,
+                                        l);
+                                return l;
+                            });
             if (cachedResult != null) {
                 result.addAll(cachedResult);
-            } else {
-                cc.check(path, file.getFullXPath(path), value, options, result);
-                pathCache.put(key, ImmutableList.copyOf(result));
             }
         }
 
@@ -85,27 +97,31 @@ public class TestCache implements XMLSource.Listener {
      * evaluate why the fallback 12 for CLDR_TESTCACHE_SIZE is appropriate or too small. Consider not
      * using maximumSize() at all, depending on softValues() instead to garbage collect only when needed.
      */
-    private Cache<CheckCLDR.Options, TestResultBundle> testResultCache =
+    private LoadingCache<CheckCLDR.Options, TestResultBundle> testResultCache =
             CacheBuilder.newBuilder()
                     .maximumSize(CLDRConfig.getInstance().getProperty("CLDR_TESTCACHE_SIZE", 12))
                     .softValues()
-                    .build();
+                    .build(
+                            new CacheLoader<CheckCLDR.Options, TestResultBundle>() {
+
+                                @Override
+                                public TestResultBundle load(Options key) throws Exception {
+                                    return new TestResultBundle(key);
+                                }
+                            });
 
     private final Factory factory;
 
     private String nameMatcher = ".*";
 
     /** Get the bundle for this test */
-    public TestResultBundle getBundle(CheckCLDR.Options options) {
-        TestResultBundle b = testResultCache.getIfPresent(options);
-        if (b != null) {
-            logger.finest(() -> this + " Bundle refvalid: " + options);
-        }
-        if (b == null) {
-            // ElapsedTimer et = new ElapsedTimer("New test bundle " + locale + " opt " + options);
-            b = new TestResultBundle(options);
-            // System.err.println(et.toString());
-            testResultCache.put(options, b);
+    public TestResultBundle getBundle(final CheckCLDR.Options options) {
+        TestResultBundle b;
+        try {
+            b = testResultCache.get(options);
+        } catch (ExecutionException e) {
+            logger.log(Level.SEVERE, e, () -> "Failed to load " + options);
+            throw new RuntimeException(e);
         }
         return b;
     }

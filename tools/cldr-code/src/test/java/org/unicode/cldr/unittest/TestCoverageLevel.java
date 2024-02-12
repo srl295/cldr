@@ -454,6 +454,10 @@ public class TestCoverageLevel extends TestFmwkPlus {
          */
         final ImmutableSet<String> inactiveMetazones =
                 ImmutableSet.of(
+                        "Greenland", // TODO: New metazone added for tz2023d update,
+                        // In CLDR 45, we don't want to include this one in modern coverage because
+                        // we don't open ST for translating display names for this metazone.
+                        // After 45, we will include "Greenland" in modern coverage.
                         "Bering",
                         "Dominican",
                         "Shevchenko",
@@ -557,7 +561,7 @@ public class TestCoverageLevel extends TestFmwkPlus {
         final Pattern collation100 =
                 PatternCache.get(
                         "("
-                                + "big5han|compat|dictionary|emoji|eor|gb2312han|phonebook|phonetic|pinyin|reformed|searchjl|stroke|traditional|unihan|zhuyin)");
+                                + "big5han|compat|dictionary|emoji|eor|gb2312han|phonebook|phonetic|pinyin|searchjl|stroke|traditional|unihan|zhuyin)");
 
         SupplementalDataInfo sdi = testInfo.getSupplementalDataInfo();
         CLDRFile english = testInfo.getEnglish();

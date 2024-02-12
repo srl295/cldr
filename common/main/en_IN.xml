@@ -1145,7 +1145,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<type key="collation" type="phonebook">↑↑↑</type>
 			<type key="collation" type="phonetic">↑↑↑</type>
 			<type key="collation" type="pinyin">↑↑↑</type>
-			<type key="collation" type="reformed">↑↑↑</type>
 			<type key="collation" type="search">↑↑↑</type>
 			<type key="collation" type="standard">↑↑↑</type>
 			<type key="collation" type="stroke">↑↑↑</type>
@@ -3373,9 +3372,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<zone type="Australia/Melbourne">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
-			<zone type="Australia/Currie">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
 			<zone type="Australia/Hobart">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
@@ -3529,9 +3525,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<zone type="America/Creston">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
-			<zone type="America/Yellowknife">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
 			<zone type="America/Edmonton">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
@@ -3550,28 +3543,16 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<zone type="America/Resolute">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
-			<zone type="America/Rainy_River">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
 			<zone type="America/Rankin_Inlet">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="America/Coral_Harbour">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
-			<zone type="America/Thunder_Bay">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
-			<zone type="America/Nipigon">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
 			<zone type="America/Toronto">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="America/Iqaluit">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
-			<zone type="America/Pangnirtung">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="America/Moncton">
@@ -4387,16 +4368,10 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<zone type="Africa/Dar_es_Salaam">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
-			<zone type="Europe/Uzhgorod">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
 			<zone type="Europe/Kiev">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="Europe/Simferopol">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
-			<zone type="Europe/Zaporozhye">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="Africa/Kampala">
@@ -4412,9 +4387,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="America/Nome">
-				<exemplarCity>↑↑↑</exemplarCity>
-			</zone>
-			<zone type="Pacific/Johnston">
 				<exemplarCity>↑↑↑</exemplarCity>
 			</zone>
 			<zone type="America/Anchorage">
@@ -5058,11 +5030,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 					<daylight>↑↑↑</daylight>
 				</long>
 			</metazone>
-			<metazone type="Macquarie">
-				<long>
-					<standard>↑↑↑</standard>
-				</long>
-			</metazone>
 			<metazone type="Magadan">
 				<long>
 					<generic>↑↑↑</generic>
@@ -5100,13 +5067,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<metazone type="Mawson">
 				<long>
 					<standard>↑↑↑</standard>
-				</long>
-			</metazone>
-			<metazone type="Mexico_Northwest">
-				<long>
-					<generic>↑↑↑</generic>
-					<standard>↑↑↑</standard>
-					<daylight>↑↑↑</daylight>
 				</long>
 			</metazone>
 			<metazone type="Mexico_Pacific">
@@ -5496,10 +5456,10 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			</decimalFormatLength>
 			<decimalFormatLength type="short">
 				<decimalFormat>
-					<pattern type="1000" count="one">0T</pattern>
-					<pattern type="1000" count="other">0T</pattern>
-					<pattern type="10000" count="one">00T</pattern>
-					<pattern type="10000" count="other">00T</pattern>
+					<pattern type="1000" count="one">0K</pattern>
+					<pattern type="1000" count="other">0K</pattern>
+					<pattern type="10000" count="one">00K</pattern>
+					<pattern type="10000" count="other">00K</pattern>
 					<pattern type="100000" count="one">0L</pattern>
 					<pattern type="100000" count="other">0L</pattern>
 					<pattern type="1000000" count="one">00L</pattern>
@@ -5510,10 +5470,10 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 					<pattern type="100000000" count="other">00Cr</pattern>
 					<pattern type="1000000000" count="one">000Cr</pattern>
 					<pattern type="1000000000" count="other">000Cr</pattern>
-					<pattern type="10000000000" count="one">0TCr</pattern>
-					<pattern type="10000000000" count="other">0TCr</pattern>
-					<pattern type="100000000000" count="one">00TCr</pattern>
-					<pattern type="100000000000" count="other">00TCr</pattern>
+					<pattern type="10000000000" count="one">0KCr</pattern>
+					<pattern type="10000000000" count="other">0KCr</pattern>
+					<pattern type="100000000000" count="one">00KCr</pattern>
+					<pattern type="100000000000" count="other">00KCr</pattern>
 					<pattern type="1000000000000" count="one">0LCr</pattern>
 					<pattern type="1000000000000" count="other">0LCr</pattern>
 					<pattern type="10000000000000" count="one">00LCr</pattern>
@@ -5552,14 +5512,14 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			</currencyFormatLength>
 			<currencyFormatLength type="short">
 				<currencyFormat type="standard">
-					<pattern type="1000" count="one">¤0T</pattern>
-					<pattern type="1000" count="one" alt="alphaNextToNumber">¤ 0T</pattern>
-					<pattern type="1000" count="other">¤0T</pattern>
-					<pattern type="1000" count="other" alt="alphaNextToNumber">¤ 0T</pattern>
-					<pattern type="10000" count="one">¤00T</pattern>
-					<pattern type="10000" count="one" alt="alphaNextToNumber">¤ 00T</pattern>
-					<pattern type="10000" count="other">¤00T</pattern>
-					<pattern type="10000" count="other" alt="alphaNextToNumber">¤ 00T</pattern>
+					<pattern type="1000" count="one">¤0K</pattern>
+					<pattern type="1000" count="one" alt="alphaNextToNumber">¤ 0K</pattern>
+					<pattern type="1000" count="other">¤0K</pattern>
+					<pattern type="1000" count="other" alt="alphaNextToNumber">¤ 0K</pattern>
+					<pattern type="10000" count="one">¤00K</pattern>
+					<pattern type="10000" count="one" alt="alphaNextToNumber">¤ 00K</pattern>
+					<pattern type="10000" count="other">¤00K</pattern>
+					<pattern type="10000" count="other" alt="alphaNextToNumber">¤ 00K</pattern>
 					<pattern type="100000" count="one">¤0L</pattern>
 					<pattern type="100000" count="one" alt="alphaNextToNumber">¤ 0L</pattern>
 					<pattern type="100000" count="other">¤0L</pattern>
@@ -5580,14 +5540,14 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 					<pattern type="1000000000" count="one" alt="alphaNextToNumber">¤ 000Cr</pattern>
 					<pattern type="1000000000" count="other">¤000Cr</pattern>
 					<pattern type="1000000000" count="other" alt="alphaNextToNumber">¤ 000Cr</pattern>
-					<pattern type="10000000000" count="one">¤0TCr</pattern>
-					<pattern type="10000000000" count="one" alt="alphaNextToNumber">¤ 0TCr</pattern>
-					<pattern type="10000000000" count="other">¤0TCr</pattern>
-					<pattern type="10000000000" count="other" alt="alphaNextToNumber">¤ 0TCr</pattern>
-					<pattern type="100000000000" count="one">¤00TCr</pattern>
-					<pattern type="100000000000" count="one" alt="alphaNextToNumber">¤ 00TCr</pattern>
-					<pattern type="100000000000" count="other">¤00TCr</pattern>
-					<pattern type="100000000000" count="other" alt="alphaNextToNumber">¤ 00TCr</pattern>
+					<pattern type="10000000000" count="one">¤0KCr</pattern>
+					<pattern type="10000000000" count="one" alt="alphaNextToNumber">¤ 0KCr</pattern>
+					<pattern type="10000000000" count="other">¤0KCr</pattern>
+					<pattern type="10000000000" count="other" alt="alphaNextToNumber">¤ 0KCr</pattern>
+					<pattern type="100000000000" count="one">¤00KCr</pattern>
+					<pattern type="100000000000" count="one" alt="alphaNextToNumber">¤ 00KCr</pattern>
+					<pattern type="100000000000" count="other">¤00KCr</pattern>
+					<pattern type="100000000000" count="other" alt="alphaNextToNumber">¤ 00KCr</pattern>
 					<pattern type="1000000000000" count="one">¤0LCr</pattern>
 					<pattern type="1000000000000" count="one" alt="alphaNextToNumber">¤ 0LCr</pattern>
 					<pattern type="1000000000000" count="other">¤0LCr</pattern>

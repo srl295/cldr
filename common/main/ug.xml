@@ -2717,11 +2717,6 @@ Reviewed by Waris Abdukerim Janbaz <oyghan@gmail.com> of the Uyghur Computer Sci
 					<daylight draft="contributed">ئاۋمېن يازلىق ۋاقتى</daylight>
 				</long>
 			</metazone>
-			<metazone type="Macquarie">
-				<long>
-					<standard draft="contributed">ماككۇۋارى ئاراللىرى ۋاقتى</standard>
-				</long>
-			</metazone>
 			<metazone type="Magadan">
 				<long>
 					<generic draft="contributed">ماگادان ۋاقتى</generic>
@@ -2759,13 +2754,6 @@ Reviewed by Waris Abdukerim Janbaz <oyghan@gmail.com> of the Uyghur Computer Sci
 			<metazone type="Mawson">
 				<long>
 					<standard draft="contributed">ماۋسون ۋاقتى</standard>
-				</long>
-			</metazone>
-			<metazone type="Mexico_Northwest">
-				<long>
-					<generic draft="contributed">مېكسىكا غەربىي شىمالىي قىسىم ۋاقتى</generic>
-					<standard draft="contributed">مېكسىكا غەربىي شىمالىي قىسىم ئۆلچەملىك ۋاقتى</standard>
-					<daylight draft="contributed">مېكسىكا غەربىي شىمالىي قىسىم يازلىق ۋاقتى</daylight>
 				</long>
 			</metazone>
 			<metazone type="Mexico_Pacific">

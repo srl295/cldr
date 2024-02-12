@@ -2293,11 +2293,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 					<daylight>लॉर्ड होवे दे ध्याड़े दे उजाले दा टैम</daylight>
 				</long>
 			</metazone>
-			<metazone type="Macquarie">
-				<long>
-					<standard>मक्वारी टापू दा टैम</standard>
-				</long>
-			</metazone>
 			<metazone type="Magadan">
 				<long>
 					<generic>मागादान दा टैम</generic>
@@ -2335,13 +2330,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 			<metazone type="Mawson">
 				<long>
 					<standard>माव्सन दा टैम</standard>
-				</long>
-			</metazone>
-			<metazone type="Mexico_Northwest">
-				<long>
-					<generic>उत्तर पश्चिमी मेक्सिको दा टैम</generic>
-					<standard>उत्तर पश्चिमी मेक्सिको दा मानक टैम</standard>
-					<daylight>उत्तर पश्चिमी मेक्सिको दे ध्याड़े दे उजाले दा टैम</daylight>
 				</long>
 			</metazone>
 			<metazone type="Mexico_Pacific">

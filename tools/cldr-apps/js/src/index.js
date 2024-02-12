@@ -11,6 +11,10 @@ import "ant-design-vue/dist/antd.min.css";
 
 import * as cldrGui from "./esm/cldrGui.mjs";
 import * as cldrVue from "./esm/cldrVue.mjs";
+import * as cldrMonitoring from "./esm/cldrMonitoring.mjs";
+
+// kick off the top level monitoring
+cldrMonitoring.init();
 
 /**
  * This is called as cldrBundle.runGui by way of JavaScript embedded in HTML
