@@ -1,5 +1,7 @@
 package org.unicode.cldr.util;
 
+import org.unicode.cldr.tool.CldrVersion;
+
 /**
  * Generate URLs to parts of CLDR and the SurveyTool. You can change the urls used with for example,
  * -DCLDR_SURVEY_BASE=http://st.unicode.org/smoketest
@@ -7,7 +9,9 @@ package org.unicode.cldr.util;
  * @author srl
  */
 public abstract class CLDRURLS {
-    /** Base URL for the CLDR repository */
+    public static final String CLDR_SCHEMA_BASE = "https://schemas.unicode.org/cldr";
+    public static final String CLDR_CURVER_BASE = CLDR_SCHEMA_BASE+"/"+CLDRFile.GEN_VERSION;
+        /** Base URL for the CLDR repository */
     public static final String CLDR_REPO_BASE = "https://github.com/unicode-org/cldr";
 
     public static final String DEFAULT_COMMIT_BASE = CLDR_REPO_BASE + "/commit/";

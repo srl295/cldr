@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +174,8 @@ public class XMLFileReader {
             AllHandler allHandler) {
         try {
             XMLReader xmlReader = createXMLReader(handlers, validating, allHandler);
+            // wrap the reader to insert a character stream
+            DTDInsertingReaderFactory.wrap(is);
             is.setSystemId(systemID);
             try {
                 xmlReader.parse(is);
