@@ -947,9 +947,7 @@ public class TestSupplementalInfo extends TestFmwkPlus {
                                         + oldSchool
                                         + " in allowed: "
                                         + preferredAndAllowedHour.allowed;
-                        // if (!logKnownIssue("cldrbug:11448", message)) {
                         errln(message);
-                        // }
                     }
                     break;
                 }
@@ -1587,9 +1585,14 @@ public class TestSupplementalInfo extends TestFmwkPlus {
                 cldrCountries.add(x.getFirst());
             }
             if (!isoCountries.equals(cldrCountries)) {
-                if (!logKnownIssue(
-                        "cldrbug:10765", "Missing codes compared to ISO: " + missing.toString())) {
-
+                // TODO 17397: remove isKnownIssue and the if around errln when the logknown issue
+                // goes away.
+                final boolean skipKnownIssue =
+                        currency.equals("ANG")
+                                && isoCountries.isEmpty()
+                                && cldrCountries.equals(Set.of("CW", "SX"))
+                                && logKnownIssue("CLDR-17397", "Mismatched codes " + cldrCountries);
+                if (!skipKnownIssue) {
                     errln(
                             "Mismatch between ISO and Cldr modern currencies for "
                                     + currency
@@ -1871,13 +1874,6 @@ public class TestSupplementalInfo extends TestFmwkPlus {
                     testLocales.contains(locale) ? CoverageIssue.error : CoverageIssue.log;
             CoverageIssue needsCoverage2 =
                     needsCoverage == CoverageIssue.error ? CoverageIssue.warn : needsCoverage;
-
-            //            if (logKnownIssue("Cldrbug:8809", "Missing plural rules/samples be and ga
-            // locales")) {
-            //                if (locale.equals("be") || locale.equals("ga")) {
-            //                    needsCoverage = CoverageIssue.warn;
-            //                }
-            //            }
             PluralRulesFactory prf =
                     PluralRulesFactory.getInstance(
                             CLDRConfig.getInstance().getSupplementalDataInfo());
