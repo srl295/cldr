@@ -355,7 +355,6 @@ public class SurveyAjax extends HttpServlet {
                     } catch (Throwable t) {
                         SurveyLog.logException(logger, t, "Parsing user " + user);
                     }
-                System.out.println("SQL: " + q1 + q2);
                 JSONObject query;
                 if (l == null && u == null) {
                     query = DBUtils.queryToJSONLimit(limit, q1 + q2);
@@ -380,7 +379,7 @@ public class SurveyAjax extends HttpServlet {
                                             + DBUtils.Table.VOTE_VALUE
                                             + ".locale=? AND "
                                             + DBUtils.Table.VOTE_VALUE
-                                            + ".submitter=? "
+                                            + ".submitter=? AND "
                                             + q2,
                                     l,
                                     u.id);
