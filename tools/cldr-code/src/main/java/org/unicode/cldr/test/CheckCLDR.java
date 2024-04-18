@@ -763,6 +763,8 @@ public abstract class CheckCLDR implements CheckAccessor {
             cachedPossibleErrors.clear();
             // call into the subclass
             handleSetCldrFileToCheck(this.cldrFileToCheck, cachedOptions, cachedPossibleErrors);
+            // all non path based
+            cachedPossibleErrors.forEach(e -> e.setNonPathBased());
             initted = true;
         }
         // unconditionally append all cached possible errors
@@ -782,7 +784,7 @@ public abstract class CheckCLDR implements CheckAccessor {
     Options cachedOptions = null;
 
     /** Status value returned from check */
-    public static class CheckStatus {
+    public static class CheckStatus implements Comparable<CheckStatus> {
         public static final Type alertType = Type.Comment,
                 warningType = Type.Warning,
                 errorType = Type.Error,
@@ -1116,6 +1118,44 @@ public abstract class CheckCLDR implements CheckAccessor {
                 }
             }
             return false;
+        }
+
+        /**
+         * @returns true if this status applies to the entire locale, not a single path
+         */
+        public boolean isNonPathBased() {
+            return nonPathBased;
+        }
+
+        /** Mark this CheckStatus as nonPathBased */
+        CheckStatus setNonPathBased() {
+            nonPathBased = true;
+            return this;
+        }
+
+        private boolean nonPathBased = false;
+
+        @Override
+        public int compareTo(CheckStatus o) {
+            if (this == o) return 0;
+            int rc = 0;
+            if (rc == 0) {
+                rc = type.compareTo(o.type);
+            }
+            if (rc == 0) {
+                rc = subtype.compareTo(o.subtype);
+            }
+            if (rc == 0) {
+                rc = getMessage().compareTo(o.getMessage());
+            }
+            return rc;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o instanceof CheckStatus) return false;
+            return compareTo((CheckStatus) o) == 0;
         }
     }
 
@@ -1488,6 +1528,8 @@ public abstract class CheckCLDR implements CheckAccessor {
                 }
             }
             if (SHOW_TIMES) System.out.println("Overall: " + testOverallTime + ": {0}");
+            // all of these are non path based.
+            possibleErrors.forEach(e -> e.setNonPathBased());
         }
 
         public Matcher getFilter() {

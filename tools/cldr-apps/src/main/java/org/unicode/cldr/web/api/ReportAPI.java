@@ -32,6 +32,7 @@ import org.unicode.cldr.util.VoterReportStatus;
 import org.unicode.cldr.util.VoterReportStatus.ReportAcceptability;
 import org.unicode.cldr.util.VoterReportStatus.ReportId;
 import org.unicode.cldr.web.CookieSession;
+import org.unicode.cldr.web.DataPage;
 import org.unicode.cldr.web.ReportsDB;
 import org.unicode.cldr.web.ReportsDB.UserReport;
 import org.unicode.cldr.web.STFactory;
@@ -414,10 +415,10 @@ public class ReportAPI {
 
     private String writeReport(ReportId report, CLDRLocale loc) throws IOException {
         final Writer w = new StringWriter();
+        final STFactory stf = CookieSession.sm.getSTFactory();
         final Chart chart = Chart.forReport(report, loc.getBaseName());
         if (chart != null) {
-            final STFactory stf = CookieSession.sm.getSTFactory();
-            chart.writeContents(w, stf);
+            chart.writeContents(w, stf, stf.getTestResult(loc, DataPage.getSimpleOptions(loc)));
         } else {
             switch (report) {
                     // "Old Three" reports

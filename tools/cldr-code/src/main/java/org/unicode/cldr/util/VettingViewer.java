@@ -197,6 +197,8 @@ public class VettingViewer<T> {
             StringBuilder errorMessage = new StringBuilder();
             factory.getTestCache().getBundle(options).check(path, result, value);
             for (CheckStatus checkStatus : result) {
+                if (checkStatus.isNonPathBased())
+                    continue; // these will show up in the Supplemental report
                 final CheckCLDR cause = checkStatus.getCause();
                 /*
                  * CheckCoverage will be shown under Missing, not under Warnings; and
