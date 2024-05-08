@@ -1,105 +1,52 @@
-// © 2016 and later: Unicode, Inc. and others.
-// License & terms of use: http://www.unicode.org/copyright.html
-//
-//  ElapsedTimer.java
-//
-//  Created by Steven R. Loomis on 11/11/2005.
-//  Copyright 2005-2012 IBM. All rights reserved.
-//
+// New implementation based on compile errors from CLDR
+// @author Steven R. Loomis
+// SPDX-License-Identifier: Unicode-3.0
+// Date: 7 May 2024
+// Copyright © 2024 Unicode, Inc. Unicode and the Unicode Logo are registered trademarks of Unicode,
+// Inc. in the United States and other countries.
 
 package com.ibm.icu.dev.util;
 
-// This file was migrated from the ICU4J repo,
-// path icu4j/main/translit/src/test/java/com/ibm/icu/dev/util/ElapsedTimer.java
-
-import com.ibm.icu.text.MessageFormat;
-import com.ibm.icu.text.NumberFormat;
-import com.ibm.icu.text.RuleBasedNumberFormat;
-import java.util.Locale;
+import com.google.common.base.Stopwatch;
 
 /**
- * Simple stopwatch timer. Usage: { ElapsedTimer et = new ElapsedTimer(); do_some_stuff;
- * System.out.println("It took " + et + " to do stuff."); }
+ * simple class to calculate elapsed times.
  *
- * <p>Advanced: { ElapsedTimer et = new ElapsedTimer("Thing2's time: {0}"); // messageformat pattern
- * do_thing_2(); System.out.println(et.toString()); }
- *
- * <p>More advanced: NumberFormat and/or MessageFormat can be provided in the constructor
- *
- * @internal CLDR
+ * @deprecated use {@link com.google.common.base.Stopwatch} instead
  */
-public final class ElapsedTimer {
+@Deprecated
+public class ElapsedTimer {
+    final Stopwatch s;
+    final String str;
 
-    /** Convenience method to print the elasped time (in milliseconds) */
-    public static String elapsedTime(long start, long end) {
-        return diffTime(getFormat(), start, end);
+    public ElapsedTimer() {
+        s = Stopwatch.createStarted();
+        str = "";
     }
 
-    public static String elapsedTime(long start) {
-        return diffTime(getFormat(), start, System.currentTimeMillis());
+    public ElapsedTimer(String string) {
+        str = string;
+        s = Stopwatch.createStarted();
     }
 
-    // class
-
-    private long startTime = System.currentTimeMillis();
-    private NumberFormat myDurationFormat = null;
-    private MessageFormat myMsgFormat = null;
-
-    public ElapsedTimer() {}
-
-    public ElapsedTimer(MessageFormat aMsgFmt) {
-        myMsgFormat = aMsgFmt;
-    }
-
-    public ElapsedTimer(NumberFormat aNumFmt) {
-        myDurationFormat = aNumFmt;
-    }
-
-    public ElapsedTimer(MessageFormat aMsgFmt, NumberFormat aNumFmt) {
-        myMsgFormat = aMsgFmt;
-        myDurationFormat = aNumFmt;
-    }
-
-    public ElapsedTimer(String pattern) {
-        myMsgFormat = new MessageFormat(pattern);
-    }
-
-    public ElapsedTimer(String pattern, NumberFormat aNumFmt) {
-        myMsgFormat = new MessageFormat(pattern);
-        myDurationFormat = aNumFmt;
+    @Override
+    public String toString() {
+        return str + ": " + s.toString();
     }
 
     /**
-     * @return elapsed time in seconds since object creation
+     * @deprecated simplistic implementation
      */
-    public final String toString() {
-        long endTime = System.currentTimeMillis();
-        String duration = diffTime(myDurationFormat, startTime, endTime);
-        if (myMsgFormat == null) {
-            return duration;
-        } else {
-            return myMsgFormat.format(new Object[] {duration});
-        }
+    @Deprecated
+    public static String elapsedTime(long startMs) {
+        return elapsedTime(startMs, System.currentTimeMillis());
     }
 
-    private static NumberFormat gFormat = null;
-
-    private static NumberFormat getFormat() {
-        if (gFormat == null) {
-            gFormat = new RuleBasedNumberFormat(Locale.US, RuleBasedNumberFormat.DURATION);
-        }
-        return gFormat;
-    }
-
-    private static String diffTime(NumberFormat fmt, long start, long end) {
-        if (fmt == null) {
-            fmt = getFormat();
-        }
-        synchronized (fmt) {
-            long age = end - start;
-            long diff = age / 1000; // millis per second. Workaround ticket:7936 by using whole
-            // number seconds.
-            return fmt.format(diff);
-        }
+    /**
+     * @deprecated simplistic implementation
+     */
+    @Deprecated
+    public static String elapsedTime(long startMs, long endMs) {
+        return String.format("[%d ms]", endMs - startMs);
     }
 }
