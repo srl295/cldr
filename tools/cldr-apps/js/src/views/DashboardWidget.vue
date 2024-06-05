@@ -79,26 +79,32 @@
           <a-spin size="large" />
         </template>
         <template v-else>
-          <template
-            v-for="entry of data.entries"
-            :key="'template-' + entry.xpstrid"
-          >
-            <template v-if="anyCatIsShown(entry.cats)">
-              <p
-                v-if="!(hideChecked && entry.checked)"
+          <RecycleScroller
+            class="sroller"
+            :items="data.entries"
+            :item-size="32"
+            key-field="xpstrid"
+            v-slot="{ item }">
+
+            <!-- <template v-if="anyCatIsShown(entry.cats)"> -->
+              <!--
+                                v-if="true && !(hideChecked && entry.checked)"
                 :key="'dash-item-' + entry.xpstrid"
                 :id="'dash-item-' + entry.xpstrid"
+
+              -->
+              <p
                 :class="
                   'dash-' +
-                  (lastClicked === entry.xpstrid ? ' last-clicked' : '')
+                  (lastClicked === item.xpstrid ? ' last-clicked' : '')
                 "
               >
                 <span class="dashEntry">
                   <a
-                    v-bind:href="getLink(locale, entry)"
-                    @click="() => setLastClicked(entry.xpstrid)"
+                    v-bind:href="getLink(locale, item)"
+                    @click="() => setLastClicked(item.xpstrid)"
                   >
-                    <span v-bind:key="cat" v-for="cat of entry.cats">
+                    <span v-bind:key="cat" v-for="cat of item.cats">
                       <span
                         v-if="!catIsHidden[cat]"
                         class="category"
@@ -107,56 +113,56 @@
                       >
                     </span>
                     <span class="section-page" title="section—page">{{
-                      humanize(entry.section + "—" + entry.page)
+                      humanize(item.section + "—" + item.page)
                     }}</span>
                     |
                     <span
-                      v-if="entry.header"
+                      v-if="item.header"
                       class="entry-header"
                       title="entry header"
-                      >{{ entry.header }}</span
+                      >{{ item.header }}</span
                     >
                     |
-                    <span class="code" title="code">{{ entry.code }}</span>
+                    <span class="code" title="code">{{ item.code }}</span>
                     |
                     <cldr-value
                       class="previous-english"
                       title="previous English"
                       lang="en"
                       dir="ltr"
-                      v-if="entry.previousEnglish"
-                      >{{ entry.previousEnglish }} →</cldr-value
+                      v-if="item.previousEnglish"
+                      >{{ item.previousEnglish }} →</cldr-value
                     >
                     <cldr-value
                       class="english"
                       lang="en"
                       dir="ltr"
                       title="English"
-                      v-if="entry.english"
-                      >{{ entry.english }}</cldr-value
+                      v-if="item.english"
+                      >{{ item.english }}</cldr-value
                     >
                     |
                     <cldr-value
-                      v-if="entry.winning"
+                      v-if="item.winning"
                       class="winning"
                       title="Winning"
-                      >{{ entry.winning }}</cldr-value
+                      >{{ item.winning }}</cldr-value
                     >
-                    <template v-if="entry.comment">
+                    <template v-if="item.comment">
                       |
-                      <span v-html="entry.comment" title="comment"></span>
+                      <span v-html="item.comment" title="comment"></span>
                     </template>
-                    <span v-if="entry.cats.has('Reports')"
-                      >{{ humanizeReport(entry.code) }} Report</span
+                    <span v-if="item.cats.has('Reports')"
+                      >{{ humanizeReport(item.code) }} Report</span
                     >
                   </a>
                 </span>
                 <input
-                  v-if="canBeHidden(entry.cats)"
+                  v-if="canBeHidden(item.cats)"
                   type="checkbox"
                   class="right-control"
                   title="You can hide checked items with the hide checkbox above"
-                  v-model="entry.checked"
+                  v-model="item.checked"
                   @change="
                     (event) => {
                       entryCheckmarkChanged(event, entry);
@@ -164,8 +170,8 @@
                   "
                 />
               </p>
-            </template>
-          </template>
+              <!-- todo /template-->
+            </RecycleScroller>
           <p class="bottom-padding">...</p>
         </template>
       </section>
@@ -174,6 +180,7 @@
 </template>
 
 <script>
+import { RecycleScroller } from "vue-virtual-scroller";
 import * as cldrCoverage from "../esm/cldrCoverage.mjs";
 import * as cldrDash from "../esm/cldrDash.mjs";
 import * as cldrGui from "../esm/cldrGui.mjs";
@@ -439,6 +446,11 @@ export default {
 </script>
 
 <style scoped>
+
+.scroller {
+
+}
+
 .st-sad {
   font-style: italic;
   border: 1px dashed red;
