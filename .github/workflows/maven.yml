@@ -92,7 +92,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DataDog sourcemap upload
         # only on push to main!
-        if: github.repository == 'unicode-org/cldr' && github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.inputs.git-ref == ''
+        # if: github.repository == 'unicode-org/cldr' && github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.inputs.git-ref == ''
         run: npx --package=@datadog/datadog-ci datadog-ci sourcemaps upload tools/cldr-apps/src/main/webapp/dist/ --minified-path-prefix=/cldr-apps/dist/ --release-version=r${{ github.sha }} --service=surveytool
         env:
           DATADOG_SITE: ${{ secrets.DATADOG_SITE }}
