@@ -1,0 +1,7 @@
+/* tr35-print.css */
+
+@media print {
+    .body {
+        padding: 2em;
+    }
+}

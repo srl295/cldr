@@ -81,7 +81,7 @@ async function processFile(f) {
     }
 
     // Push the whole ToC out
-    out.push(toc.join('\n'));
+    out.push(...toc.split('\n'));
     out.push('');
 
     // Now, look for the end of the old ToC

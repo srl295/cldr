@@ -60,6 +60,7 @@ async function renderit(infile) {
     `<meta charset="utf-8">\n` +
     `<link rel='stylesheet' type='text/css' media='screen' href='../reports-v2.css'>\n` +
     `<link rel='stylesheet' type='text/css' media='screen' href='tr35.css'>\n`;
+    `<link rel='stylesheet' type='text/css' media='print' href='tr35-print.css'>\n`;
 
   // Assume there's not already a title and that we need to add one.
   if (dom.window.document.getElementsByTagName("title").length >= 1) {
