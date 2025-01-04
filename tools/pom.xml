@@ -190,6 +190,12 @@
 				<artifactId>semver4j</artifactId>
 				<version>3.1.0</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.moonstoneid</groupId>
+				<artifactId>apg-java</artifactId>
+				<version>1.1.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

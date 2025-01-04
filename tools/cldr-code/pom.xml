@@ -62,6 +62,11 @@
 			<groupId>com.vdurmont</groupId>
 			<artifactId>semver4j</artifactId>
 		</dependency>
+		<!-- for ABNF -->
+		<dependency>
+			<groupId>com.moonstoneid</groupId>
+			<artifactId>apg-java</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
