@@ -24,6 +24,14 @@ import java.util.regex.Matcher;
 import org.unicode.cldr.util.CLDRFile.DraftStatus;
 import org.unicode.cldr.util.XMLSource.ResolvingSource;
 
+/**
+ * The SimpleFactory can have a list of source directories, but- importantly- each file
+ * (locale) will only be found in a single directory.  For example, the old behavior had
+ * "seed" and "common" directories, and a locale might be in seed OR common.
+ *
+ * The SimpleFactory does NOT handle the case where the same locale is in multiple places, such as
+ * with subdivisions.
+ */
 public class SimpleFactory extends Factory {
 
     /**

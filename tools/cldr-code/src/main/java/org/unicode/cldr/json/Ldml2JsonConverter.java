@@ -47,6 +47,7 @@ import org.unicode.cldr.util.Annotations;
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRFile.DraftStatus;
+import org.unicode.cldr.util.InterleavedFactory;
 import org.unicode.cldr.util.CLDRLocale;
 import org.unicode.cldr.util.CLDRPaths;
 import org.unicode.cldr.util.CLDRTool;
@@ -544,6 +545,10 @@ public class Ldml2JsonConverter {
             throws IOException, ParseException {
         final Map<JSONSection, List<CldrItem>> sectionItems = new TreeMap<>();
 
+        String prefixMatch = "";
+        if (type == RunType.subdivisions) {
+            prefixMatch = "//ldml/localeDisplayNames/subdivisions/subdivision";
+        }
         String locID = file.getLocaleID();
         Matcher noNumberingSystemMatcher = LdmlConvertRules.NO_NUMBERING_SYSTEM_PATTERN.matcher("");
         Matcher numberingSystemMatcher = LdmlConvertRules.NUMBERING_SYSTEM_PATTERN.matcher("");
@@ -562,7 +567,7 @@ public class Ldml2JsonConverter {
         // read paths in DTD order. The order is critical for JSON processing.
         final CLDRFile.Status status = new CLDRFile.Status();
         for (Iterator<String> it =
-                        file.iterator("", DtdData.getInstance(fileDtdType).getDtdComparator(null));
+                        file.iterator(prefixMatch, DtdData.getInstance(fileDtdType).getDtdComparator(null));
                 it.hasNext(); ) {
             int cv = Level.UNDETERMINED.getLevel();
             final String path = it.next();
@@ -2224,7 +2229,21 @@ public class Ldml2JsonConverter {
     public void processDirectory(String dirName, DraftStatus minimalDraftStatus)
             throws IOException, ParseException {
         SupplementalDataInfo sdi = SupplementalDataInfo.getInstance(cldrCommonDir + "supplemental");
-        Factory cldrFactory = Factory.make(cldrCommonDir + dirName + "/", ".*");
+        // which CLDRFactory to use
+        Factory cldrFactory;
+        // XPath for prefix match
+        if (type == RunType.subdivisions) {
+            // overlay - common/main first, THEN the subdir.
+            File sourceDirectories[] = {
+                new File(CLDRPaths.MAIN_DIRECTORY),
+                new File(CLDRPaths.SUBDIVISIONS_DIRECTORY),
+            };
+            cldrFactory = new InterleavedFactory(sourceDirectories, DraftStatus.unconfirmed);
+        } else {
+            // generic factory
+            cldrFactory = Factory.make(cldrCommonDir + dirName + "/", ".*");
+        }
+
         Set<String> files =
                 cldrFactory
                         .getAvailable()
@@ -2239,6 +2258,8 @@ public class Ldml2JsonConverter {
         final int total = files.size();
         AtomicInteger readCount = new AtomicInteger(0);
         Map<String, Throwable> errs = new TreeMap<>();
+        // is this type eligible for using a resolving source?
+        boolean couldResolve = (type == RunType.main || type == RunType.subdivisions);
 
         // This takes a long time (minutes, in 2020), so run it in parallel forkJoinPool threads.
         // The result of this pipeline is an array of toString()-able filenames of XML files which
@@ -2259,7 +2280,7 @@ public class Ldml2JsonConverter {
                                     CLDRFile file =
                                             cldrFactory.make(
                                                     filename,
-                                                    resolve && type == RunType.main,
+                                                    resolve && couldResolve,
                                                     minimalDraftStatus);
                                     // Print 'reading' after the make, to stagger the output a
                                     // little bit.
