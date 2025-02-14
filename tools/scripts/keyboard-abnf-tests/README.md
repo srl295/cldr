@@ -16,6 +16,10 @@ Note there are four files. There's a `.d` directory for each ABNF file in keyboa
 - transform-to-required.d/to-replacement.pass.txt
 - transform-to-required.d/to-replacement.fail.txt
 
+## Updating the spec
+
+- Use <https://www.bottlecaps.de/ebnf-convert/> to convert .abnf files into EBNF for the spec
+
 ## Copyright
 
 Copyright &copy; 1991-2025 Unicode, Inc.

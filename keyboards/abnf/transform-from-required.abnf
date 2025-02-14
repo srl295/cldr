@@ -81,7 +81,7 @@ class = fixed-class / set-class
 
 fixed-class = backslash fixed-class-char
 
-fixed-class-char = "s" / "S" / "t" / "r" / "n" / "f" / "v" / backslash / "$" / "d" / "w" / "D" / "W" / "0"
+fixed-class-char = "s" / "S" / "t" / "r" / "n" / "f" / "v" / "d" / "w" / "D" / "W" / "0"
 
 set-class = "[" set-negator set-members "]"
 set-members = set-member *(set-member)
@@ -99,8 +99,9 @@ range-char        = content-char / ws / escaped-char / "."/ "|" / "{" / "}"
 ; group for everything BUT syntax chars.
 content-char      = ASCII-PUNCT / ALPHA / DIGIT / NON-ASCII
 
-; Character escapes
-escaped-char = backslash ( backslash / "{" / "|" / "}" )
+; Character escapes. Does not include classes such as \w
+escaped-char = backslash escaped-syntax-char
+escaped-syntax-char = backslash / "$" / "+" / "(" / ")" / "*" / "{" / "|" / "}"
 
 backslash    = %x5C ; U+005C REVERSE SOLIDUS "\"
 ws = SP / HTAB / CR / LF / %x3000
