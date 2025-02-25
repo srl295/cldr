@@ -92,6 +92,7 @@ public class Ldml2JsonConverter {
     private static final String MODERN_TIER_SUFFIX = "-modern";
     private static final String TRANSFORM_RAW_SUFFIX = ".txt";
     private static Logger logger = Logger.getLogger(Ldml2JsonConverter.class.getName());
+    private static final String VERBOSE_LEVEL = java.util.logging.Level.FINEST.getName();
 
     enum RunType {
         all, // number zero
@@ -278,42 +279,78 @@ public class Ldml2JsonConverter {
                             'L',
                             ".*",
                             "",
-                            "Override the license file included in the bundle");
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(GEAR_ICON + " " + Ldml2JsonConverter.class.getName() + " options:");
-        options.parse(args, true);
-
-        Timer overallTimer = new Timer();
-        overallTimer.start();
-        final String rawType = options.get("type").getValue();
-
-        if (RunType.all.name().equals(rawType)) {
-            // Running all types
-            for (final RunType t : RunType.values()) {
-                if (t == RunType.all) continue;
-                System.out.println();
-                System.out.println(
-                        TYPE_ICON + "#######################  " + t + " #######################");
-                Timer subTimer = new Timer();
-                subTimer.start();
-                processType(t.name());
-                System.out.println(
-                        TYPE_ICON + " " + t + "\tFinished in " + subTimer.toMeasureString());
-                System.out.println();
-            }
-        } else {
-            processType(rawType);
-        }
-
-        System.out.println(
-                "\n\n###\n\n"
-                        + DONE_ICON
-                        + " Finished everything in "
-                        + overallTimer.toMeasureString());
-    }
-
-    static void processType(final String runType) throws Exception {
+                            "Override the license file included in the bundle")
+                    .add(
+                            "verbose",
+                            'v',
+                            "(OFF|SEVERE|WARNING|INFO|CONFIG|FINE|FINER|FINEST|ALL|)",
+                            getLevelName(logger),
+                            String.format("Change tool verbosity (%s if no argument)", VERBOSE_LEVEL));
+                                                    
+                            
+                                public static void main(String[] args) throws Exception {
+                                    System.out.println(GEAR_ICON + " " + Ldml2JsonConverter.class.getName() + " options:");
+                                    options.parse(args, true);
+                            
+                                    if (options.get("verbose").doesOccur()) {
+                                        String logLevel = options.get("verbose").getExplicitValue();
+                                        if (logLevel == null || logLevel.isEmpty()) {
+                                            logLevel = VERBOSE_LEVEL; // user just put -v or --verbose
+                                        }
+                                        {
+                                            try {
+                                                logger.setLevel(java.util.logging.Level.parse(logLevel));
+                                                // print the new effective level
+                                                logger.info("verbose=" + getLevelName(logger));
+                                            } catch (Throwable t) {
+                                                logger.log(java.util.logging.Level.WARNING, "Trying to set verbose=" + logLevel, t);
+                                            }
+                                        }
+                                    } else {
+                                        logger.finest("verbose=" + getLevelName(logger));
+                                    }
+                            
+                                    Timer overallTimer = new Timer();
+                                    overallTimer.start();
+                                    final String rawType = options.get("type").getValue();
+                            
+                                    if (RunType.all.name().equals(rawType)) {
+                                        // Running all types
+                                        for (final RunType t : RunType.values()) {
+                                            if (t == RunType.all) continue;
+                                            System.out.println();
+                                            System.out.println(
+                                                    TYPE_ICON + "#######################  " + t + " #######################");
+                                            Timer subTimer = new Timer();
+                                            subTimer.start();
+                                            processType(t.name());
+                                            System.out.println(
+                                                    TYPE_ICON + " " + t + "\tFinished in " + subTimer.toMeasureString());
+                                            System.out.println();
+                                        }
+                                    } else {
+                                        processType(rawType);
+                                    }
+                            
+                                    System.out.println(
+                                            "\n\n###\n\n"
+                                                    + DONE_ICON
+                                                    + " Finished everything in "
+                                                    + overallTimer.toMeasureString());
+                                }
+                            
+                                /** recursively find the default level for a logger */
+                                private static String getLevelName(final Logger log) {
+                                    final java.util.logging.Level lev = log.getLevel();
+                                    if (lev == null) {
+                                        final java.util.logging.Logger par = log.getParent();
+                                        if (par == null) return "OFF"; // configuration error
+                                        return getLevelName(par);
+                                    }
+                                    return lev.getName();
+                                }
+                            
+                                static void processType(final String runType) throws Exception {
         Ldml2JsonConverter l2jc =
                 new Ldml2JsonConverter(
                         options.get("commondir").getValue(),
@@ -530,7 +567,6 @@ public class Ldml2JsonConverter {
             result = underscoreToHypen(result);
         }
         logger.finest("OUT pathStr : " + result);
-        logger.finest("result: " + result);
         return result;
     }
 
