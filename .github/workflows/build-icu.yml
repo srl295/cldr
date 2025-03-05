@@ -1,6 +1,6 @@
 # Build ICU
 
-name: Build ICU from CLDR
+name: Build ICU and JSON from CLDR
 
 on:
   workflow_dispatch:
@@ -18,9 +18,13 @@ on:
         required: true
         default: 'unicode-org/icu'
       icu-ref:
-        description: ICU branch/tag
-        required: true
+        description: 'ICU branch/tag (or empty to skip ICU)'
+        required: false
         default: 'main'
+      json-ver:
+        description: 'JSON version number to build (or empty to skip)'
+        required: false
+        default: '0.0.0-TEST'
 jobs:
   proddata:
     name: Build Production Data
@@ -71,6 +75,7 @@ jobs:
           name: cldr-prod
           path: target/cldr-prod.zip
   genicudata:
+    if: ${{ github.event.inputs.icu-ref }}
     name: Generate ICU4C Data
     runs-on: ubuntu-latest
     needs: proddata
@@ -165,6 +170,7 @@ jobs:
   # (FORCE guards make this tool pass but won't compile to working code.
   # See the testtagsguards.sh script for details.)
   icu4c-clang:
+    if: ${{ github.event.inputs.icu-ref }}
     name: ICU4C Build/Test, Ubuntu/Clang, new data
     runs-on: ubuntu-latest
     needs: genicudata
@@ -209,6 +215,7 @@ jobs:
           ( cd test/depstest && python3 depstest.py ../../../source/ );
           ( cd .. && source/test/hdrtst/testtagsguards.sh );
   icu4j-java16:
+    if: ${{ github.event.inputs.icu-ref }}
     name: ICU4J Build/Test, Java 16, new data
     runs-on: ubuntu-latest
     needs: genicudata
@@ -253,3 +260,102 @@ jobs:
         run: |
           [ -d icu4j/out/junit-results ] && cd icu4j && cat `find out/junit-results -name "*.txt" -exec grep -l FAILED {} \;`;
         if: ${{ failure() }}
+  json:
+    if: ${{ github.event.inputs.json-ver }}
+    name: Generate cldr-json
+    runs-on: ubuntu-latest
+    needs: proddata
+    steps:
+      - name: Download CLDR Production Artifact
+        id: downloadprod
+        uses: actions/download-artifact@v4
+        with:
+          name: cldr-prod
+          path: .
+      - name: Download CLDR tools
+        id: downloadtools
+        uses: actions/download-artifact@v4
+        with:
+          name: cldr-code
+          path: cldr-code
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 11
+          distribution: 'temurin'
+      # - name: Setup Maven Settings
+      #   uses: s4u/maven-settings-action@v2.8.0
+      #   with:
+      #     servers: |
+      #       [{
+      #           "id": "github",
+      #           "username": "${{ github.actor }}",
+      #           "password": "${{ github.token }}"
+      #       },{
+      #           "id": "githubicu",
+      #           "username": "${{ github.actor }}",
+      #           "password": "${{ github.token }}"
+      #       },{
+      #           "id": "githubcldr",
+      #           "username": "${{ github.actor }}",
+      #           "password": "${{ github.token }}"
+      #       }]
+      - name: Create empty CLDR dir, unpack cldr-prod
+        run: mkdir -p cldr cldr-prod && cd cldr-prod && unzip ../cldr-prod.zip
+      # Don't actually need CLDR repo
+      # - name: Clone CLDR
+      #   uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{ github.event.inputs.cldr-ref }}
+      #     lfs: false
+      #     repository: ${{ github.event.inputs.cldr-repo }}
+      #     path: cldr
+      - name: Clone CLDR-JSON tools minus data
+        uses: actions/checkout@v4
+        with:
+          repository: unicode-org/cldr-json
+          # ref: ${{ github.event.inputs.icu-ref }}
+          ref: srl295/jar ## TODO: special until this is merged into main
+          lfs: false # not needed here
+          path: cldr-json
+          fetch-depth: 1
+          sparse-checkout: .  # only need top scripts!
+
+      # - name: Cache local Maven repository
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.m2/repository
+      #     key: ${{ runner.os }}-maven-${{ hashFiles('icu/tools/**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-
+      - name: Update local-config.sh
+        # env:
+        run: |
+          cat <<EOF > cldr-json/local-config.sh
+          # generated local-config.sh
+          CLDR_DIR=../cldr
+          INDATA=../cldr-prod/production
+          VERSION=${{ github.event.inputs.json-ver }}
+          #EXTRA_JSON_OPTS=
+          #TYPES=
+          #MATCH=
+          #DRAFTSTATUS=
+          EOF
+          chmod a+rx cldr-json/local-config.sh
+          cat cldr-json/local-config.sh
+          mkdir dist
+          cd cldr-json && (bash cldr-identify.sh || true) | tee dist/identity.txt
+      - name: Generate cldr-json Data
+        run: >
+          cd cldr-json && time bash cldr-generate-json.sh
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build cldr-json zip files
+        run: >
+          cd cldr-json && time bash cldr-generate-zip.sh
+      - name: Upload cldr-json dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: cldr-json
+          path: cldr-json/dist
+      
