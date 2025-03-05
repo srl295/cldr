@@ -338,6 +338,7 @@ jobs:
           cat <<EOF > local-config.sh
           # generated local-config.sh
           CLDR_DIR=../cldr
+          CLDR_JAR=../cldr-code/cldr-code.jar
           INDATA=../cldr-prod/production
           VERSION=${{ github.event.inputs.json-ver }}
           #EXTRA_JSON_OPTS=
