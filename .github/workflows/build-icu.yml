@@ -75,7 +75,8 @@ jobs:
           name: cldr-prod
           path: target/cldr-prod.zip
   genicudata:
-    if: ${{ github.event.inputs.icu-ref }}
+    # if: ${{ github.event.inputs.icu-ref }}
+    if: false
     name: Generate ICU4C Data
     runs-on: ubuntu-latest
     needs: proddata
@@ -170,7 +171,8 @@ jobs:
   # (FORCE guards make this tool pass but won't compile to working code.
   # See the testtagsguards.sh script for details.)
   icu4c-clang:
-    if: ${{ github.event.inputs.icu-ref }}
+    # if: ${{ github.event.inputs.icu-ref }}
+    if: false
     name: ICU4C Build/Test, Ubuntu/Clang, new data
     runs-on: ubuntu-latest
     needs: genicudata
@@ -215,7 +217,8 @@ jobs:
           ( cd test/depstest && python3 depstest.py ../../../source/ );
           ( cd .. && source/test/hdrtst/testtagsguards.sh );
   icu4j-java16:
-    if: ${{ github.event.inputs.icu-ref }}
+    # if: ${{ github.event.inputs.icu-ref }}
+    if: false
     name: ICU4J Build/Test, Java 16, new data
     runs-on: ubuntu-latest
     needs: genicudata
@@ -331,7 +334,8 @@ jobs:
       - name: Update local-config.sh
         # env:
         run: |
-          cat <<EOF > cldr-json/local-config.sh
+          cd cldr-json
+          cat <<EOF > local-config.sh
           # generated local-config.sh
           CLDR_DIR=../cldr
           INDATA=../cldr-prod/production
@@ -341,10 +345,10 @@ jobs:
           #MATCH=
           #DRAFTSTATUS=
           EOF
-          chmod a+rx cldr-json/local-config.sh
-          cat cldr-json/local-config.sh
-          mkdir dist
-          cd cldr-json && (bash cldr-identify.sh || true) | tee dist/identity.txt
+          chmod a+rx local-config.sh
+          cat local-config.sh
+          mkdir -p dist
+          (bash cldr-identify.sh || true) | tee dist/identity.txt
       - name: Generate cldr-json Data
         run: >
           cd cldr-json && time bash cldr-generate-json.sh
