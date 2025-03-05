@@ -286,7 +286,7 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      - name: Create empty CLDR dir, unpack cldr-prod
+      - name: Unpack cldr-prod
         run: mkdir -p cldr-prod && cd cldr-prod && unzip ../cldr-prod.zip
       - name: Clone CLDR
         uses: actions/checkout@v4
@@ -314,7 +314,7 @@ jobs:
           # generated local-config.sh
           CLDR_DIR=../cldr
           CLDR_JAR=../cldr-code/cldr-code.jar
-          INDATA=../cldr-prod/production
+          INDATA=../cldr-prod
           VERSION=${{ github.event.inputs.json-ver }}
           #EXTRA_JSON_OPTS=
           #TYPES=
