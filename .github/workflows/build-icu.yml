@@ -286,33 +286,16 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      # - name: Setup Maven Settings
-      #   uses: s4u/maven-settings-action@v2.8.0
-      #   with:
-      #     servers: |
-      #       [{
-      #           "id": "github",
-      #           "username": "${{ github.actor }}",
-      #           "password": "${{ github.token }}"
-      #       },{
-      #           "id": "githubicu",
-      #           "username": "${{ github.actor }}",
-      #           "password": "${{ github.token }}"
-      #       },{
-      #           "id": "githubcldr",
-      #           "username": "${{ github.actor }}",
-      #           "password": "${{ github.token }}"
-      #       }]
       - name: Create empty CLDR dir, unpack cldr-prod
-        run: mkdir -p cldr cldr-prod && cd cldr-prod && unzip ../cldr-prod.zip
-      # Don't actually need CLDR repo
-      # - name: Clone CLDR
-      #   uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.event.inputs.cldr-ref }}
-      #     lfs: false
-      #     repository: ${{ github.event.inputs.cldr-repo }}
-      #     path: cldr
+        run: mkdir -p cldr-prod && cd cldr-prod && unzip ../cldr-prod.zip
+      - name: Clone CLDR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.cldr-ref }}
+          lfs: false
+          repository: ${{ github.event.inputs.cldr-repo }}
+          path: cldr
+          fetch-depth: 1
       - name: Clone CLDR-JSON tools minus data
         uses: actions/checkout@v4
         with:
@@ -323,14 +306,6 @@ jobs:
           path: cldr-json
           fetch-depth: 1
           sparse-checkout: .  # only need top scripts!
-
-      # - name: Cache local Maven repository
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.m2/repository
-      #     key: ${{ runner.os }}-maven-${{ hashFiles('icu/tools/**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven-
       - name: Update local-config.sh
         # env:
         run: |
