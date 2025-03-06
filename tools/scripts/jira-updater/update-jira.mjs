@@ -16,11 +16,11 @@ const {
   // Github stuff, we'll take what we can get
   GITHUB_REPOSITORY,
   GITHUB_ACTOR,
-  GITHUB_WORKFLOW,
   GITHUB_SHA,
 } = process.env;
 
-const [,PR_TITLE] = process.argv;
+// extract PR title from process (see workflow)
+const [, , PR_TITLE] = process.argv;
 
 const DONE_ICON = "✅";
 const GEAR_ICON = "⚙️";
