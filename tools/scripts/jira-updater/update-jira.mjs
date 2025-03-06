@@ -3,7 +3,7 @@
  * For terms of use, see http://www.unicode.org/copyright.html
  * SPDX-License-Identifier: Unicode-3.0
  */
- 
+
 import { Version3Client } from 'jira.js';
 // import fs from 'node:fs';
 import process from 'node:process';
@@ -12,7 +12,12 @@ const {
   // from repo
   JIRA_HOST, JIRA_EMAIL, JIRA_APITOKEN, JIRA_FIELD,
   // from workflow
-  PR_TITLE, MERGED_TO
+  PR_TITLE, MERGED_TO, PR_NUMBER,
+  // Github stuff, we'll take what we can get
+  GITHUB_REPOSITORY,
+  GITHUB_ACTOR,
+  GITHUB_WORKFLOW,
+  GITHUB_SHA,
 } = process.env;
 
 
@@ -25,6 +30,7 @@ const TYPE_ICON = "📂";
 // const WARN_ICON = "⚠️";
 // const POINT_ICON = "👉";
 const MISSING_ICON = "❌";
+const LAND_ICON = "🛬";
 
 
 // DEBUG&&console.dir({JIRA_HOST, JIRA_EMAIL, JIRA_APITOKEN});
@@ -92,7 +98,61 @@ async function main() {
     DEBUG && console.error(e);
     throw Error(`${MISSING_ICON} Error updating ${ourField}+${mergedTo} on ${issueIdOrKey}: ${e}`);
   }
-  console.log(`${DONE_ICON} Success: Updated ${ourField} += ${mergedTo} on ${JIRA_HOST}/browse/${issueIdOrKey}`);
+  const digits = issueIdOrKey.split("-")[1];
+
+  // the Jira hostname is redacted, so use an old redirect!
+  console.log(`${DONE_ICON} Success: Updated ${ourField} += ${mergedTo} on https://unicode.org/cldr/trac/ticket/${digits}`);
+
+  // now, let's add a comment
+  await client.issueComments.addComment({
+    issueIdOrKey,
+    comment: {
+      version: 1,
+      type: "doc",
+      content: [
+
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 4
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": `${LAND_ICON} Merged PR`
+            }
+          ]
+        },
+
+
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: `@${GITHUB_ACTOR} merged a PR to ${GITHUB_REPOSITORY}:${MERGED_TO}`
+            }
+          ]
+        },
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: `${PR_TITLE}\n`
+            },
+            {
+              "type": "inlineCard",
+              "attrs": {
+                "url": `https://github.com/${GITHUB_REPOSITORY}/pull/${PR_NUMBER}`,
+              }
+            }
+          ]
+        }
+
+      ]
+    }
+  });
 }
 
 main();

@@ -24,6 +24,7 @@ jobs:
         - name: 'Run tool'
           env:
             PR_TITLE: ${{ github.event.pull_request.title }}
+            PR_NUMBER: ${{ github.event.number }}
             MERGED_TO: ${{ github.event.pull_request.base.ref }}
             JIRA_HOST: ${{ secrets.JIRA_HOST }}
             JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
