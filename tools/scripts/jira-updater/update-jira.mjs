@@ -54,6 +54,7 @@ const client = new Version3Client({
 async function main() {
   let resp = /^([A-Z]+-[0-9]+)/.exec(PR_TITLE);
   if (!resp || !resp[1]) throw Error(`${MISSING_ICON} Could not find JIRA ticket in ${PR_TITLE}`);
+  const issueIdOrKey = resp[1];
   // graceful behavior if the PR # is missing
   resp = /\(#([0-9]+)\)\s*$/.exec(PR_TITLE);
   let PR_NUMBER = undefined;
@@ -61,7 +62,6 @@ async function main() {
     PR_NUMBER = resp[1];
   }
   if (!PR_NUMBER) console.error(`${MISSING_ICON} Could not find PR# in ${PR_TITLE}`);
-  const issueIdOrKey = resp[1];
   const mergedTo = MERGED_TO;
 
   console.log(`${GEAR_ICON} Logging in`);
