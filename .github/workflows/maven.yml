@@ -15,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # since we have to checkout all branches, cache here
+      - name: Checkout CLDR
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
       - name: Cache .git
         uses: actions/cache@v4
         with:
