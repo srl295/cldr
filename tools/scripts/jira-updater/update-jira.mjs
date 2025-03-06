@@ -1,16 +1,39 @@
+/**
+ * Copyright © 2025 Unicode, Inc.
+ * For terms of use, see http://www.unicode.org/copyright.html
+ * SPDX-License-Identifier: Unicode-3.0
+ */
+ 
 import { Version3Client } from 'jira.js';
-import fs from 'node:fs';
+// import fs from 'node:fs';
 import process from 'node:process';
 
-const { JIRA_HOST, JIRA_EMAIL, JIRA_APITOKEN, JIRA_FIELD, PR_TITLE, MERGED_TO } = process.env;
+const {
+  // from repo
+  JIRA_HOST, JIRA_EMAIL, JIRA_APITOKEN, JIRA_FIELD,
+  // from workflow
+  PR_TITLE, MERGED_TO
+} = process.env;
+
+
+const DONE_ICON = "✅";
+const GEAR_ICON = "⚙️";
+// const NONE_ICON = "∅";
+// const PACKAGE_ICON = "📦";
+// const SECTION_ICON = "📍";
+const TYPE_ICON = "📂";
+// const WARN_ICON = "⚠️";
+// const POINT_ICON = "👉";
+const MISSING_ICON = "❌";
+
 
 // DEBUG&&console.dir({JIRA_HOST, JIRA_EMAIL, JIRA_APITOKEN});
 if (!JIRA_HOST || !JIRA_EMAIL || !JIRA_APITOKEN) {
-  throw Error(`Configuration error: set JIRA_HOST, JIRA_EMAIL, JIRA_APITOKEN`);
+  throw Error(`${MISSING_ICON} Configuration error: set JIRA_HOST, JIRA_EMAIL, JIRA_APITOKEN`);
 }
 
-if (!PR_TITLE) throw Error(`PR_TITLE unset, something is wrong`);
-if (!MERGED_TO) throw Error(`MERGED_TO unset, something is wrong`);
+if (!PR_TITLE) throw Error(`${MISSING_ICON} PR_TITLE unset, something is wrong`);
+if (!MERGED_TO) throw Error(`${MISSING_ICON} MERGED_TO unset, something is wrong`);
 
 const DEBUG = false;
 
@@ -29,21 +52,20 @@ const client = new Version3Client({
 
 async function main() {
   const resp = /^([A-Z]+-[0-9]+)/.exec(PR_TITLE);
-  if (!resp || !resp[1]) throw Error(`Could not find JIRA ticket in ${PR_TITLE}`);
+  if (!resp || !resp[1]) throw Error(`${MISSING_ICON} Could not find JIRA ticket in ${PR_TITLE}`);
   const issueIdOrKey = resp[1];
   const mergedTo = MERGED_TO;
 
-  console.log(`Updating ${issueIdOrKey} on Jira with a merge to ${mergedTo}…`);
-
-  throw Error('- stop here -');
+  console.log(`${GEAR_ICON} Logging in`);
 
   try {
     await client.myself.getCurrentUser();
   } catch (e) {
     DEBUG && console.error(e);
-    throw Error(`JIRA Authentication error: ${e}`);
+    throw Error(`${MISSING_ICON} JIRA Authentication error: ${e}`);
   }
 
+  console.log(`${TYPE_ICON} Updating ${issueIdOrKey} on Jira with a merge to ${mergedTo}…`);
 
   const ourField = JIRA_FIELD || 'Merged'; // could be a config option later
 
@@ -52,7 +74,7 @@ async function main() {
   const fields = (await client.issueFields.getFields())
     .filter(({ name }) => name === ourField);
   if (fields.length !== 1) {
-    throw Error(`Looking for 1 custom field named ${ourField} but found ${fields.length}`);
+    throw Error(`${MISSING_ICON} Looking for 1 custom field named ${ourField} but found ${fields.length}`);
   }
   const { id: fieldId } = fields[0];
   DEBUG && console.dir({ fieldId });
@@ -68,9 +90,9 @@ async function main() {
     DEBUG && console.dir(resp);
   } catch (e) {
     DEBUG && console.error(e);
-    throw Error(`Error updating ${ourField}+${mergedTo} on ${issueIdOrKey}: ${e}`);
+    throw Error(`${MISSING_ICON} Error updating ${ourField}+${mergedTo} on ${issueIdOrKey}: ${e}`);
   }
-  console.log(`Updated ${ourField} += ${mergedTo} on ${JIRA_HOST}/browse/${issueIdOrKey}`);
+  console.log(`${DONE_ICON} Success: Updated ${ourField} += ${mergedTo} on ${JIRA_HOST}/browse/${issueIdOrKey}`);
 }
 
 main();

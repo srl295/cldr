@@ -1,3 +1,4 @@
+name: update-jira
 description: "Update Jira"
 on:
     pull_request:
