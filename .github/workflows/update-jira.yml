@@ -1,0 +1,25 @@
+description: "Update Jira"
+on:
+    pull_request:
+        branches:
+            - main
+            - maint/*
+        types:
+            - closed
+
+jobs:
+    update_jira:
+        # we only want to run this on unicode-org/cldr
+        if: github.repository == 'srl295/cldr' && github.event.pull_request.merged == true
+        runs-on: ubuntu-latest
+        steps:
+        - name: 'Setup tool'
+          run: cd tools/scripts/jira-updater && npm ci
+        - name: 'Run tool'
+          env:
+            PR_TITLE: ${{ github.event.pull_request.title }}
+            MERGED_TO: ${{ github.event.pull_request.base.ref }}
+            JIRA_HOST: ${{ secrets.JIRA_HOST }}
+            JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+            JIRA_APITOKEN: ${{ secrets.JIRA_APITOKEN }}
+          run: cd tools/scripts/jira-updater && node update-jira.mjs
