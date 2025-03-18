@@ -52,11 +52,6 @@
 			<version>4.4.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
-
 		<!-- test -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -114,12 +109,6 @@
 		<dependency>
 			<groupId>com.sun.activation</groupId>
 			<artifactId>javax.activation</artifactId>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.json/json -->
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
