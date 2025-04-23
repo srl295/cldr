@@ -1081,7 +1081,9 @@ A set of keywords for a character or sequence. For more information, see [Short 
 This section is appended to every markdown fragment.
 -->
 
-[Characters]: https://cldr.unicode.org/translation/characters
+<!-- purposely broken-->
+
+[Characters]: https://cldr.unicode.Xrg/translation/characters
 [Character Labels]: https://cldr.unicode.org/translation/characters/character-labels
 [Compound Units]: https://cldr.unicode.org/translation/units/unit-names-and-patterns#compound-units
 [Country Names]: https://cldr.unicode.org/translation/displaynames/countryregion-territory-names
