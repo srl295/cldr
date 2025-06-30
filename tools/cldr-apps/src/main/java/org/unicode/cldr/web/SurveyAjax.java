@@ -2090,12 +2090,9 @@ public class SurveyAjax extends HttpServlet {
             cs.put(OldVoteImportStatus.KEY, status);
         }
         while (--ver >= oldestVersionForImportingVotes) {
-            String oldVotesTable =
-                    DBUtils.Table.VOTE_VALUE
-                            .forVersion(Integer.valueOf(ver).toString(), false)
-                            .toString();
+            final String verStr = Integer.valueOf(ver).toString();
+            String oldVotesTable = DBUtils.Table.VOTE_VALUE.forVersion(verStr, false).toString();
             if (DBUtils.hasTable(oldVotesTable)) {
-                // SurveyLog.warnOnce("Old Votes table present: " + oldVotesTable);
                 int count =
                         DBUtils.sqlCount(
                                 "select  count(*) as count from "
@@ -2103,10 +2100,14 @@ public class SurveyAjax extends HttpServlet {
                                         + " where submitter=?",
                                 user.id);
                 if (count > 0) { // may be -1 on error
-                    if (SurveyMain.isUnofficial()) {
-                        System.out.println(
-                                "Old Votes remaining: " + user + " oldVotesCount = " + count);
-                    }
+                    logger.fine(
+                            () ->
+                                    "Old Votes remaining: "
+                                            + user
+                                            + " oldVotesCount = "
+                                            + count
+                                            + " for"
+                                            + verStr);
                     confirmations +=
                             importAllOldWinningVotes(user, sm, oldVotesTable, newVotesTable);
                 }
@@ -2248,7 +2249,17 @@ public class SurveyAjax extends HttpServlet {
             try {
                 String curValue = diskData.getValueAtDPath(xpathString);
                 if (curValue == null) {
-                    continue;
+                    final String baileyValue = cldrFile.getBaileyValue(xpathString, null, null);
+                    if (baileyValue != null) {
+                        curValue = baileyValue;
+                        System.out.println(
+                                String.format(
+                                        "%s:%s: using curValue %s", locale, xpathString, curValue));
+                    } else {
+                        System.out.println(
+                                String.format("%s:%s: null baileyValue", locale, xpathString));
+                        continue;
+                    }
                 }
                 if (valueCanBeAutoImported(value, curValue, cldrFile, xpathString, loc)) {
                     BallotBox<User> box = stFac.ballotBoxForLocale(locale);
