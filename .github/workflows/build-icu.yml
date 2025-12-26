@@ -2,6 +2,13 @@
 
 name: Build ICU from CLDR
 
+env:
+  ICU_DIR: ${{ github.workspace }}/icu
+  CLDR_DIR: ${{ github.workspace }}/cldr
+  ICU4C_DIR: ${{ github.workspace }}/icu/icu4c
+  TOOLS_ROOT: ${{ github.workspace }}/icu/tools
+  ICU4J_DIR: ${{ github.workspace }}/icu/icu4j
+
 on:
   workflow_dispatch:
     inputs:
@@ -142,13 +149,15 @@ jobs:
       - name: Generate ICU4C Data
         run: >
           env
-          TOOLS_ROOT=$(pwd)/icu/tools/
-          CLDR_DIR=$(pwd)/cldr
           CLDR_DATA_DIR=$(pwd)/cldr-prod/
-          mvn -B --file=icu/tools/cldr/cldr-to-icu/pom.xml clean package -DskipTests -DskipITs &&
-          cd icu/tools/cldr/cldr-to-icu && java -jar target/cldr-to-icu-1.0-SNAPSHOT-jar-with-dependencies.jar --cldrDataDir="$CLDR_DATA_DIR"
+          mvn -B --file=$TOOLS_ROOT/cldr/cldr-to-icu/pom.xml clean package -DskipTests -DskipITs &&
+          cd $TOOLS_ROOT/cldr/cldr-to-icu && java -jar target/cldr-to-icu-1.0-SNAPSHOT-jar-with-dependencies.jar --cldrDataDir="$CLDR_DATA_DIR"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: copy test data
+        run: >
+          env
+          cd $TOOLS_ROOT/cldr ; ant copy-cldr-testdata
       - name: Zip up icu-data.zip
         run: 'cd icu/icu4c/source && zip -rlq ../../../icu-data.zip data'
       - name: Upload icu-data.zip
@@ -156,11 +165,6 @@ jobs:
         with:
           name: icu-data
           path: icu-data.zip
-      - name: copy test data
-        run: >
-          env
-          CLDR_DIR=$(pwd)/cldr
-          cd icu/tools/cldr ; ant copy-cldr-testdata
   # clang release build with some options to enforce useful constraints.
   # Includes dependency checker on an in-source, optimized build.
   # Includes checking @draft etc. API tags vs. ifndef guards like
