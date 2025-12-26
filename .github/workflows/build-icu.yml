@@ -156,7 +156,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: copy test data
         run: >
-          env
           cd $TOOLS_ROOT/cldr ; ant copy-cldr-testdata
       - name: Zip up icu-data.zip
         run: 'cd icu/icu4c/source && zip -rlq ../../../icu-data.zip data'
