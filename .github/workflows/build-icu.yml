@@ -112,14 +112,13 @@ jobs:
             }]
       - name: Create empty CLDR dir, unpack cldr-prod
         run: mkdir -p cldr cldr-prod && cd cldr-prod && unzip ../cldr-prod.zip
-      # Don't actually need CLDR
-      # - name: Clone CLDR
-      #   uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.event.inputs.cldr-ref }}
-      #     lfs: false
-      #     repository: ${{ github.event.inputs.cldr-repo }}
-      #     path: cldr
+      - name: Clone CLDR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.cldr-ref }}
+          lfs: false
+          repository: ${{ github.event.inputs.cldr-repo }}
+          path: cldr
       - name: Clone ICU
         uses: actions/checkout@v4
         with:
@@ -134,22 +133,20 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('icu/tools/**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Install CLDR tools
-        # TODO: Should not have to do this, see ICU-21425
-        # Do this after restoring cache.
+      # TODO: update DTDs https://github.com/unicode-org/icu/blob/main/docs/processes/cldr-icu.md#3-make-pre-adjustments
+      # TODO: update ICU4J build version and locales https://github.com/unicode-org/icu/blob/main/docs/processes/cldr-icu.md#3-make-pre-adjustments
+      - name: Build and Install CLDR jar
         run: >
-          mvn -B install:install-file   -Dproject.parent.relativePath=""   -DgroupId=org.unicode.cldr
-          -DartifactId=cldr-api   -Dversion=0.1-SNAPSHOT   -Dpackaging=jar   -DgeneratePom=true
-          -Dfile=cldr-code/cldr-code.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          env
+          mvn --file=cldr/tools/pom.xml -B clean install -pl :cldr-all,:cldr-code -DskipTests -DskipITs
       - name: Generate ICU4C Data
         run: >
           env
           TOOLS_ROOT=$(pwd)/icu/tools/
           CLDR_DIR=$(pwd)/cldr
           CLDR_DATA_DIR=$(pwd)/cldr-prod/
-          ant -f icu/tools/cldr/cldr-to-icu/build-icu-data.xml clean all && ln icu/icu4c/LICENSE icu/icu4c/source/data/
+          mvn -B --file=icu/tools/cldr/cldr-to-icu/pom.xml clean package -DskipTests -DskipITs &&
+          cd icu/tools/cldr/cldr-to-icu && java -jar target/cldr-to-icu-1.0-SNAPSHOT-jar-with-dependencies.jar --cldrDataDir="$CLDR_DATA_DIR"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Zip up icu-data.zip
@@ -159,6 +156,11 @@ jobs:
         with:
           name: icu-data
           path: icu-data.zip
+      - name: copy test data
+        run: >
+          env
+          CLDR_DIR=$(pwd)/cldr
+          cd icu/tools/cldr ; ant copy-cldr-testdata
   # clang release build with some options to enforce useful constraints.
   # Includes dependency checker on an in-source, optimized build.
   # Includes checking @draft etc. API tags vs. ifndef guards like
