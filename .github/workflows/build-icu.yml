@@ -8,6 +8,7 @@ env:
   ICU4C_DIR: ${{ github.workspace }}/icu/icu4c
   TOOLS_ROOT: ${{ github.workspace }}/icu/tools
   ICU4J_DIR: ${{ github.workspace }}/icu/icu4j
+  CLDR_DATA_DIR: ${{ github.workspace }}/cldr-prod
 
 on:
   workflow_dispatch:
@@ -149,7 +150,6 @@ jobs:
       - name: Generate ICU4C Data
         run: >
           env
-          CLDR_DATA_DIR=$(pwd)/cldr-prod/
           mvn -B --file=$TOOLS_ROOT/cldr/cldr-to-icu/pom.xml clean package -DskipTests -DskipITs &&
           cd $TOOLS_ROOT/cldr/cldr-to-icu && java -jar target/cldr-to-icu-1.0-SNAPSHOT-jar-with-dependencies.jar --cldrDataDir="$CLDR_DATA_DIR"
         env:
