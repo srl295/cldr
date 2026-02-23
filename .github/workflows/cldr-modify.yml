@@ -74,6 +74,7 @@ jobs:
           -Dexec.args="modify -d${TMPD} -s$(pwd)/common/main" &&
           (mv -v ${TMPD}/*.xml common/main/ || true)
       - name: Check on Changes
+        id: gitstatus
         run: |
           echo '### Changes' >> $GITHUB_STEP_SUMMARY
           echo >> $GITHUB_STEP_SUMMARY
@@ -81,7 +82,9 @@ jobs:
           git status | tee -a $GITHUB_STEP_SUMMARY
           git diff --stat | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+          ( echo changecount=$(git diff 2>/dev/null | wc -l) ) | tee -a $GITHUB_OUTPUT
       - name: Update branch
+        if: steps.gitstatus.outputs.changecount > 0
         run: |
           set -euxo pipefail
           git config user.name 'Steven R. Loomis [bot]'
@@ -95,14 +98,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Open PR
+        if: steps.gitstatus.outputs.changecount > 0
         run: |
           set -euxo pipefail
-          gh pr create \
+          ( gh pr create \
             --title $(git log --pretty=%s HEAD | head -1 | cut -d' ' -f1)" auto: CLDRModify" \
             --body $(git log --pretty=%s HEAD | head -1 | cut -d' ' -f1)" Automatically created, etc" \
             --base 'srl295/cldr-16083/continuous-cldr-modify' \
             --head $(git rev-parse --abbrev-ref HEAD) \
-            | tee -a $GITHUB_STEP_SUMMARY
+            | tee -a $GITHUB_STEP_SUMMARY ) || ( echo "# Could not create PR - may already exist" | tee -a $GITHUB_STEP_SUMMARY )
         env:
           GH_TOKEN: ${{ github.token }}
 
