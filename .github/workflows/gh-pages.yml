@@ -136,7 +136,7 @@ jobs:
           # bump modification section if needed.
           bash tools/scripts/tr-archive/check-mod-section.sh HEAD "origin/$BASE_REF" >/dev/null || echo '<!--' 'Auto SpecFix' $(date) '-->' | tee -a docs/ldml/tr35-modifications.md
         env:
-          BASE_REF: ${{ github.base_ref }}
+          BASE_REF: main
       - name: Update SpecFix branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.gitstatus.outputs.changecount > 0
         run: |
