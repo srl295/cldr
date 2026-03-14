@@ -123,7 +123,7 @@ jobs:
           echo "::endgroup::"
           echo "Now go to https://cldr-smoke.unicode.org/spec/"$(basename ${GITHUB_REF_NAME})
       - name: Verify SpecFix Changes
-        if: github.repository == 'unicode-org/cldr' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         id: gitstatus
         run: |
           echo '### tr35 fixups' >> $GITHUB_STEP_SUMMARY
@@ -138,7 +138,7 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
       - name: Update SpecFix branch
-        if: github.repository == 'unicode-org/cldr' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.gitstatus.outputs.changecount > 0
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.gitstatus.outputs.changecount > 0
         run: |
           set -euxo pipefail
           git config user.name 'gh-pages.yml [bot]'
@@ -148,13 +148,14 @@ jobs:
           git log -n 1
           git checkout -b ${AUTO_BRANCH}
           # reset origin using token
-          git remote set-url ${AUTO_REMOTE} "https://unicode-org:${GH_TOKEN}@github.com/unicode-org/cldr.git"
+          git remote set-url ${AUTO_REMOTE} "https://unicode-org:${GH_TOKEN}@github.com/${GITHUB_REPO}.git"
           # push ONLY if files under common/ are out of date.
           bash .github/workflows/cldr-modify-push-if-needed.sh ${AUTO_REMOTE} ${AUTO_BRANCH} docs/ldml/
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
       - name: Open SpecFix PR
-        if: github.repository == 'unicode-org/cldr' && github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.gitstatus.outputs.changecount > 0
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.gitstatus.outputs.changecount > 0
         run: |
           set -euxo pipefail
           ( gh pr create \
