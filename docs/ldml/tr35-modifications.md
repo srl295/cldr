@@ -15,6 +15,7 @@ This is a partial document, describing only the changes to the LDML since the pr
 ## <a name="Contents" href="#Contents">Contents of Appendix A, Modifications</a>
 
 * [Modifications](#modifications)
+  * [MessageFormat](#messageformat)
   * [Locale Identifiers and Names](#locale-identifiers-and-names)
   * [Misc.](#misc)
   * [DateTime formats](#datetime-formats)
@@ -42,11 +43,11 @@ This is a partial document, describing only the changes to the LDML since the pr
 
 **Changes in LDML Version 48.2 (Differences from Version 48.1)**
 
-* New section [Nested Bracket Replacement](tr35-general.html#Character_Nested_Bracket_Replacement)
-* [Locale Display Name Algorithm](tr35-general.html#locale_display_name_algorithm) updated to use the nested bracket replacement data and avoid nested parentheses by flattening `-t-` (transform) language names.
+* New section [Nested Bracket Replacement](tr35-general.md#Character_Nested_Bracket_Replacement)
+* [Locale Display Name Algorithm](tr35-general.md#locale_display_name_algorithm) updated to use the nested bracket replacement data and avoid nested parentheses by flattening `-t-` (transform) language names.
     * As part of this, the display name order is changed so that any names for `-u-` items appear _before_ (instead of after) any names for `-t-` items.
 * Specify that missing `<keys>` translations should fall back to the key identifier
-* The section "Enhanced Language Matching" is retitled as [Language Matching Variables](tr35.html#enhanced-language-matching) and clarified.
+* The section "Enhanced Language Matching" is retitled as [Language Matching Variables](tr35.md#enhanced-language-matching) and clarified.
 
 ### MessageFormat
 
@@ -57,7 +58,7 @@ This is a partial document, describing only the changes to the LDML since the pr
 
 **Changes in LDML Version 48.1 (Differences from Version 48)**
 
-* [Segmentations](tr35-general.html#Segmentations) removed outdated note about `X Format*->X` not being supported in CLDR since it no longer accurate.
+* [Segmentations](tr35-general.md#Segmentations) removed outdated note about `X Format*->X` not being supported in CLDR since it no longer accurate.
 <!-- typo fix -->
 
 **Changes in LDML Version 48 (Differences from Version 47)**
