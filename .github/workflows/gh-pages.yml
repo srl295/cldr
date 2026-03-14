@@ -133,8 +133,6 @@ jobs:
           git diff --stat | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           ( echo changecount=$(git diff 2>/dev/null | wc -l) ) | tee -a $GITHUB_OUTPUT
-          # bump modification section if needed.
-          bash tools/scripts/tr-archive/check-mod-section.sh HEAD "origin/main" || (echo '<!--' 'Auto SpecFix' $(date) '-->' | tee -a docs/ldml/tr35-modifications.md)
       - name: Update SpecFix branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.gitstatus.outputs.changecount > 0
         run: |
@@ -143,6 +141,7 @@ jobs:
           git config user.email 'unicode-org@users.noreply.github.com'
           git add docs/ldml
           bash .github/workflows/cldr-modify-commit.sh gh-pages.yml SpecFix
+          bash tools/scripts/tr-archive/check-mod-section.sh HEAD "origin/main" || (echo '<!--' 'Auto SpecFix' $(date) '-->' | tee -a docs/ldml/tr35-modifications.md && git commit --amend -C HEAD docs/ldml/tr35-modifications.md)
           git log -n 1
           git checkout -b ${AUTO_BRANCH}
           # reset origin using token
