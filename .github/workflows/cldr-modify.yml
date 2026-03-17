@@ -95,7 +95,7 @@ jobs:
           bash .github/workflows/cldr-modify-commit.sh cldr-modify.yml CLDRModify
           git checkout -b ${AUTO_BRANCH}
           # reset origin using token
-          git remote set-url ${AUTO_REMOTE} "https://unicode-org:${GH_TOKEN}@github.com/unicode-org/cldr.git"
+          git remote set-url ${AUTO_REMOTE} "https://unicode-org:${GH_TOKEN}@github.com/srl295/cldr.git"
           # push ONLY if files under common/ are out of date.
           bash .github/workflows/cldr-modify-push-if-needed.sh ${AUTO_REMOTE} ${AUTO_BRANCH} common/
         env:
