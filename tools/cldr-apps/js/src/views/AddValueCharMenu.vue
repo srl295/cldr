@@ -138,7 +138,7 @@ function handleDropdownVisibleChange(isVisible) {
 }
 </script>
 
-<style>
+<!-- <style>
 /* Not scoped, for overriding ant styles */
 
 /* The div with "ant-select-selector" normally contains the menu arrow and placeholder.
@@ -161,7 +161,7 @@ function handleDropdownVisibleChange(isVisible) {
 .ant-select-dropdown {
   min-width: 6em !important; /* wider than ant-select-item */
 }
-</style>
+</style> -->
 
 <style scoped>
 .tag-menu {
