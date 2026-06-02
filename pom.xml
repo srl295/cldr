@@ -16,11 +16,43 @@
 		</license>
 	</licenses>
 	<properties>
+		<jacoco.version>0.8.11</jacoco.version>
+		<jacocoArgLine></jacocoArgLine>
 	</properties>
 
 	<modules>
 		<module>tools</module>
 	</modules>
+
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco.version}</version>
+						<executions>
+							<execution>
+								<id>report-aggregate</id>
+								<goals>
+									<goal>report-aggregate</goal>
+								</goals>
+								<phase>verify</phase>
+								<configuration>
+									<outputDirectory>${project.build.directory}/site/jacoco-aggregate</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<distributionManagement>
 		<repository>
