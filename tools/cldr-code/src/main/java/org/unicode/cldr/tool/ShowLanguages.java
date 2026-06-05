@@ -1277,6 +1277,21 @@ public class ShowLanguages {
 
             Collection<Comparable<?>[]> plainData = new ArrayList<>(); // For TSV
 
+            // add header row to plainitems
+            {
+                Comparable<?>[] plainItems =
+                        new Comparable<?>[] {
+                            "languageName", // getLanguageName(languageCode),
+                            "languageCode",
+                            "territoryName",
+                            "territoryCode",
+                            "officialStatus", // getOfficialStatus(territoryCode, languageCode),
+                            "population", // Math.round(languageData.getPopulation()),
+                            "literatePopulation" // Math.round(languageData.getLiteratePopulation()),
+                        };
+                plainData.add(plainItems);
+            }
+
             for (String territoryCode : supplementalDataInfo.getTerritoriesWithPopulationData()) {
                 // PopulationData territoryData =
                 // supplementalDataInfo.getPopulationDataForTerritory(territoryCode);
@@ -1323,8 +1338,14 @@ public class ShowLanguages {
             String value = tablePrinter.addRows(flattened).toTable();
             pw2.println(value);
             pw2.close();
+            writePlainData(ffw, plainData);
+        }
+
+        private void writePlainData(FormattedFileWriter ffw, Collection<Comparable<?>[]> plainData)
+                throws IOException {
             try (PrintWriter pw21plain =
-                    FileUtilities.openUTF8Writer(ffw.getDir(), ffw.getBaseFileName() + ".txt")) {
+                    FileUtilities.openUTF8Writer(
+                            ffw.getDir() + "/../tsv/", ffw.getBaseFileName() + ".tsv")) {
                 for (Comparable<?>[] row : plainData) {
                     pw21plain.println(Joiner.on("\t").join(row));
                 }
@@ -1589,13 +1610,13 @@ public class ShowLanguages {
         }
 
         private void showCountryLanguageInfo(PrintWriter pw) throws IOException {
-            PrintWriter pw21 =
-                    new PrintWriter(
-                            new FormattedFileWriter(
-                                    null,
-                                    "Territory-Language Information",
-                                    null,
-                                    SUPPLEMENTAL_INDEX_ANCHORS));
+            FormattedFileWriter ffw =
+                    new FormattedFileWriter(
+                            null,
+                            "Territory-Language Information",
+                            null,
+                            SUPPLEMENTAL_INDEX_ANCHORS);
+            PrintWriter pw21 = new PrintWriter(ffw);
             PrintWriter pw2 = pw21;
             NumberFormat nf = NumberFormat.getInstance(ULocale.ENGLISH);
             nf.setGroupingUsed(true);
@@ -1650,6 +1671,22 @@ public class ShowLanguages {
                             "Written%",
                             "class='target'", "{0,number,#0.0}%", "class='targetRight'", true);
 
+            Collection<Comparable<?>[]> plainData = new ArrayList<>(); // For TSV
+
+            // // add header row to plainitems
+            // {
+            //         Comparable<?>[] plainItems =
+            //                 new Comparable<?>[] {
+            //                     getLanguageName(languageCode),
+            //                     languageCode,
+            //                     territoryName,
+            //                     territoryCode,
+            //                     getOfficialStatus(territoryCode, languageCode),
+            //                     Math.round(languageData.getPopulation()),
+            //                     Math.round(languageData.getLiteratePopulation()),
+            //                 };
+            //         plainData.add(plainItems);
+            // }
             for (String territoryCode : supplementalDataInfo.getTerritoriesWithPopulationData()) {
                 String territoryName =
                         englishNameGetter.getNameFromTypeEnumCode(
@@ -1685,11 +1722,34 @@ public class ShowLanguages {
                             .addCell(languageliteracy)
                             .addCell(writingFrequency)
                             .finishRow();
+                    Comparable<?>[] plainItems = new Comparable<?>[] {
+                                // .addCell(getFirstPrimaryWeight(territoryName))
+                                // .addCell(territoryName)
+                                // .addCell(territoryCode)
+                                // .addCell(territoryLiteracy)
+                                // .addCell(getLanguageName(languageCode))
+                                // .addCell(languageCode)
+                                // .addCell(getOfficialStatus(territoryCode, languageCode))
+                                // .addCell(languageData.getPopulation())
+                                // .addCell(languagePopulationPercent)
+                                // .addCell(languageliteracy)
+                                // .addCell(writingFrequency)
+
+                                //     getLanguageName(languageCode),
+                                //     languageCode,
+                                //     territoryName,
+                                //     territoryCode,
+                                //     getOfficialStatus(territoryCode, languageCode),
+                                //     Math.round(languageData.getPopulation()),
+                                //     Math.round(languageData.getLiteratePopulation()),
+                            };
+                    plainData.add(plainItems);
                 }
             }
             String value = tablePrinter.toTable();
             pw2.println(value);
             pw2.close();
+            writePlainData(ffw, plainData);
         }
 
         private void showCountryInfo(PrintWriter pw) throws IOException {
