@@ -204,7 +204,7 @@ jobs:
           mysql --user=root --password=root < tools/cldr-apps/test-setup.sql
       - name: Test with maven
         run: >
-          mvn -s .github/workflows/mvn-settings.xml -B test --file tools/pom.xml
+          mvn -s .github/workflows/mvn-settings.xml -B verify -Pcoverage --file tools/pom.xml
           '-Dorg.unicode.cldr.unittest.web.jdbcurl=jdbc:mysql://cldrtest:VbrB3LFCr6A!@localhost/cldrtest?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC'
           '-Dorg.unicode.cldr.unittest.web.KeepDb=true' -DCLDR_GITHUB_ANNOTATIONS=true
           '-Dorg.unicode.cldr.unittest.testArgs=-e10 -n'
@@ -217,6 +217,13 @@ jobs:
         with:
           paths: "tools/*/target/surefire-reports/**/TEST-*.xml"
         if: always()
+      - name: packup site
+        run: tar cvfpz cldr-sites.tgz $(find . -type d -name site )
+      - name: upload cldr-sites.tgz
+        uses: actions/upload-artifact@v4
+        with:
+          name: cldr-sites
+          path: cldr-sites.tgz
   check:
     #Cannot change the name, it's a required step.
     #name: "Run ConsoleCheckCLDR"
