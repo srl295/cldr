@@ -42,7 +42,6 @@ import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRFile.Status;
 import org.unicode.cldr.util.CLDRLocale;
 import org.unicode.cldr.util.DateConstants;
-import org.unicode.cldr.util.ExemplarSets;
 import org.unicode.cldr.util.ExemplarSets.ExemplarType;
 import org.unicode.cldr.util.Factory;
 import org.unicode.cldr.util.InternalCldrException;
@@ -285,7 +284,8 @@ public class CheckForExemplars extends FactoryCheckCLDR {
             }
         }
         // TODO: CLDR-19115 remove (or document) the next line, replace it with just "U+0020"?
-        exemplars.addAll(ExemplarSets.AlwaysOK).addAll(LB_JOIN_CONTROLS).freeze();
+        // exemplars.addAll(ExemplarSets.AlwaysOK).addAll(LB_JOIN_CONTROLS).freeze();
+        exemplars.add(0x20).freeze();
         exemplarsPlusAscii = new UnicodeSet(exemplars).addAll(ASCII).freeze();
 
         skip = false;
