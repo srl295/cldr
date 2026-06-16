@@ -18,11 +18,13 @@ public class GetPath {
                     i++;
                     l = CLDRLocale.getInstance(args[i]);
                     break;
-                case "--path":
+                case "--xpath":
                     i++;
                     p = args[i];
                 case "--explain":
-                    explainPath(l, p);
+                    if (p == null) p = readString("XPath");
+                    if (l == null) l = readString("Locale");
+                    explainPath(l, p.replaceAll("%","\""));
                     break;
             }
         }
