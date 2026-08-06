@@ -15,6 +15,7 @@ on:
     # this can handle other branches, the auto branch will be auto/cldrmodify/some/branch etc
     branches:
       - 'main'
+      - 'brs/v49vxml3'
 jobs:
   modify:
     name: Run CLDRModify
