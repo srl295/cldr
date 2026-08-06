@@ -83,7 +83,7 @@ jobs:
             if [[ "" == $(echo "${mainClass}" | tr -c -d .) ]];
             then
               # no package given - use default package
-              CLDRCLASS=org.unicode.cldr.tool.${CLDRCLASS}
+              mainClass=org.unicode.cldr.tool.${mainClass}
             fi
             echo "- :gear: Running ${mainClass}" ${arg} >> $GITHUB_STEP_SUMMARY
             echo "::group::${mainClass}" ${arg}
