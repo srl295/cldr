@@ -656,12 +656,8 @@ public class Ldml2JsonConverter {
                             new CldrItem(
                                     transformedPath, transformedFullPath, path, fullPath, value);
 
-                    List<CldrItem> cldrItems = sectionItems.get(js);
-                    if (cldrItems == null) {
-                        cldrItems = new ArrayList<>();
-                    }
+                    List<CldrItem> cldrItems = sectionItems.computeIfAbsent(js, (i) -> new ArrayList<>());
                     cldrItems.add(item);
-                    sectionItems.put(js, cldrItems);
                     break;
                 }
             }
@@ -1149,7 +1145,11 @@ public class Ldml2JsonConverter {
                             // then add it! Because we run before the sorting,
                             // we can run where the parent isn't added yet.
                             je = new JsonObject();
-                            sub.add(n.getNodeKeyName(), je);
+                            final String key = n.getNodeKeyName();
+                            if(sub.has(key)) {
+                                throw new RuntimeException("Dup key " + key + " in " + item.getUntransformedPath());
+                            }
+                            sub.add(key, je);
                         }
                         sub = je.getAsJsonObject(); // traverse into the JSON DOM..
                     }
@@ -2044,7 +2044,6 @@ public class Ldml2JsonConverter {
         }
 
         ArrayList<CldrNode> nodesInPath = item.getNodesInPath();
-        int arraySize = nodesInPath.size();
 
         int i = 0;
         if (i == nodesInPath.size() && type != RunType.rbnf) {
@@ -2604,7 +2603,11 @@ public class Ldml2JsonConverter {
                 outputSpaceSepArray(out, objName, value);
             } else {
                 // normal value
-                out.getAsJsonObject().addProperty(objName, value);
+                JsonObject jo = out.getAsJsonObject();
+                if(jo.has(objName)) {
+                    throw new RuntimeException("Also dup " + objName + " in ???");
+                }
+                jo.addProperty(objName, value);
             }
             return;
         }
