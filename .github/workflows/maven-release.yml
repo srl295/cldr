@@ -6,6 +6,9 @@ on:
   release:
     types: [created]
   workflow_dispatch:
+  push:
+    branches:
+      - release-0.0.0
 jobs:
   mvn-deploy:
     runs-on: ubuntu-latest
@@ -39,20 +42,23 @@ jobs:
       - name: Build with Maven
         run: >
           mvn -s .github/workflows/mvn-settings.xml -B compile install package --file tools/pom.xml
-          -DskipTests=true
+          -DskipTests=true  # TODO?
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # cldr-archive is needed since we will run tests
       - name: Checkout CLDR archive
+        if: false # TODO
         run: >
           mkdir -v ../cldr-archive && java -jar tools/cldr-code/target/cldr-code.jar checkout-archive
       - name: set version to generic number
+        if: false # TODO
         run: |
           mvn -s .github/workflows/mvn-settings.xml --file tools/pom.xml versions:set -DnewVersion=0.0.0-SNAPSHOT-$(echo ${GITHUB_SHA} | cut -c1-10)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload to GitHub maven
         # only for head fork
-        if: github.repository == 'unicode-org/cldr'
+        if: github.repository == 'unicode-org/cldr' && false # TODO
         run: |
           mvn -s .github/workflows/mvn-settings.xml  --file tools/pom.xml source:jar deploy
         env:
